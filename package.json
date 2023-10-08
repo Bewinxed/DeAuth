@@ -20,6 +20,7 @@
     "@playwright/test": "^1.38.1",
     "@sveltejs/adapter-auto": "^2.1.0",
     "@sveltejs/kit": "^1.25.1",
+    "@types/gtag.js": "^0.0.16",
     "@types/inquirer": "^9.0.3",
     "@types/speakeasy": "^2.0.8",
     "@types/uuid": "^9.0.5",
