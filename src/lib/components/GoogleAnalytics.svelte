@@ -9,6 +9,12 @@
 				page_title: document.title,
 				page_path: $page.url.pathname
 			});
+			// if there is a user session
+			// @ts-expect-error ignore this, ganalytics
+			if (page.data.session.user) {
+				// @ts-expect-error ignore this, ganalytics
+				gtag('set', { user_id: page.data.session.user.userId });
+			}
 		}
 	}
 </script>
