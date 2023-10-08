@@ -22,7 +22,7 @@
 <svelte:head>
 	<script
 		async
-		src="https://www.googletagmanager.com/gtag/js?id=MEASUREMENT_ID"
+		src="https://www.googletagmanager.com/gtag/js?id=G-914DZTMXZC"
 	>
 	</script>
 	<script>
