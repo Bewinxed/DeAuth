@@ -15,7 +15,9 @@ const handlers: {
 };
 
 export const GET: RequestHandler = async (request) => {
-	const { locals, cookies, params, url } = request;
+	const { locals, cookies, params, url: original_url } = request;
+
+	const url = new URL(original_url.toString().replace("amp", "&"))
 
 	const handler = handlers[params.provider as OAuthProvider];
 
