@@ -139,7 +139,7 @@ export const verifyMessage = async (
 };
 
 export async function create_session_tokens(args: {
-	application: Prisma.applicationGetPayload<object>;
+	application: Prisma.ApplicationGetPayload<object>;
 	account_id: string;
 	proof: string;
 	date: Date;
