@@ -1,0 +1,352 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "foreignKeys"
+}
+
+model User {
+  id                    String                 @id @unique
+  name                  String?
+  username              String?                @unique
+  avatar_url            String?
+  email                 String?                @unique
+  created_at            DateTime               @default(now())
+  organization          Organization[]
+  nfts                  Nft[]
+  session               Session[]              @relation("user_sessions")
+  impersonated_sessions Session[]              @relation("user_impersonations")
+  key                   Key[]
+  auth_request          AuthRequest[]
+  user_role             user_role[]
+  updated_at            DateTime               @updatedAt
+  memberships           Member[]
+  FeatureFlagSetting    feature_flag_setting[]
+  suspended_at          DateTime?
+  suspended_by_user_id  String? // TODO: add audit log for suspension
+
+  @@map("users")
+}
+
+model AuthRequest {
+  id                      Int           @id @default(autoincrement())
+  // add a field for the application id
+  application             Application   @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  uuid                    String
+  state                   String
+  nonce                   String
+  uri                     String
+  signature               String?
+  provider_access_token   String? // New field
+  provider_refresh_token  String? // New field
+  provider_account_id     String // New field
+  access_token            String?
+  refresh_token           String?
+  access_token_expires_in Int?
+  user_id                 String?
+  user                    User?         @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  created_at              DateTime      @default(now())
+  updated_at              DateTime      @updatedAt
+  application_id          String
+  ip_address              String?
+  provider                OAuthProvider
+  session                 Session[]
+
+  @@unique([application_id, state])
+  @@map("auth_requests")
+}
+
+model Session {
+  id         String   @id @unique
+  created_at DateTime @default(now())
+
+  active_expires          BigInt
+  idle_expires            BigInt
+  auth_request_id         Int?
+  auth_request            AuthRequest? @relation(fields: [auth_request_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  application_id          String
+  application             Application  @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  user_id                 String
+  user                    User         @relation(name: "user_sessions", references: [id], fields: [user_id], onDelete: Cascade)
+  provider_id             String
+  access_token            String
+  refresh_token           String
+  access_token_expires_in Int
+  impersonating_user_id   String?
+  impersonating_user      User?        @relation(name: "user_impersonations", fields: [impersonating_user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([application_id])
+  @@map("sessions")
+}
+
+model Key {
+  id              String         @id @unique
+  hashed_password String?
+  user_id         String
+  user            User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  provider        OAuthProvider?
+  account_id      String?        @unique
+  additional_data Json? // Stores additional data like profile pic, username etc.
+
+  @@index([user_id])
+  @@map("keys")
+}
+
+model Nft {
+  id         Int    @id @default(autoincrement())
+  public_key String
+  image_url  String
+  metadata   Json
+  user_id    String
+  user       User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([user_id])
+  @@map("nft")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  DEVELOPER
+  MEMBER
+  MODERATOR
+}
+
+model user_role {
+  id              Int          @id @default(autoincrement())
+  role            Role
+  user_id         String
+  user            User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  organization_id String
+  organization    Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+
+  @@index([organization_id])
+  @@map("user_roles")
+}
+
+model app_role {
+  id                    Int                    @id @default(autoincrement())
+  name                  String                 @default("USER")
+  role                  Role                   @default(MEMBER)
+  application_id        String
+  application           Application            @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  app_role_assignment   app_role_assignment[]
+  created_at            DateTime               @default(now())
+  updated_at            DateTime               @updatedAt
+  modified_by_user_id   String?
+  feature_flag_settings feature_flag_setting[]
+  permissions           Permission[] // Many-to-many relation with Permission model
+
+  @@map("app_roles")
+}
+
+model Member {
+  id                  String                @id @default(uuid())
+  user_id             String
+  user                User                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  application_id      String
+  application         Application           @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  role_assignments    app_role_assignment[]
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+  modified_by_user_id String?
+  permissions         Permission[]          @relation("UserPermissions") // Direct permissions for users
+
+  @@unique([user_id, application_id])
+  @@map("members")
+}
+
+model app_role_assignment {
+  id                  Int      @id @default(autoincrement())
+  app_role_id         Int
+  app_role            app_role @relation(fields: [app_role_id], references: [id], onDelete: Cascade)
+  member_id           String
+  member              Member   @relation(fields: [member_id], references: [id], onDelete: Cascade)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  modified_by_user_id String?
+
+  @@unique([app_role_id, member_id])
+  @@map("app_role_assignments")
+}
+
+enum OAuthProvider {
+  discord
+  twitter
+  github
+  solana
+  ip_address
+  // Add more providers as needed
+}
+
+model Organization {
+  id                   String         @id @default(uuid())
+  name                 String
+  owner_id             String
+  owner                User           @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  members              user_role[]
+  callback_urls        String[]
+  applications         Application[]
+  website              String?
+  privacy_policy_url   String?
+  terms_of_service_url String?
+  created_at           DateTime       @default(now())
+  updated_at           DateTime       @updatedAt
+  modified_by_user_id  String?
+  subscription         subscription[]
+  branding_id          Int?
+  branding             Branding?      @relation(fields: [branding_id], references: [id])
+
+  @@map("organizations")
+}
+
+model authentication_rule {
+  id                  Int           @id @default(autoincrement())
+  created_at          DateTime      @default(now())
+  application_id      String
+  application         Application   @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  provider            OAuthProvider
+  is_required         Boolean
+  updated_at          DateTime      @updatedAt
+  modified_by_user_id String?
+
+  @@unique([application_id, provider])
+  @@map("authentication_rules")
+}
+
+model Branding {
+  id                  Int            @id @default(autoincrement())
+  created_at          DateTime       @default(now())
+  logo                String? // URL of the logo image
+  primary_color       String? // Primary color hex code
+  secondary_color     String? // Secondary color hex code
+  font                String? // Font to be used
+  organization        Organization[]
+  application         Application[]
+  updated_at          DateTime       @updatedAt
+  modified_by_user_id String?
+
+  @@map("branding")
+}
+
+model redirect_url {
+  id                  Int         @id @default(autoincrement())
+  url                 String
+  application_id      String
+  application         Application @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  created_at          DateTime    @default(now())
+  updated_at          DateTime    @updatedAt
+  modified_by_user_id String?
+
+  @@map("redirect_urls")
+}
+
+model Application {
+  id                   String       @id @default(uuid())
+  name                 String
+  description          String?
+  organization_id      String
+  organization         Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  access_token_secret  String
+  refresh_token_secret String
+  access_token_expiry  Int          @default(3600)
+  website              String?
+  privacy_policy_url   String?
+  terms_of_service_url String?
+  // 30d
+  refresh_token_expiry Int          @default(2592000)
+  updated_at           DateTime     @updatedAt
+  modified_by_user_id  String?
+
+  redirect_urls redirect_url[]
+  created_at    DateTime       @default(now())
+  branding_id   Int?
+  branding      Branding?      @relation(fields: [branding_id], references: [id])
+
+  app_role             app_role[]
+  auth_request         AuthRequest[]
+  session              Session[]
+  user_access_controls user_access_control[]
+  authentication_rule  authentication_rule[]
+  member               Member[]
+
+  @@map("applications")
+}
+
+enum AccessControlType {
+  WHITELIST
+  BLACKLIST
+}
+
+model user_access_control {
+  id                  Int               @id @default(autoincrement())
+  created_at          DateTime          @default(now())
+  application_id      String
+  application         Application       @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  provider            OAuthProvider
+  account_id          String
+  access_type         AccessControlType
+  modified_by_user_id String?
+
+  @@map("user_access_controls")
+}
+
+model subscription {
+  id              Int          @id @default(autoincrement())
+  organization_id String
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  plan            String
+  payment_method  String
+  starts_at       DateTime     @default(now())
+  ends_at         DateTime?
+  updated_at      DateTime     @updatedAt
+
+  @@map("subscriptions")
+}
+
+enum FeatureFlagType {
+  BOOLEAN
+  STRING
+  INTEGER
+}
+
+model feature_flag {
+  id                 Int                    @id @default(autoincrement())
+  key_identifier     String                 @unique
+  flag_type          FeatureFlagType
+  flag_value         String? // Store the value as a string for flexibility
+  FeatureFlagSetting feature_flag_setting[]
+
+  @@map("feature_flags")
+}
+
+model feature_flag_setting {
+  id              Int          @id @default(autoincrement())
+  feature_flag    feature_flag @relation(fields: [feature_flag_id], references: [id])
+  feature_flag_id Int
+  user            User?        @relation(fields: [user_id], references: [id])
+  user_id         String?
+  app_role        app_role?    @relation(fields: [app_role_id], references: [id])
+  app_role_id     Int?
+  flag_value      String // Store the value as a string for flexibility
+
+  @@map("feature_flag_settings")
+}
+
+model Permission {
+  id                   Int        @id @default(autoincrement())
+  key                  String     @unique
+  name                 String
+  description          String
+  default_for_new_role Boolean    @default(false)
+  app_roles            app_role[] // Associated with the existing user_role model
+  users                Member[]   @relation("UserPermissions")
+  created_at           DateTime   @default(now())
+  updated_at           DateTime   @updatedAt
+
+  @@map("permissions")
+}

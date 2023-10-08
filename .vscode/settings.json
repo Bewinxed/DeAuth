@@ -1,0 +1,25 @@
+{
+    "tailwindCSS.files.exclude": [
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/.hg/**",
+        "**/.svn/**",
+        "**.ts**"
+    ],
+    "workbench.editor.labelFormat": "short",
+    "workbench.tree.indent": 16,
+    "explorer.sortOrder": "filesFirst",
+    "explorer.compactFolders": false,
+    "editor.formatOnSave": true,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    "terminal.integrated.scrollback": 10000,
+    "path-intellisense.showHiddenFiles": true,
+    "files.watcherExclude": {
+        "**/.svelte-kit/**": true
+    },
+    "javascript.inlayHints.parameterTypes.enabled": true,
+    "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
+    "javascript.inlayHints.variableTypes.enabled": true,
+    
+}

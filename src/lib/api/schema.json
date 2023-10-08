@@ -1,0 +1,4208 @@
+{
+  "type": "object",
+  "properties": {
+    "app/orgs": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "owner_id": {
+                      "type": "string"
+                    },
+                    "callback_urls": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    },
+                    "branding_id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "POST": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "callback_urls": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "created_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "updated_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    },
+                    "members": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "applications": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "subscription": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "branding": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "owner_id": {
+                      "type": "string"
+                    },
+                    "callback_urls": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    },
+                    "branding_id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing user id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DELETE": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "name": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "callback_urls": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "push": {
+                              "anyOf": [
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                {
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "created_at": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "updated_at": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "modified_by_user_id": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "owner": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "members": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "applications": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "subscription": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "branding": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/auth/auth_requests": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "uuid": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "nonce": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    },
+                    "signature": {
+                      "type": "string"
+                    },
+                    "provider_access_token": {
+                      "type": "string"
+                    },
+                    "provider_refresh_token": {
+                      "type": "string"
+                    },
+                    "provider_account_id": {
+                      "type": "string"
+                    },
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    },
+                    "access_token_expires_in": {
+                      "type": "number"
+                    },
+                    "user_id": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "ip_address": {
+                      "type": "string"
+                    },
+                    "auth_method": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing query params"
+                    }
+                  }
+                },
+                "404": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Auth request not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/auth/authorize": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object"
+            },
+            "responses": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        }
+      }
+    },
+    "api/auth/session": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "session_id": {
+                      "type": "string"
+                    },
+                    "session": {
+                      "type": "string"
+                    },
+                    "signature": {
+                      "type": "string"
+                    },
+                    "proof": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "string"
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing session id"
+                    }
+                  }
+                },
+                "401": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "No access token"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "Session expired"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "404": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "Session not found"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "Auth request not found"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "User not found"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "Session not found"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/login/discord": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object"
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "string"
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing app_id"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/login/solana": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object"
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/nfts/:public_key": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "public_key": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "after": {
+                      "type": "string"
+                    },
+                    "before": {
+                      "type": "string"
+                    },
+                    "limit": {
+                      "type": "string"
+                    },
+                    "page": {
+                      "type": "string"
+                    },
+                    "sortBy": {
+                      "type": "object",
+                      "properties": {
+                        "sortBy": {
+                          "$ref": "#/definitions/AssetSortBy"
+                        },
+                        "sortDirection": {
+                          "$ref": "#/definitions/AssetSortDirection"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "grand_total": {
+                      "type": "boolean"
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "interface": {
+                            "enum": [
+                              "Custom",
+                              "Executable",
+                              "FungibleAsset",
+                              "Identity",
+                              "Legacy_NFT",
+                              "ProgrammableNFT",
+                              "V1_NFT",
+                              "V1_PRINT",
+                              "V2_NFT"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "content": {
+                            "type": "object",
+                            "properties": {
+                              "$schema": {
+                                "type": "string"
+                              },
+                              "json_uri": {
+                                "type": "string"
+                              },
+                              "files": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "uri": {
+                                      "type": "string"
+                                    },
+                                    "mime": {
+                                      "type": "string"
+                                    },
+                                    "cdn_uri": {
+                                      "type": "string"
+                                    },
+                                    "quality": {
+                                      "type": "object",
+                                      "properties": {
+                                        "schema": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "contexts": {
+                                      "type": "array",
+                                      "items": {
+                                        "enum": [
+                                          "app",
+                                          "app-desktop",
+                                          "app-mobile",
+                                          "vr",
+                                          "wallet-default",
+                                          "web-desktop",
+                                          "web-mobile"
+                                        ],
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "type": "object",
+                                "properties": {
+                                  "attributes": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "value": {
+                                          "type": "string"
+                                        },
+                                        "trait_type": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "description": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "symbol": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "links": {
+                                "type": "object",
+                                "properties": {
+                                  "external_url": {
+                                    "type": "string"
+                                  },
+                                  "image": {
+                                    "type": "string"
+                                  },
+                                  "animation_url": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "authorities": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "address": {
+                                  "type": "string"
+                                },
+                                "scopes": {
+                                  "type": "array",
+                                  "items": {
+                                    "enum": [
+                                      "extension",
+                                      "full",
+                                      "metadata",
+                                      "royalty"
+                                    ],
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "compression": {
+                            "type": "object",
+                            "properties": {
+                              "eligible": {
+                                "type": "boolean"
+                              },
+                              "compressed": {
+                                "type": "boolean"
+                              },
+                              "data_hash": {
+                                "type": "string"
+                              },
+                              "creator_hash": {
+                                "type": "string"
+                              },
+                              "asset_hash": {
+                                "type": "string"
+                              },
+                              "tree": {
+                                "type": "string"
+                              },
+                              "seq": {
+                                "type": "number"
+                              },
+                              "leaf_id": {
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "grouping": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "group_key": {
+                                  "type": "string"
+                                },
+                                "group_value": {
+                                  "type": "string"
+                                },
+                                "verified": {
+                                  "type": "boolean"
+                                },
+                                "collection_metadata": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "symbol": {
+                                      "type": "string"
+                                    },
+                                    "image": {
+                                      "type": "string"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "external_url": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "royalty": {
+                            "type": "object",
+                            "properties": {
+                              "royalty_model": {
+                                "enum": [
+                                  "creators",
+                                  "fanout",
+                                  "single"
+                                ],
+                                "type": "string"
+                              },
+                              "target": {
+                                "type": "string"
+                              },
+                              "percent": {
+                                "type": "number"
+                              },
+                              "basis_points": {
+                                "type": "number"
+                              },
+                              "primary_sale_happened": {
+                                "type": "boolean"
+                              }
+                            }
+                          },
+                          "ownership": {
+                            "type": "object",
+                            "properties": {
+                              "frozen": {
+                                "type": "boolean"
+                              },
+                              "delegated": {
+                                "type": "boolean"
+                              },
+                              "delegate": {
+                                "type": "string"
+                              },
+                              "ownership_model": {
+                                "enum": [
+                                  "single",
+                                  "token"
+                                ],
+                                "type": "string"
+                              },
+                              "owner": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "creators": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "address": {
+                                  "type": "string"
+                                },
+                                "share": {
+                                  "type": "number"
+                                },
+                                "verified": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          },
+                          "uses": {
+                            "type": "object",
+                            "properties": {
+                              "use_method": {
+                                "enum": [
+                                  "Burn",
+                                  "Multiple",
+                                  "Single"
+                                ],
+                                "type": "string"
+                              },
+                              "remaining": {
+                                "type": "number"
+                              },
+                              "total": {
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "supply": {
+                            "type": "object",
+                            "properties": {
+                              "print_max_supply": {
+                                "type": "number"
+                              },
+                              "print_current_supply": {
+                                "type": "number"
+                              },
+                              "edition_nonce": {
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "mutable": {
+                            "type": "boolean"
+                          },
+                          "burnt": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/user/:user_id": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "by": {
+                      "enum": [
+                        "account_id",
+                        "userId"
+                      ],
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "hashed_password": {
+                            "type": "string"
+                          },
+                          "user_id": {
+                            "type": "string"
+                          },
+                          "provider": {
+                            "enum": [
+                              "DISCORD",
+                              "GITHUB",
+                              "IP_ADDRESS",
+                              "SOLANA",
+                              "TWITTER"
+                            ],
+                            "type": "string"
+                          },
+                          "account_id": {
+                            "type": "string"
+                          },
+                          "additional_data": {
+                            "type": "object",
+                            "additionalProperties": {}
+                          }
+                        }
+                      }
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "avatar_url": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "joined_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "avatar_url": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "joined_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "avatar_url": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "joined_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/auth/callback/:provider": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "302": {
+                  "type": "null"
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Invalid provider"
+                    }
+                  }
+                },
+                "401": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "No User Id"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "You have been denied access to this application, Contact the application owner if you believe this is an error."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "404": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Session not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/login/discord/callback": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "state": {},
+                    "code": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "null"
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "Invalid state"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "const": "No auth request found"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "404": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Application not found"
+                    }
+                  }
+                },
+                "500": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "User not found nor created"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/siws/message/verify": {
+      "type": "object",
+      "properties": {
+        "POST": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "input": {
+                      "type": "object",
+                      "properties": {
+                        "domain": {
+                          "type": "string"
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "statement": {
+                          "type": "string"
+                        },
+                        "uri": {
+                          "type": "string"
+                        },
+                        "version": {
+                          "type": "string"
+                        },
+                        "chainId": {
+                          "type": "string"
+                        },
+                        "nonce": {
+                          "type": "string"
+                        },
+                        "issuedAt": {
+                          "type": "string"
+                        },
+                        "expirationTime": {
+                          "type": "string"
+                        },
+                        "notBefore": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string"
+                        },
+                        "resources": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "output": {
+                      "type": "object",
+                      "properties": {
+                        "signedMessage": {
+                          "type": "string"
+                        },
+                        "signature": {
+                          "type": "string"
+                        },
+                        "account": {
+                          "type": "object",
+                          "properties": {
+                            "publicKey": {
+                              "type": "string"
+                            },
+                            "address": {
+                              "type": "string"
+                            },
+                            "chains": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "features": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "label": {
+                              "type": "string"
+                            },
+                            "icon": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "signatureType": {
+                          "enum": [
+                            "ed25519",
+                            "legacy"
+                          ],
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "avatar_url": {
+                          "type": "string"
+                        },
+                        "public_keys": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "sessionId": {
+                      "type": "string"
+                    },
+                    "activePeriodExpiresAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "idlePeriodExpiresAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "state": {
+                      "enum": [
+                        "active",
+                        "idle"
+                      ],
+                      "type": "string"
+                    },
+                    "fresh": {
+                      "type": "boolean"
+                    },
+                    "public_key": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing state"
+                    }
+                  }
+                },
+                "404": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Application not found"
+                    }
+                  }
+                },
+                "500": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "User not found nor created"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "app/orgs/:org_id/apps": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {},
+                    "org_id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "organization_id": {
+                      "type": "string"
+                    },
+                    "access_token_secret": {
+                      "type": "string"
+                    },
+                    "refresh_token_secret": {
+                      "type": "string"
+                    },
+                    "access_token_expiry": {
+                      "type": "number"
+                    },
+                    "refresh_token_expiry": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "branding_id": {
+                      "type": "number"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "POST": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "organization_id": {
+                      "type": "string"
+                    },
+                    "access_token_secret": {
+                      "type": "string"
+                    },
+                    "refresh_token_secret": {
+                      "type": "string"
+                    },
+                    "access_token_expiry": {
+                      "type": "number"
+                    },
+                    "refresh_token_expiry": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "branding_id": {
+                      "type": "number"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DELETE": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {},
+                    "org_id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "name": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "description": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "access_token_secret": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "refresh_token_secret": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "access_token_expiry": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "increment": {
+                              "type": "number"
+                            },
+                            "decrement": {
+                              "type": "number"
+                            },
+                            "multiply": {
+                              "type": "number"
+                            },
+                            "divide": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "refresh_token_expiry": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "increment": {
+                              "type": "number"
+                            },
+                            "decrement": {
+                              "type": "number"
+                            },
+                            "multiply": {
+                              "type": "number"
+                            },
+                            "divide": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "created_at": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "updated_at": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "modified_by_user_id": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "organization": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "redirect_urls": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "branding": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "app_role": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "app_role_assignment": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "AuthRequest": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "session": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "user_access_controls": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "authentication_rule": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {},
+                    "org_id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "app/orgs/:org_id/branding": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "logo": {
+                      "type": "string"
+                    },
+                    "primary_color": {
+                      "type": "string"
+                    },
+                    "secondary_color": {
+                      "type": "string"
+                    },
+                    "font": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PUT": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "updated_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "app_id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "logo": {
+                      "type": "string"
+                    },
+                    "primary_color": {
+                      "type": "string"
+                    },
+                    "secondary_color": {
+                      "type": "string"
+                    },
+                    "font": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DELETE": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {},
+                    "app_id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {},
+                    "app_id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/siws/message/:app_id/:public_key/generate": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "app_id": {
+                      "type": "string"
+                    },
+                    "public_key": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "siws": {
+                      "$ref": "#/definitions/SolanaSignInInputWithRequiredFields"
+                    },
+                    "legacy": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "app/orgs/:org_id/apps/:app_id/access_control": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "application_id": {
+                        "type": "string"
+                      },
+                      "provider": {
+                        "enum": [
+                          "DISCORD",
+                          "GITHUB",
+                          "IP_ADDRESS",
+                          "SOLANA",
+                          "TWITTER"
+                        ],
+                        "type": "string"
+                      },
+                      "account_id": {
+                        "type": "string"
+                      },
+                      "access_type": {
+                        "enum": [
+                          "BLACKLIST",
+                          "WHITELIST"
+                        ],
+                        "type": "string"
+                      },
+                      "modified_by_user_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PUT": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "provider": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    },
+                    "account_id": {
+                      "type": "string"
+                    },
+                    "access_type": {
+                      "enum": [
+                        "BLACKLIST",
+                        "WHITELIST"
+                      ],
+                      "type": "string"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "provider": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    },
+                    "account_id": {
+                      "type": "string"
+                    },
+                    "access_type": {
+                      "enum": [
+                        "BLACKLIST",
+                        "WHITELIST"
+                      ],
+                      "type": "string"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DELETE": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "provider": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    },
+                    "account_id": {
+                      "type": "string"
+                    },
+                    "access_type": {
+                      "enum": [
+                        "BLACKLIST",
+                        "WHITELIST"
+                      ],
+                      "type": "string"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "provider": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    },
+                    "account_id": {
+                      "type": "string"
+                    },
+                    "access_type": {
+                      "enum": [
+                        "BLACKLIST",
+                        "WHITELIST"
+                      ],
+                      "type": "string"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "app/orgs/:org_id/apps/:app_id/app_roles": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "application_id": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "modified_by_user_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PUT": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "updated_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    },
+                    "app_role_assignment": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DELETE": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "app/orgs/:org_id/apps/:app_id/auth_rules": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "application_id": {
+                        "type": "string"
+                      },
+                      "provider": {
+                        "enum": [
+                          "DISCORD",
+                          "GITHUB",
+                          "IP_ADDRESS",
+                          "SOLANA",
+                          "TWITTER"
+                        ],
+                        "type": "string"
+                      },
+                      "is_required": {
+                        "type": "boolean"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "modified_by_user_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PUT": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "provider": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    },
+                    "is_required": {
+                      "type": "boolean"
+                    },
+                    "updated_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "provider": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    },
+                    "is_required": {
+                      "type": "boolean"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DELETE": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "provider": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    },
+                    "is_required": {
+                      "type": "boolean"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "provider": {
+                      "enum": [
+                        "DISCORD",
+                        "GITHUB",
+                        "IP_ADDRESS",
+                        "SOLANA",
+                        "TWITTER"
+                      ],
+                      "type": "string"
+                    },
+                    "is_required": {
+                      "type": "boolean"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "app/orgs/:org_id/apps/:app_id/redirects": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "application_id": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "modified_by_user_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PUT": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "updated_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "application_id": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "modified_by_user_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DELETE": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "id": {}
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "app/orgs/:org_id/apps/:app_id/secrets": {
+      "type": "object",
+      "properties": {
+        "GET": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "access_token_secret": {
+                      "type": "string"
+                    },
+                    "refresh_token_secret": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PATCH": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "org_id": {
+                      "type": "string"
+                    },
+                    "app_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "properties": {
+                    "refresh_token_secret": {
+                      "type": "boolean"
+                    },
+                    "access_token_secret": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "type": "object",
+              "properties": {
+                "200": {
+                  "type": "object",
+                  "properties": {
+                    "access_token_secret": {
+                      "type": "string"
+                    },
+                    "refresh_token_secret": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "errors": {
+              "type": "object",
+              "properties": {
+                "400": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Missing user id"
+                    }
+                  }
+                },
+                "401": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AssetSortBy": {
+      "enum": [
+        "created",
+        "recent_action",
+        "updated"
+      ],
+      "type": "string"
+    },
+    "AssetSortDirection": {
+      "enum": [
+        "asc",
+        "desc"
+      ],
+      "type": "string"
+    },
+    "SolanaSignInInputWithRequiredFields": {
+      "description": "TODO: docs",
+      "allOf": [
+        {
+          "$ref": "#/definitions/SolanaSignInInput"
+        },
+        {
+          "$ref": "#/definitions/Required<Pick<SolanaSignInInput,\"address\"|\"domain\">>"
+        }
+      ]
+    },
+    "SolanaSignInInput": {
+      "description": "Input for signing in.",
+      "type": "object",
+      "properties": {
+        "domain": {
+          "description": "Optional EIP-4361 Domain.\nIf not provided, the wallet must determine the Domain to include in the message.",
+          "type": "string"
+        },
+        "address": {
+          "description": "Optional EIP-4361 Address.\nIf not provided, the wallet must determine the Address to include in the message.",
+          "type": "string"
+        },
+        "statement": {
+          "description": "Optional EIP-4361 Statement.\nIf not provided, the wallet must not include Statement in the message.",
+          "type": "string"
+        },
+        "uri": {
+          "description": "Optional EIP-4361 URI.\nIf not provided, the wallet must not include URI in the message.",
+          "type": "string"
+        },
+        "version": {
+          "description": "Optional EIP-4361 Version.\nIf not provided, the wallet must not include Version in the message.",
+          "type": "string"
+        },
+        "chainId": {
+          "description": "Optional EIP-4361 Chain ID.\nIf not provided, the wallet must not include Chain ID in the message.",
+          "type": "string"
+        },
+        "nonce": {
+          "description": "Optional EIP-4361 Nonce.\nIf not provided, the wallet must not include Nonce in the message.",
+          "type": "string"
+        },
+        "issuedAt": {
+          "description": "Optional EIP-4361 Issued At.\nIf not provided, the wallet must not include Issued At in the message.",
+          "type": "string"
+        },
+        "expirationTime": {
+          "description": "Optional EIP-4361 Expiration Time.\nIf not provided, the wallet must not include Expiration Time in the message.",
+          "type": "string"
+        },
+        "notBefore": {
+          "description": "Optional EIP-4361 Not Before.\nIf not provided, the wallet must not include Not Before in the message.",
+          "type": "string"
+        },
+        "requestId": {
+          "description": "Optional EIP-4361 Request ID.\nIf not provided, the wallet must not include Request ID in the message.",
+          "type": "string"
+        },
+        "resources": {
+          "description": "Optional EIP-4361 Resources.\nIf not provided, the wallet must not include Resources in the message.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Required<Pick<SolanaSignInInput,\"address\"|\"domain\">>": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "description": "Optional EIP-4361 Address.\nIf not provided, the wallet must determine the Address to include in the message.",
+          "type": "string"
+        },
+        "domain": {
+          "description": "Optional EIP-4361 Domain.\nIf not provided, the wallet must determine the Domain to include in the message.",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
