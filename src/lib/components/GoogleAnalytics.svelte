@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 
-    
 	$: {
-        // @ts-expect-error ignore this, ganalytics
+		// @ts-expect-error ignore this, ganalytics
 		if (typeof gtag !== 'undefined') {
-            // @ts-expect-error ignore this, ganalytics
-			gtag('config', '914DZTMXZC', {
+			// @ts-expect-error ignore this, ganalytics
+			gtag('config', 'G-914DZTMXZC', {
 				page_title: document.title,
 				page_path: $page.url.pathname
 			});
@@ -28,6 +27,6 @@
 		}
 
 		gtag('js', new Date());
-		gtag('config', 'MEASUREMENT_ID');
+		gtag('config', 'G-914DZTMXZC');
 	</script>
 </svelte:head>
