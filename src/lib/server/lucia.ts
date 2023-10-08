@@ -36,7 +36,7 @@ export const auth = lucia({
 export const solana_oauth = solanaAuth(auth, {
     uri: "http://127.0.0.1:5173/auth",
     validationUri: "http://127.0.0.1:5173/api/auth/session",
-    redirectUri: "http://127.0.0.1:5173/api/auth/callback/solana",
+    redirectUri: dev ? "http://127.0.0.1:5173/api/auth/callback/solana" : "https://deauth.xyz/api/auth/callback/solana",
     scope: ["scope1", "scope2"],
     rpc: "https://api.mainnet-beta.solana.com/",
     loginExpiresIn: 60 * 60 * 24 * 30,
@@ -46,7 +46,7 @@ export const solana_oauth = solanaAuth(auth, {
 export const discord_oauth = discord(auth, {
     clientId: DISCORD_OAUTH_CLIENT_ID,
     clientSecret: DISCORD_OAUTH_CLIENT_SECRET,
-    redirectUri: dev ? "http://127.0.0.1:5173/api/auth/callback/discord" : "https://dab-web.vercel.app/api/auth/callback/discord",
+    redirectUri: dev ? "http://127.0.0.1:5173/api/auth/callback/discord" : "https://deauth.xyz/api/auth/callback/discord",
     scope: ["identify", "guilds"],
 
 });
