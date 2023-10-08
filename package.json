@@ -86,7 +86,6 @@
     "typescript": "^5.2.2",
     "uuid": "^9.0.1"
   },
-  // overrides
   "overrides": {
     "@efstajas/svelte-stepper": {
       "svelte": "latest"
