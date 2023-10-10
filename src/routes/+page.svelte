@@ -120,7 +120,7 @@
 		>
 			<div class="flex w-full flex-col place-content-center place-items-center">
 				<span
-					class="text-center text-[5rem] font-semibold sm:text-[10rem] md:text-[12rem] lg:text-[16rem] xl:text-[20rem]"
+					class="text-center font-display text-[5rem] font-semibold sm:text-[10rem] md:text-[12rem] lg:text-[16rem] xl:text-[20rem]"
 					>DeAuth.</span
 				>
 				<div class="h-fit rounded-full px-8 py-4 text-base-content underline">
@@ -141,7 +141,7 @@
 							y: 300,
 							easing: quintIn
 						}}"
-						class="text-left text-lg font-semibold"
+						class="text-left text-lg font-semibold font-serif"
 						>Have you been trying to implement web3 login? with social login?
 						signing messages? ledger support? security?<br /></span
 					>
@@ -177,7 +177,7 @@
 									});
 								}
 							}}"
-							class="btn btn-neutral btn-lg animate-float rounded-full drop-shadow-glow-solanablue"
+							class="btn btn-neutral btn-lg animate-float rounded-full drop-shadow-glow-solanablue font-display"
 						>
 							YES 😭</button
 						>
@@ -242,7 +242,7 @@
 					</button>
 				</div>
 				<span
-					class="text-center text-[5rem] font-semibold sm:text-[10rem] md:text-[12rem] lg:text-[16rem] xl:text-[20rem]"
+					class="text-center font-display text-[5rem] font-semibold sm:text-[10rem] md:text-[12rem] lg:text-[14rem] xl:text-[20rem]"
 					>Features.</span
 				>
 				<div class="h-fit rounded-full px-8 py-4 text-base-content underline">
@@ -280,7 +280,7 @@
 				</div>
 				<!-- card for description -->
 				<div
-					class="group card-body rounded-3xl border bg-base-200 p-8 text-base-content"
+					class="group card-body place-content-center rounded-3xl border bg-base-200 p-8 text-base-content"
 				>
 					<!-- <figure class="h-10">
 					<Icon
@@ -380,7 +380,7 @@
 					</div>
 				</div>
 				<div
-					class="group card-body rounded-3xl border-2 bg-base-100 p-8 text-base-content border-primary shadow-inner"
+					class="group card-body place-content-center rounded-3xl border-2 bg-base-100 p-8 text-base-content border-primary shadow-inner"
 				>
 					<!-- <figure class="h-10">
 					<Icon

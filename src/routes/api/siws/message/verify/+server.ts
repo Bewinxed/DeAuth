@@ -103,13 +103,28 @@ export async function POST({
 		if (session) {
 			user = await handle_existing_session({
 				application,
-				auth_request: authRequest,
+				provider: 'solana',
+				provider_account_id: public_key,
+				provider_user: {
+					id: public_key,
+					name: payload.output.account.label ?? 'Unnamed',
+					email: payload.output.account.address,
+					image: payload.output.account.icon ?? ''
+				},
 				session
 			});
 		} else {
 			user = await handle_no_session({
 				application,
-				auth_request: authRequest
+				provider: 'solana',
+				provider_account_id: public_key,
+				provider_user: {
+					id: public_key,
+					name: payload.output.account.label ?? 'Unnamed',
+					email: payload.output.account.address,
+					image: payload.output.account.icon ?? ''
+				}
+
 			});
 		}
 	} catch (e) {
@@ -143,7 +158,7 @@ export async function POST({
 	session = await auth.createSession({
 		userId: user.id,
 		attributes: {
-			provider_id: authRequest?.provider_account_id,
+			provider_account_id: public_key,
 			access_token,
 			refresh_token,
 			access_token_expires_in,

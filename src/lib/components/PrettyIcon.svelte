@@ -28,27 +28,27 @@
 
 	let sizes: Sizes = {
 		small: {
-			figure: { size: 'h-6 w-6', padding: 'p-0.5', roundness: 'rounded-md' },
+			figure: { size: 'h-6 w-6', padding: 'p-0', roundness: 'rounded-md' },
 			inner: {
-				size: 'h-4 w-4',
+				size: 'h-5 w-5',
 				padding: 'p-0',
-				roundness: 'rounded-sm'
+				roundness: 'rounded-md`'
 			},
 			icon: {
-				size: 'h-3 w-3',
+				size: 'h-full w-full',
 				padding: 'p-0',
 				roundness: 'rounded-sm'
 			}
 		},
 		medium: {
-			figure: { size: 'h-8 w-8', padding: 'p-2', roundness: 'rounded-md' },
+			figure: { size: 'h-10 w-10', padding: 'p-0.5', roundness: 'rounded-lg' },
 			inner: {
-				size: 'h-6 w-6',
-				padding: 'p-1',
+				size: 'h-8 w-8',
+				padding: 'p-0.5',
 				roundness: 'rounded-md'
 			},
 			icon: {
-				size: 'h-4 w-4',
+				size: 'h-full w-full',
 				padding: 'p-1',
 				roundness: 'rounded-md'
 			}

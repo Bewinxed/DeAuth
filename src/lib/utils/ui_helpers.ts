@@ -1,4 +1,5 @@
-import type { OAuthProvider } from "@prisma/client";
+import type { CrudOperation, OAuthProvider } from "@prisma/client";
+import toast from "svelte-french-toast";
 
 export function typewriter(opts: {
 	string: string;
@@ -98,3 +99,36 @@ export const account_id_patterns: Record<OAuthProvider, RegExp> = {
 	discord: /^.{2,32}#\d{4}$/,
 	ip_address: /^(\d{1,3}\.){3}\d{1,3}$/
 };
+
+export function trim_id(string: string, slice: number = 5) {
+	return string.slice(0, slice) + '...' + string.slice(-slice);
+}
+
+export const crud_icons: Record<CrudOperation, string> = {
+	create: 'carbon:add',
+	read: 'carbon:search',
+	update: 'carbon:edit',
+	delete: 'carbon:delete',
+	all: 'carbon:id-management'
+};
+
+export const promise_toast = (promise: Promise<unknown>, opts?: {
+	loading: string,
+	success: string,
+	error?: string,
+	with_error?: boolean
+}) => {
+	const { success, error, loading, with_error } = opts ?? {};
+	const id = toast.loading(loading ?? 'Loading')
+	return new Promise((resolve, reject) => {
+		promise
+			.then((r) => {
+				toast.success(success ?? 'Success', {id});
+				resolve(r);
+			})
+			.catch((e) => {
+				toast.error((error ? error + ': ' : '') + ((with_error ?? true) ? `${e}` : ''), {id});
+				reject(e);
+			});
+	});
+}

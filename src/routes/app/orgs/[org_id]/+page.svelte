@@ -20,9 +20,12 @@
 	let modal_open = false;
 
 	async function handleSubmit(e: Event) {
-		e.preventDefault();
-		const form = document.querySelector('#modal')?.querySelector('form');
-		if (!(form instanceof HTMLFormElement)) return;
+		// get nearest form
+		const form =
+			e.currentTarget instanceof HTMLElement
+				? e.currentTarget?.closest('form')
+				: undefined;
+		if (!(form instanceof HTMLFormElement)) throw new Error('No form found');
 		const formData = new FormData(form);
 		const name = formData.get('name') as string;
 		const svetch = new Svetch();
@@ -43,6 +46,7 @@
 						res.data
 					];
 					invalidate('user:apps');
+					invalidate('user:orgs');
 					customDispatch(e, 'close');
 				}
 			});
@@ -56,7 +60,7 @@
 	>
 		<div class="flex place-content-start place-items-center gap-2">
 			<PrettyIcon icon="icon-park-outline:api-app"></PrettyIcon>
-			<h1 class="text-xl font-bold">Applications</h1>
+			<h1 class=" text-xl font-bold">Applications</h1>
 		</div>
 		<div>
 			<ModalButton
@@ -74,7 +78,7 @@
 					<form
 						method="post"
 						class="form-control gap-4"
-						on:submit="{handleSubmit}"
+						on:submit|preventDefault="{handleSubmit}"
 					>
 						<label
 							class="label"
@@ -122,7 +126,7 @@
 							/>
 						</figure>
 						<div class="card-body justify-between shadow-inner">
-							<h2 class="card-title">
+							<h2 class="font-display card-title">
 								<a
 									style:--org="app-name-{application.id}"
 									href="{$page.url.pathname}/apps/{application.id}"
@@ -134,6 +138,7 @@
 								<!-- PromiseButton for edit/delete -->
 								<PromiseButton
 									icon="carbon:trash-can"
+									square
 									grace="{2}"
 									confirm="{2}"
 									promise="{() =>
@@ -190,38 +195,7 @@
 											</div>
 											<button
 												class="btn btn-primary"
-												on:click="{async (e) => {
-													if (!$organization) return;
-													if (!e.target) return;
-													const form = e.target.closest('form');
-													e.preventDefault();
-													await svetch
-														.patch('app/orgs/:org_id/apps', {
-															query: {
-																id: application.id,
-																org_id: $organization.id
-															},
-															path: {
-																org_id: $organization.id.toString()
-															},
-															body: {
-																name: form.name.value
-															}
-														})
-														.then((res) => {
-															if (!$organization) return;
-															if (res.data) {
-																$organization.applications =
-																	$organization.applications.map((a) => {
-																		if (a.id === application.id) {
-																			return { ...a, name: form.name.value };
-																		}
-																		return a;
-																	});
-																customDispatch(e, 'close');
-															}
-														});
-												}}"
+												on:click|preventDefault="{handleSubmit}"
 											>
 												Create Application
 											</button>
@@ -237,31 +211,8 @@
 			<EmptyState
 				item_name="application"
 				icon="icon-park-outline:api-app"
-				><form
-					class="form-control gap-4"
-					method="post"
-					use:enhance="{({
-						formElement,
-						formData,
-						action,
-						cancel,
-						submitter
-					}) => {
-						// `formElement` is this `<form>` element
-						// `formData` is its `FormData` object that's about to be submitted
-						// `action` is the URL to which the form is posted
-						// calling `cancel()` will prevent the submission
-						// `submitter` is the `HTMLElement` that caused the form to be submitted
-						return async ({ result, update }) => {
-							invalidate('user:apps');
-							invalidate('user:orgs');
-
-							// `result` is an `ActionResult` object
-							// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
-						};
-					}}"
-				>
-					<div class="form-control">
+				><form class="flex flex-col gap-4">
+					<div class="form-control gap-4">
 						<label
 							class="label"
 							for="name"
@@ -275,8 +226,17 @@
 							class="input input-bordered"
 							value="Untitled Application"
 						/>
+						<PromiseButton
+							icon="carbon:add"
+							promise="{handleSubmit}"
+							class="btn btn-primary btn-wide place-self-center justify-self-center"
+							on:click="{(e) => {
+								customDispatch(e, 'close');
+							}}"
+						>
+							Create Application
+						</PromiseButton>
 					</div>
-					<button class="btn btn-primary"> Create Application </button>
 				</form></EmptyState
 			>
 		{/if}

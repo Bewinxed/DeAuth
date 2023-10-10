@@ -1,0 +1,2 @@
+// generic type that excludes the id field
+export type ApiCreatePayload<T> = Omit<T, 'id' | 'created_at' | 'updated_at' | 'application_id' | 'organization_id' | 'resource_id' | 'application' | 'resource' | 'organization'>;

@@ -27,36 +27,71 @@ model User {
   FeatureFlagSetting    feature_flag_setting[]
   suspended_at          DateTime?
   suspended_by_user_id  String? // TODO: add audit log for suspension
+  AuditLog              AuditLog[]
+  Invites               Invites[]
 
   @@map("users")
 }
 
+model AuditLog {
+  id              Int           @id @default(autoincrement())
+  created_at      DateTime      @default(now())
+  user_id         String?
+  user            User?         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  application_id  String?
+  application     Application?  @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  organization_id String?
+  organization    Organization? @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  action          String
+  data            Json
+
+  @@map("audit_logs")
+}
+
 model AuthRequest {
-  id                      Int           @id @default(autoincrement())
+  id                               Int           @id @default(autoincrement())
   // add a field for the application id
-  application             Application   @relation(fields: [application_id], references: [id], onDelete: Cascade)
-  uuid                    String
-  state                   String
-  nonce                   String
-  uri                     String
-  signature               String?
-  provider_access_token   String? // New field
-  provider_refresh_token  String? // New field
-  provider_account_id     String // New field
-  access_token            String?
-  refresh_token           String?
-  access_token_expires_in Int?
-  user_id                 String?
-  user                    User?         @relation(references: [id], fields: [user_id], onDelete: Cascade)
-  created_at              DateTime      @default(now())
-  updated_at              DateTime      @updatedAt
-  application_id          String
-  ip_address              String?
-  provider                OAuthProvider
-  session                 Session[]
+  application                      Application   @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  uuid                             String
+  state                            String
+  nonce                            String
+  uri                              String
+  signature                        String?
+  provider_access_token            String? // New field
+  provider_refresh_token           String? // New field
+  provider_access_token_expires_in Int? // New field
+  provider_account_id              String? // New field
+  access_token                     String?
+  refresh_token                    String?
+  access_token_expires_in          Int?
+  user_id                          String?
+  user                             User?         @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  created_at                       DateTime      @default(now())
+  updated_at                       DateTime      @updatedAt
+  application_id                   String
+  ip_address                       String?
+  provider                         OAuthProvider
+  session                          Session[]
 
   @@unique([application_id, state])
   @@map("auth_requests")
+}
+
+model Invites {
+  id                  Int           @id @default(autoincrement())
+  from_user_id        String
+  from_user           User          @relation(fields: [from_user_id], references: [id], onDelete: Cascade)
+  application_id      String?
+  application         Application?  @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  organization_id     String?
+  organization        Organization? @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  key_id              String
+  key                 Key           @relation(fields: [key_id], references: [id], onDelete: Cascade)
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+  modified_by_user_id String?
+
+  @@map("application_invites")
 }
 
 model Session {
@@ -71,7 +106,7 @@ model Session {
   application             Application  @relation(fields: [application_id], references: [id], onDelete: Cascade)
   user_id                 String
   user                    User         @relation(name: "user_sessions", references: [id], fields: [user_id], onDelete: Cascade)
-  provider_id             String
+  provider_account_id     String
   access_token            String
   refresh_token           String
   access_token_expires_in Int
@@ -91,6 +126,7 @@ model Key {
   provider        OAuthProvider?
   account_id      String?        @unique
   additional_data Json? // Stores additional data like profile pic, username etc.
+  Invites         Invites[]
 
   @@index([user_id])
   @@map("keys")
@@ -117,44 +153,45 @@ enum Role {
 }
 
 model user_role {
-  id              Int          @id @default(autoincrement())
-  role            Role
-  user_id         String
-  user            User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  organization_id String
-  organization    Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  id                   Int                       @id @default(autoincrement())
+  role                 Role
+  user_id              String
+  user                 User                      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  organization_id      String
+  organization         Organization              @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  assigned_permissions AppPermissionAssignment[]
 
   @@index([organization_id])
   @@map("user_roles")
 }
 
 model app_role {
-  id                    Int                    @id @default(autoincrement())
-  name                  String                 @default("USER")
-  role                  Role                   @default(MEMBER)
-  application_id        String
-  application           Application            @relation(fields: [application_id], references: [id], onDelete: Cascade)
-  app_role_assignment   app_role_assignment[]
-  created_at            DateTime               @default(now())
-  updated_at            DateTime               @updatedAt
-  modified_by_user_id   String?
-  feature_flag_settings feature_flag_setting[]
-  permissions           Permission[] // Many-to-many relation with Permission model
+  id                     Int                       @id @default(autoincrement())
+  name                   String                    @default("USER")
+  application_id         String
+  application            Application               @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  app_role_assignment    app_role_assignment[]
+  default_for_new_member Boolean                   @default(false)
+  created_at             DateTime                  @default(now())
+  updated_at             DateTime                  @updatedAt
+  modified_by_user_id    String?
+  feature_flag_settings  feature_flag_setting[]
+  assigned_permissions   AppPermissionAssignment[]
 
   @@map("app_roles")
 }
 
 model Member {
-  id                  String                @id @default(uuid())
-  user_id             String
-  user                User                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  application_id      String
-  application         Application           @relation(fields: [application_id], references: [id], onDelete: Cascade)
-  role_assignments    app_role_assignment[]
-  created_at          DateTime              @default(now())
-  updated_at          DateTime              @updatedAt
-  modified_by_user_id String?
-  permissions         Permission[]          @relation("UserPermissions") // Direct permissions for users
+  id                   String                    @id @default(uuid())
+  user_id              String
+  user                 User                      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  application_id       String
+  application          Application               @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  role_assignments     app_role_assignment[]
+  created_at           DateTime                  @default(now())
+  updated_at           DateTime                  @updatedAt
+  modified_by_user_id  String?
+  assigned_permissions AppPermissionAssignment[]
 
   @@unique([user_id, application_id])
   @@map("members")
@@ -200,6 +237,8 @@ model Organization {
   subscription         subscription[]
   branding_id          Int?
   branding             Branding?      @relation(fields: [branding_id], references: [id])
+  Invites              Invites[]
+  AuditLog             AuditLog[]
 
   @@map("organizations")
 }
@@ -273,6 +312,10 @@ model Application {
   user_access_controls user_access_control[]
   authentication_rule  authentication_rule[]
   member               Member[]
+  invites              Invites[]
+  AuditLog             AuditLog[]
+  permissions          AppPermission[]
+  resources            AppResources[]        @relation("ApplicationResources")
 
   @@map("applications")
 }
@@ -337,16 +380,67 @@ model feature_flag_setting {
   @@map("feature_flag_settings")
 }
 
-model Permission {
-  id                   Int        @id @default(autoincrement())
-  key                  String     @unique
-  name                 String
-  description          String
-  default_for_new_role Boolean    @default(false)
-  app_roles            app_role[] // Associated with the existing user_role model
-  users                Member[]   @relation("UserPermissions")
-  created_at           DateTime   @default(now())
-  updated_at           DateTime   @updatedAt
+enum CrudOperation {
+  read
+  update
+  create
+  delete
+  all
+}
 
-  @@map("permissions")
+model AppResources {
+  id                  Int          @id @default(autoincrement())
+  key                String
+  description         String?
+  application_id      String
+  application         Application     @relation("ApplicationResources", fields: [application_id], references: [id], onDelete: Cascade)
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
+  modified_by_user_id String?
+  permissions         AppPermission[] @relation("PermissionResources")
+
+  @@map("app_resources")
+
+  @@unique([application_id, key])
+}
+
+model AppPermission {
+  id                   Int                       @id @default(autoincrement())
+  operation            CrudOperation
+  resource_id          Int
+  resource             AppResources              @relation("PermissionResources", fields: [resource_id], references: [id], onDelete: Cascade)
+  description          String?
+  default_for_new_role Boolean                   @default(false)
+  parent_permission_id Int? // new field for parent permission
+  parent_permission    AppPermission?            @relation("PermissionHierarchy", fields: [parent_permission_id], references: [id])
+  child_permissions    AppPermission[]           @relation("PermissionHierarchy")
+  application_id       String
+  application          Application               @relation(fields: [application_id], references: [id], onDelete: Cascade)
+  created_at           DateTime                  @default(now())
+  updated_at           DateTime                  @updatedAt
+  modified_by_user_id  String?
+  assignments          AppPermissionAssignment[]
+
+  @@map("app_permissions")
+  @@unique([application_id, resource_id, operation])
+}
+
+model AppPermissionAssignment {
+  id                  Int           @id @default(autoincrement())
+  permission_id       Int
+  permission          AppPermission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+  app_role_id         Int?
+  app_role            app_role?      @relation(fields: [app_role_id], references: [id], onDelete: Cascade)
+  member_id           String?
+  member              Member?        @relation(fields: [member_id], references: [id], onDelete: Cascade)
+  user_role           user_role?    @relation(fields: [user_role_id], references: [id], onDelete: Cascade)
+  user_role_id        Int?
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+  modified_by_user_id String?
+
+  @@map("app_permission_assignments")
+  @@unique([permission_id, app_role_id])
+  @@unique([permission_id, member_id])
+  @@unique([permission_id, user_role_id])
 }

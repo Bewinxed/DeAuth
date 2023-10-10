@@ -17,11 +17,12 @@
 	const svetch = get_svetch();
 	export let data;
 	const application = getApplication();
-	const users = writable<{
+	const members_store = writable<{
 		[key: number]:
 			| Prisma.MemberGetPayload<{
 					include: {
 						user: true;
+						role_assignments: true;
 					};
 			  }>[]
 			| undefined;
@@ -29,8 +30,8 @@
 	let current_page = 0;
 	let limit = 10;
 
-	$: if (!$users[current_page]) {
-		$users[current_page] = undefined;
+	$: if (!$members_store[current_page]) {
+		$members_store[current_page] = undefined;
 		svetch
 			.get('app/orgs/:org_id/apps/:app_id/sessions', {
 				path: {
@@ -44,8 +45,8 @@
 			})
 			.then((res) => {
 				if (res.data) {
-					$users[current_page] = res.data;
-					$users = $users;
+					$members_store[current_page] = res.data;
+					$members_store = $members_store;
 				}
 			});
 	}
@@ -56,8 +57,8 @@
 		data.promises.page_2.then((res) => {
 			console.log(res);
 			if (res) {
-				$users[1] = res;
-				$users = $users;
+				$members_store[1] = res;
+				$members_store = $members_store;
 			}
 		});
 	});
@@ -70,7 +71,7 @@
 	<div class="flex flex-col place-content-start place-items-start gap-2">
 		<div class="flex place-content-start place-items-center gap-2">
 			<PrettyIcon icon="carbon:virtual-column-key"></PrettyIcon>
-			<h1 class="text-xl font-bold">Users</h1>
+			<h1 class=" text-xl font-bold">Users</h1>
 		</div>
 		<p class="text-sm italic">
 			Find below all users for your application, Add or remove roles or delete
@@ -80,7 +81,7 @@
 	<!-- <figure class="w-4 h-4 inline text-base-content"><Icon icon="carbon:chevron-right" class="h-4 w-4"></Icon></figure> -->
 </header>
 <div class="flex flex-col gap-2 p-4">
-	{#each object_entries($users) as [member_page, members] (member_page)}
+	{#each object_entries($members_store) as [member_page, members] (member_page)}
 		{#if member_page.toString() === current_page.toString()}
 			{#if members === undefined}
 				<span class="loading loading-ring loading-lg"></span>
@@ -103,85 +104,72 @@
 										class=" inline text-neutral"
 									/>
 								</div>
-								{#await svetch
-									.get( 'app/orgs/:org_id/apps/:app_id/members/:member_id', { path: { app_id: $page.params.app_id, org_id: $page.params.org_id, member_id: member.user.id } } )
-									.then((res) => {
-										if (res.data) {
-											return res.data;
-										}
-										throw res.error;
-									})}
-									<span class="loading loading-dots loading-xs"></span>
-								{:then member}
-									<div class="flex items-center space-x-3">
-										<figure class="avatar block">
-											<div class="w-8 rounded">
-												<img
-													src="{member.user.avatar_url}"
-													alt="{member.id}'s avatar"
-													class="avatar"
-												/>
-											</div>
-										</figure>
-										<div>
-											<span class="font-bold">{member.user.username ?? 'User'}</span>
-											<div
-												class="tooltip tooltip-primary"
-												data-tip="{member.id}"
-											>
-												<Icon
-													icon="carbon:information"
-													class=" inline"
-												/>
-											</div>
 
-											<div class="flex gap-1">
-												{#each member.role_assignments as role}
-													{@const app_role = $application.app_role.find(
-														(r) => r.id === role.app_role_id
-													)}
-													{#if app_role}
-														<span class="badge badge-primary badge-outline">
-															{app_role.name}
-															<button
-																class="contents"
-																on:click="{() => {
-																	svetch
-																		.delete(
-																			'app/orgs/:org_id/apps/:app_id/members/:member_id/roles/:role_id',
-																			{
-																				path: {
-																					app_id: $page.params.app_id,
-																					org_id: $page.params.org_id,
-																					role_id: role.id.toString(),
-																					member_id: member.id
-																				}
+								<div class="flex items-center space-x-3">
+									<figure class="avatar block">
+										<div class="w-8 rounded">
+											<img
+												src="{member.user.avatar_url}"
+												alt="{member.id}'s avatar"
+												class="avatar"
+											/>
+										</div>
+									</figure>
+									<div>
+										<span class="font-bold"
+											>{member.user.username ?? 'User'}</span
+										>
+										<div
+											class="tooltip tooltip-primary"
+											data-tip="{member.id}"
+										>
+											<Icon
+												icon="carbon:information"
+												class=" inline"
+											/>
+										</div>
+
+										<div class="flex gap-1">
+											{#each member.role_assignments as role}
+												{@const app_role = $application.app_role.find(
+													(r) => r.id === role.app_role_id
+												)}
+												{#if app_role}
+													<span class="badge badge-primary badge-outline">
+														{app_role.name}
+														<button
+															class="contents"
+															on:click="{() => {
+																svetch
+																	.delete(
+																		'app/orgs/:org_id/apps/:app_id/members/:member_id/roles/:role_id',
+																		{
+																			path: {
+																				app_id: $page.params.app_id,
+																				org_id: $page.params.org_id,
+																				role_id: role.id.toString(),
+																				member_id: member.id
 																			}
-																		)
-																		.then((res) => {
-																			if (res.data) {
-																				invalidate('app:users');
-																			}
-																		});
-																}}"
-															>
-																<Icon
-																	icon="carbon:close"
-																	class="inline rounded-full bg-error text-white"
-																/>
-															</button>
-														</span>
-													{/if}
-												{/each}
-											</div>
+																		}
+																	)
+																	.then((res) => {
+																		if (res.data) {
+																			invalidate('app:users');
+																		}
+																	});
+															}}"
+														>
+															<Icon
+																icon="carbon:close"
+																class="inline rounded-full bg-error text-white"
+															/>
+														</button>
+													</span>
+												{/if}
+											{/each}
 										</div>
 									</div>
-								{:catch error}
-									<Icon
-										icon="carbon:user-x-ray"
-										class="inline text-error"
-									/>
-								{/await}
+								</div>
 							</span>
 
 							<!-- created at -->
@@ -231,6 +219,7 @@
 									></PromiseButton>
 									<PromiseButton
 										icon="carbon:trash-can"
+										square
 										class="btn btn-error btn-sm"
 										tooltip="{'delete'}"
 										promise="{async () => {
@@ -318,8 +307,8 @@
 				<button class="btn join-item">Page {current_page + 1}</button>
 				<button
 					class="btn join-item"
-					disabled="{$users[current_page]?.length < limit}"
-					aria-disabled="{$users[current_page]?.length < limit}"
+					disabled="{$members_store[current_page]?.length < limit}"
+					aria-disabled="{$members_store[current_page]?.length < limit}"
 					on:click="{() => {
 						current_page++;
 						current_page = current_page;

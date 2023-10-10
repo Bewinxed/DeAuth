@@ -99,31 +99,38 @@
 
 <dialog
 	id="modal"
-	use:customListener={{ on: 'close', do: () => (open = false) }}
-	on:close={() => (open = false)}
+	use:customListener="{{ on: 'close', do: () => (open = false) }}"
+	on:close="{() => (open = false)}"
 	class="modal modal-bottom transition-opacity duration-300 sm:modal-middle"
-	bind:this={modal}
+	bind:this="{modal}"
 	aria-hidden="true"
 >
 	{#if open}
 		<div
 			use:swipeToClose
-			in:fly={{ x: 0, y: 100, duration: 200, delay: 200 }}
-			out:fly={{ x: 0, y: -100, duration: 200 }}
+			in:fly="{{ x: 0, y: 100, duration: 200, delay: 200 }}"
+			out:fly="{{ x: 0, y: -100, duration: 200 }}"
 			class="modal-box flex flex-col p-0"
 		>
-			<div class="flex place-content-start place-items-center justify-between gap-4 border p-4">
+			<div
+				class="flex place-content-start place-items-center justify-between gap-4 border p-4"
+			>
 				<div class="flex place-content-start place-items-center gap-4">
 					<PrettyIcon {icon}></PrettyIcon>
-					<h1 class="text-xl font-bold">{title ? title : `Create ${item_name}`}</h1>
+					<h1 class=" text-xl font-bold">
+						{title ? title : `Create ${item_name}`}
+					</h1>
 				</div>
 				<button
 					class="btn btn-square btn-ghost btn-sm"
-					on:click={() => {
+					on:click="{() => {
 						open = false;
-					}}
+					}}"
 				>
-					<Icon icon="carbon:close" class="h-6 w-6"></Icon>
+					<Icon
+						icon="carbon:close"
+						class="h-6 w-6"
+					></Icon>
 				</button>
 			</div>
 			<div class="p-4 shadow-inner">

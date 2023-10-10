@@ -22,12 +22,35 @@ export const GET = async ({ locals, params, url }) => {
 		| Prisma.SessionOrderByWithRelationInput
 		| undefined;
 
+	const query = url.searchParams.get('query') ?? undefined;
+
 	const members = await prisma.member.findMany({
 		where: {
-			application_id: params.app_id
+			application_id: params.app_id,
+			user: query
+				? {
+						key: {
+							some: {
+								id: {
+									contains: query
+								}
+							}
+						}
+				  }
+				: undefined
 		},
 		include: {
-			user: true,
+			user: {
+				select: {
+					avatar_url: true,
+					username: true,
+					key: {
+						select: {
+							id	: true
+						}
+					}
+				}
+			},
 			role_assignments: true
 		},
 		take: limit ? parseInt(limit) : undefined,

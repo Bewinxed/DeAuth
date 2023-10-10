@@ -9,7 +9,7 @@
 </script>
 
 <button
-	class="btn btn-outline {$$restProps.class}"
+	class="btn btn-outline font-display {$$restProps.class}"
 	on:click={() => {
 		open = true;
 	}}

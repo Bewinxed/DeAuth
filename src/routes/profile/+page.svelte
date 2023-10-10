@@ -42,7 +42,7 @@
 	>
 		<div class="flex place-content-start place-items-center gap-2">
 			<PrettyIcon icon="carbon:user"></PrettyIcon>
-			<h1 class="text-xl font-bold">Organizations</h1>
+			<h1 class=" text-xl font-bold">Organizations</h1>
 		</div>
 	</header>
 	<div

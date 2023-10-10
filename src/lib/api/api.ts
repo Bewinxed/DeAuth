@@ -99,6 +99,9 @@ export interface APIPaths {
   name: string;
   owner_id: string;
   callback_urls: string[];
+  website: null | string;
+  privacy_policy_url: null | string;
+  terms_of_service_url: null | string;
   created_at: Date;
   updated_at: Date;
   modified_by_user_id: null | string;
@@ -123,6 +126,9 @@ export interface APIPaths {
   callback_urls?: string[] | {
     
   };
+  website?: null | string;
+  privacy_policy_url?: null | string;
+  terms_of_service_url?: null | string;
   created_at?: string | Date;
   updated_at?: string | Date;
   modified_by_user_id?: null | string;
@@ -138,6 +144,12 @@ export interface APIPaths {
   branding?: {
     
   };
+  Invites?: {
+    
+  };
+  AuditLog?: {
+    
+  };
 },
         query?: never,
       },
@@ -147,6 +159,9 @@ export interface APIPaths {
   name: string;
   owner_id: string;
   callback_urls: string[];
+  website: null | string;
+  privacy_policy_url: null | string;
+  terms_of_service_url: null | string;
   created_at: Date;
   updated_at: Date;
   modified_by_user_id: null | string;
@@ -194,6 +209,15 @@ export interface APIPaths {
   callback_urls?: string[] | {
     push?: string | string[];
   };
+  website?: null | string | {
+    
+  };
+  privacy_policy_url?: null | string | {
+    
+  };
+  terms_of_service_url?: null | string | {
+    
+  };
   created_at?: string | Date | {
     
   };
@@ -216,6 +240,12 @@ export interface APIPaths {
     
   };
   branding?: {
+    
+  };
+  Invites?: {
+    
+  };
+  AuditLog?: {
     
   };
 },
@@ -252,7 +282,8 @@ export interface APIPaths {
   signature: null | string;
   provider_access_token: null | string;
   provider_refresh_token: null | string;
-  provider_account_id: string;
+  provider_access_token_expires_in: null | number;
+  provider_account_id: null | string;
   access_token: null | string;
   refresh_token: null | string;
   access_token_expires_in: null | number;
@@ -481,7 +512,7 @@ export interface APIPaths {
   auth_request_id: null | number;
   application_id: string;
   user_id: string;
-  provider_id: string;
+  provider_account_id: string;
   access_token: string;
   refresh_token: string;
   access_token_expires_in: number;
@@ -536,6 +567,8 @@ avatar_url: null | string;
 email: null | string;
 created_at: Date;
 updated_at: Date;
+suspended_at: null | Date;
+suspended_by_user_id: null | string;
  },
       }
       errors: {
@@ -555,6 +588,8 @@ updated_at: Date;
   email?: null | string;
   created_at?: Date;
   updated_at?: Date;
+  suspended_at?: null | Date;
+  suspended_by_user_id?: null | string;
 },
         query?: never,
       },
@@ -567,6 +602,8 @@ updated_at: Date;
   email: null | string;
   created_at: Date;
   updated_at: Date;
+  suspended_at: null | Date;
+  suspended_by_user_id: null | string;
 },
       }
       errors: {
@@ -592,12 +629,15 @@ updated_at: Date;
           message: 'Missing state',
         },
         401: {
-          message: 'No User Id',
-        } | {
           message: 'You have been denied access to this application, Contact the application owner if you believe this is an error.',
         },
         404: {
-          message: 'Session not found',
+          message: 'Auth Request not found',
+        },
+        500: {
+          message: 'User not found nor created',
+        } | {
+          message: 'Session not found nor created',
         },
       }
     },
@@ -682,6 +722,9 @@ public_key: string;
   access_token_secret: string;
   refresh_token_secret: string;
   access_token_expiry: number;
+  website: null | string;
+  privacy_policy_url: null | string;
+  terms_of_service_url: null | string;
   refresh_token_expiry: number;
   updated_at: Date;
   modified_by_user_id: null | string;
@@ -702,7 +745,55 @@ public_key: string;
       parameters: {
         path: { org_id: string;  },
         body: {
-  name: Prisma.applicationCreateInput;
+  id?: string;
+  name: string;
+  description?: null | string;
+  access_token_secret: string;
+  refresh_token_secret: string;
+  access_token_expiry?: number;
+  website?: null | string;
+  privacy_policy_url?: null | string;
+  terms_of_service_url?: null | string;
+  refresh_token_expiry?: number;
+  updated_at?: string | Date;
+  modified_by_user_id?: null | string;
+  created_at?: string | Date;
+  redirect_urls?: {
+    
+  };
+  branding?: {
+    
+  };
+  app_role?: {
+    
+  };
+  auth_request?: {
+    
+  };
+  session?: {
+    
+  };
+  user_access_controls?: {
+    
+  };
+  authentication_rule?: {
+    
+  };
+  member?: {
+    
+  };
+  invites?: {
+    
+  };
+  AuditLog?: {
+    
+  };
+  permissions?: {
+    
+  };
+  resources?: {
+    
+  };
 },
         query?: never,
       },
@@ -712,8 +803,8 @@ app_role: Array<
   {
     id: number;
     name: string;
-    role: 'OWNER' | 'ADMIN' | 'DEVELOPER' | 'MEMBER' | 'MODERATOR';
     application_id: string;
+    default_for_new_member: boolean;
     created_at: Date;
     updated_at: Date;
     modified_by_user_id: null | string;
@@ -726,6 +817,9 @@ organization_id: string;
 access_token_secret: string;
 refresh_token_secret: string;
 access_token_expiry: number;
+website: null | string;
+privacy_policy_url: null | string;
+terms_of_service_url: null | string;
 refresh_token_expiry: number;
 updated_at: Date;
 modified_by_user_id: null | string;
@@ -761,7 +855,92 @@ branding_id: null | number;
     PATCH: {
       parameters: {
         path: { org_id: string;  },
-        body: Prisma.applicationUpdateInput,
+        body: {
+  id?: string | {
+    
+  };
+  name?: string | {
+    
+  };
+  description?: null | string | {
+    
+  };
+  access_token_secret?: string | {
+    
+  };
+  refresh_token_secret?: string | {
+    
+  };
+  access_token_expiry?: number | {
+    increment?: number;
+    decrement?: number;
+    multiply?: number;
+    divide?: number;
+  };
+  website?: null | string | {
+    
+  };
+  privacy_policy_url?: null | string | {
+    
+  };
+  terms_of_service_url?: null | string | {
+    
+  };
+  refresh_token_expiry?: number | {
+    increment?: number;
+    decrement?: number;
+    multiply?: number;
+    divide?: number;
+  };
+  updated_at?: string | Date | {
+    
+  };
+  modified_by_user_id?: null | string | {
+    
+  };
+  created_at?: string | Date | {
+    
+  };
+  organization?: {
+    
+  };
+  redirect_urls?: {
+    
+  };
+  branding?: {
+    
+  };
+  app_role?: {
+    
+  };
+  auth_request?: {
+    
+  };
+  session?: {
+    
+  };
+  user_access_controls?: {
+    
+  };
+  authentication_rule?: {
+    
+  };
+  member?: {
+    
+  };
+  invites?: {
+    
+  };
+  AuditLog?: {
+    
+  };
+  permissions?: {
+    
+  };
+  resources?: {
+    
+  };
+},
         query: { id: any; org_id: any; },
       },
       responses: {
@@ -864,6 +1043,98 @@ branding_id: null | number;
         200: {
           id: number,
         },
+      }
+      errors: {
+        400: {
+          message: 'Missing id',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+  },
+  'app/orgs/:org_id/invites': {
+    GET: {
+      parameters: {
+        path: { org_id: string;  },
+        query?: never,
+      },
+      responses: {
+        200: Array<
+  {
+    id: number;
+    from_user_id: string;
+    application_id: null | string;
+    organization_id: null | string;
+    key_id: string;
+    created_at: Date;
+    updated_at: Date;
+    modified_by_user_id: null | string;
+  }
+>,
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    PUT: {
+      parameters: {
+        path: { org_id: string;  },
+        body: {
+  id?: number;
+  from_user_id: string;
+  application_id?: null | string;
+  organization_id?: null | string;
+  key_id: string;
+  created_at?: string | Date;
+  updated_at?: string | Date;
+  modified_by_user_id?: null | string;
+},
+        query?: never,
+      },
+      responses: {
+        200: {
+  id: number;
+  from_user_id: string;
+  application_id: null | string;
+  organization_id: null | string;
+  key_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
+      }
+      errors: {
+        400: {
+          message: 'User does not exist',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+        500: {
+          message: 'Internal Server Error',
+        },
+      }
+    },
+    DELETE: {
+      parameters: {
+        path: { org_id: string;  },
+        query: { org_id: ({ locals, url }: { locals: any; url: any; }) => Promise<Response>; id: any; },
+      },
+      responses: {
+        200: {
+  id: number;
+  from_user_id: string;
+  application_id: null | string;
+  organization_id: null | string;
+  key_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
       }
       errors: {
         400: {
@@ -1031,8 +1302,8 @@ branding_id: null | number;
   {
     id: number;
     name: string;
-    role: 'OWNER' | 'ADMIN' | 'DEVELOPER' | 'MEMBER' | 'MODERATOR';
     application_id: string;
+    default_for_new_member: boolean;
     created_at: Date;
     updated_at: Date;
     modified_by_user_id: null | string;
@@ -1050,14 +1321,17 @@ branding_id: null | number;
         path: { org_id: string; app_id: string;  },
         body: {
   name?: string;
-  role?: 'OWNER' | 'ADMIN' | 'DEVELOPER' | 'MEMBER' | 'MODERATOR';
+  default_for_new_member?: false | true;
   created_at?: string | Date;
   updated_at?: string | Date;
   modified_by_user_id?: null | string;
   app_role_assignment?: {
     
   };
-  FeatureFlagSetting?: {
+  feature_flag_settings?: {
+    
+  };
+  assigned_permissions?: {
     
   };
 },
@@ -1067,8 +1341,8 @@ branding_id: null | number;
         200: {
   id: number;
   name: string;
-  role: 'OWNER' | 'ADMIN' | 'DEVELOPER' | 'MEMBER' | 'MODERATOR';
   application_id: string;
+  default_for_new_member: boolean;
   created_at: Date;
   updated_at: Date;
   modified_by_user_id: null | string;
@@ -1231,23 +1505,109 @@ branding_id: null | number;
       }
     },
   },
+  'app/orgs/:org_id/apps/:app_id/invites': {
+    GET: {
+      parameters: {
+        path: { org_id: string; app_id: string;  },
+        query?: never,
+      },
+      responses: {
+        200: Array<
+  {
+    id: number;
+    from_user_id: string;
+    application_id: null | string;
+    organization_id: null | string;
+    key_id: string;
+    created_at: Date;
+    updated_at: Date;
+    modified_by_user_id: null | string;
+  }
+>,
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    PUT: {
+      parameters: {
+        path: { org_id: string; app_id: string;  },
+        body: {
+  id?: number;
+  from_user_id: string;
+  application_id?: null | string;
+  organization_id?: null | string;
+  key_id: string;
+  created_at?: string | Date;
+  updated_at?: string | Date;
+  modified_by_user_id?: null | string;
+},
+        query?: never,
+      },
+      responses: {
+        200: {
+  username: null | string;
+  avatar_url: null | string;
+},
+      }
+      errors: {
+        400: {
+          message: 'User does not exist',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+        500: {
+          message: 'Internal Server Error',
+        },
+      }
+    },
+    DELETE: {
+      parameters: {
+        path: { org_id: string; app_id: string;  },
+        query: { org_id: ({ locals, url }: { locals: any; url: any; }) => Promise<Response>; id: any; },
+      },
+      responses: {
+        200: {
+  id: number;
+  from_user_id: string;
+  application_id: null | string;
+  organization_id: null | string;
+  key_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
+      }
+      errors: {
+        400: {
+          message: 'Missing id',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+  },
   'app/orgs/:org_id/apps/:app_id/members': {
     GET: {
       parameters: {
         path: { org_id: string; app_id: string;  },
-        query: { limit: any; skip: any; sortBy?: import("/home/bewinxed/Downloads/GuardianGeckoBot/templates/solana-oauth/node_modules/.prisma/client/index").Prisma.SessionOrderByWithRelationInput | undefined; },
+        query: { limit: any; skip: any; sortBy?: import("/home/bewinxed/Downloads/GuardianGeckoBot/templates/solana-oauth/node_modules/.prisma/client/index").Prisma.SessionOrderByWithRelationInput | undefined; query: any; },
       },
       responses: {
         200: Array<
   { 
   user: {
-    id: string;
-    name: null | string;
+    key: Array<
+      {
+        id: string;
+      }
+    >;
     username: null | string;
     avatar_url: null | string;
-    email: null | string;
-    created_at: Date;
-    updated_at: Date;
   };
   role_assignments: Array<
     {
@@ -1306,10 +1666,8 @@ branding_id: null | number;
       parameters: {
         path: { org_id: string; app_id: string;  },
         body: {
-  url: string;
-  created_at?: string | Date;
-  updated_at?: string | Date;
   modified_by_user_id?: null | string;
+  url: string;
 },
         query?: never,
       },
@@ -1361,6 +1719,114 @@ branding_id: null | number;
         200: {
           id: number,
         },
+      }
+      errors: {
+        400: {
+          message: 'Missing id',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+  },
+  'app/orgs/:org_id/apps/:app_id/resources': {
+    GET: {
+      parameters: {
+        path: { org_id: string; app_id: string;  },
+        query?: never,
+      },
+      responses: {
+        200: Array<
+  {
+    id: number;
+    key: string;
+    description: null | string;
+    application_id: string;
+    created_at: Date;
+    updated_at: Date;
+    modified_by_user_id: null | string;
+  }
+>,
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    PUT: {
+      parameters: {
+        path: { org_id: string; app_id: string;  },
+        body: {
+  key: string;
+  modified_by_user_id?: null | string;
+  description?: null | string;
+  permissions?: {
+    
+  };
+},
+        query?: never,
+      },
+      responses: {
+        200: {
+  id: number;
+  key: string;
+  description: null | string;
+  application_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+        409: {
+          message: 'Duplicate resource name',
+        },
+      }
+    },
+    DELETE: {
+      parameters: {
+        path: { org_id: string; app_id: string;  },
+        query: { id: any; },
+      },
+      responses: {
+        200: {
+          id: number,
+        },
+      }
+      errors: {
+        400: {
+          message: 'Missing id',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    PATCH: {
+      parameters: {
+        path: { org_id: string; app_id: string;  },
+        body: {
+  id: number;
+  name: never;
+  description: null | string;
+},
+        query: { id: any; },
+      },
+      responses: {
+        200: {
+  id: number;
+  key: string;
+  description: null | string;
+  application_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
       }
       errors: {
         400: {
@@ -1460,6 +1926,8 @@ avatar_url: null | string;
 email: null | string;
 created_at: Date;
 updated_at: Date;
+suspended_at: null | Date;
+suspended_by_user_id: null | string;
  };
 role_assignments: Array<
   {
@@ -1489,6 +1957,277 @@ modified_by_user_id: null | string;
       }
     },
   },
+  'app/orgs/:org_id/apps/:app_id/resources/:resource_id': {
+    GET: {
+      parameters: {
+        path: { org_id: string; app_id: string; resource_id: string;  },
+        query?: never,
+      },
+      responses: {
+        200: Array<
+  {
+    id: number;
+    operation: 'create' | 'update' | 'delete' | 'read' | 'all';
+    resource_id: number;
+    description: null | string;
+    default_for_new_role: boolean;
+    parent_permission_id: null | number;
+    application_id: string;
+    created_at: Date;
+    updated_at: Date;
+    modified_by_user_id: null | string;
+  }
+>,
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    PUT: {
+      parameters: {
+        path: { org_id: string; app_id: string; resource_id: string;  },
+        body: {
+  operation: 'create' | 'update' | 'delete' | 'read' | 'all';
+  modified_by_user_id?: null | string;
+  description?: null | string;
+  default_for_new_role?: false | true;
+  parent_permission?: {
+    
+  };
+  child_permissions?: {
+    
+  };
+  assignments?: {
+    
+  };
+},
+        query?: never,
+      },
+      responses: {
+        200: {
+  id: number;
+  operation: 'create' | 'update' | 'delete' | 'read' | 'all';
+  resource_id: number;
+  description: null | string;
+  default_for_new_role: boolean;
+  parent_permission_id: null | number;
+  application_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    DELETE: {
+      parameters: {
+        path: { org_id: string; app_id: string; resource_id: string;  },
+        query: { id: any; },
+      },
+      responses: {
+        200: {
+          id: number,
+        },
+      }
+      errors: {
+        400: {
+          message: 'Missing id',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    PATCH: {
+      parameters: {
+        path: { org_id: string; app_id: string; resource_id: string;  },
+        body: {
+  id?: number;
+  operation?: 'create' | 'update' | 'delete' | 'read' | 'all';
+  resource_id?: number;
+  description?: null | string;
+  default_for_new_role?: false | true;
+  parent_permission_id?: null | number;
+  application_id?: string;
+  created_at?: string | Date;
+  updated_at?: string | Date;
+  modified_by_user_id?: null | string;
+  child_permissions?: {
+    
+  };
+  assignments?: {
+    
+  };
+},
+        query: { id: any; },
+      },
+      responses: {
+        200: {
+  id: number;
+  operation: 'create' | 'update' | 'delete' | 'read' | 'all';
+  resource_id: number;
+  description: null | string;
+  default_for_new_role: boolean;
+  parent_permission_id: null | number;
+  application_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
+      }
+      errors: {
+        400: {
+          message: 'Missing id',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+  },
+  'app/orgs/:org_id/apps/:app_id/app_roles/:app_role_id/permissions': {
+    GET: {
+      parameters: {
+        path: { org_id: string; app_id: string; app_role_id: string;  },
+        query?: never,
+      },
+      responses: {
+        200: { 
+permission: {
+  id: number;
+  operation: 'create' | 'update' | 'delete' | 'read' | 'all';
+  resource_id: number;
+  description: null | string;
+  default_for_new_role: boolean;
+  parent_permission_id: null | number;
+  application_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+};
+id: number;
+permission_id: number;
+app_role_id: null | number;
+member_id: null | string;
+user_role_id: null | number;
+created_at: Date;
+updated_at: Date;
+modified_by_user_id: null | string;
+ },
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    PUT: {
+      parameters: {
+        path: { org_id: string; app_id: string; app_role_id: string;  },
+        body: Array<
+  {
+    id: number;
+    operation: 'create' | 'update' | 'delete' | 'read' | 'all';
+    resource_id: number;
+    description: null | string;
+    default_for_new_role: boolean;
+    parent_permission_id: null | number;
+    application_id: string;
+    created_at: Date;
+    updated_at: Date;
+    modified_by_user_id: null | string;
+  }
+>,
+        query?: never,
+      },
+      responses: {
+        200: Array<
+  {
+    id: number;
+    permission_id: number;
+    app_role_id: null | number;
+    member_id: null | string;
+    user_role_id: null | number;
+    created_at: Date;
+    updated_at: Date;
+    modified_by_user_id: null | string;
+  }
+>,
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+        409: {
+          message: 'No Changes',
+        },
+      }
+    },
+    DELETE: {
+      parameters: {
+        path: { org_id: string; app_id: string; app_role_id: string;  },
+        query?: never,
+      },
+      responses: {
+        200: {
+  count: number;
+},
+      }
+      errors: {
+        400: {
+          message: 'Missing ids',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+    PATCH: {
+      parameters: {
+        path: { org_id: string; app_id: string; app_role_id: string;  },
+        body: {
+  key?: string;
+  description?: null | string;
+  created_at?: string | Date;
+  updated_at?: string | Date;
+  modified_by_user_id?: null | string;
+  application?: {
+    
+  };
+  permissions?: {
+    
+  };
+},
+        query: { id: any; },
+      },
+      responses: {
+        200: {
+  id: number;
+  permission_id: number;
+  app_role_id: null | number;
+  member_id: null | string;
+  user_role_id: null | number;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
+      }
+      errors: {
+        400: {
+          message: 'Missing id',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+  },
   'app/orgs/:org_id/apps/:app_id/members/:member_id/impersonate': {
     GET: {
       parameters: {
@@ -1508,6 +2247,24 @@ modified_by_user_id: null | string;
       }
     },
   },
+  'app/orgs/:org_id/apps/:app_id/app_roles/:app_role_id/permissions/:permission_id': {
+    DELETE: {
+      parameters: {
+        path: { org_id: string; app_id: string; app_role_id: string; permission_id: string;  },
+        query?: never,
+      },
+      responses: {
+        200: {
+          id: number,
+        },
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+  },
   'app/orgs/:org_id/apps/:app_id/members/:member_id/roles/:role_id': {
     GET: {
       parameters: {
@@ -1515,15 +2272,25 @@ modified_by_user_id: null | string;
         query?: never,
       },
       responses: {
-        200: {
-  id: number;
-  name: string;
-  role: 'OWNER' | 'ADMIN' | 'DEVELOPER' | 'MEMBER' | 'MODERATOR';
-  application_id: string;
-  created_at: Date;
-  updated_at: Date;
-  modified_by_user_id: null | string;
-},
+        200: { 
+app_role_assignment: Array<
+  {
+    id: number;
+    app_role_id: number;
+    member_id: string;
+    created_at: Date;
+    updated_at: Date;
+    modified_by_user_id: null | string;
+  }
+>;
+id: number;
+name: string;
+application_id: string;
+default_for_new_member: boolean;
+created_at: Date;
+updated_at: Date;
+modified_by_user_id: null | string;
+ },
       }
       errors: {
         401: {

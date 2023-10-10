@@ -26,7 +26,7 @@ export type ValidatedSignatureData = {
 	application_id: string;
 	access_token_expires_in: number;
 	signature: string;
-	user: Omit<User, 'userId'>
+	user: Omit<User, 'userId'>;
 };
 
 export const solanaAuth = (auth: Auth, config: SolAuthConfig) => {
@@ -59,11 +59,17 @@ export class SolanaAuth {
 	//     providerUserId: string;
 	//     passwordDefined: boolean;
 	// }>>;
-	createKey = async (public_key: string) => {
+	createKey = async (options: {
+		userId: string;
+		providerId: string;
+		providerUserId: string;
+		// passwordDefined: boolean;
+	}) => {
+		console.log(options);
 		return {
-			userId: public_key,
+			userId: options.userId,
 			providerId: PROVIDER_ID,
-			providerUserId: public_key,
+			providerUserId: options.providerUserId,
 			passwordDefined: false
 		};
 	};
@@ -75,11 +81,7 @@ export class SolanaAuth {
 		const solanaTokens = await this.validateSignature(signature);
 		const solanaUser = solanaTokens.user;
 		const { account_id } = solanaTokens;
-		const user = providerUserAuth(
-			this.auth,
-			PROVIDER_ID,
-			account_id
-		);
+		const user = providerUserAuth(this.auth, PROVIDER_ID, account_id);
 		return {
 			solanaTokens,
 			solanaUser,
@@ -99,17 +101,18 @@ export class SolanaAuth {
 	};
 
 	validateSignature = async (signature: string) => {
-		const request = await fetch(`${this.config.validationUri}?proof=${signature}`, {
-			
-		});
+		const request = await fetch(
+			`${this.config.validationUri}?proof=${signature}`,
+			{}
+		);
 
 		if (!request.ok) {
-			throw new Error('Callback failed', {cause: await request.text()});
+			throw new Error('Callback failed', { cause: await request.text() });
 		}
 
-		const response = await request.json() as ValidatedSignatureData;
+		const response = (await request.json()) as ValidatedSignatureData;
 
-		return response
+		return response;
 	};
 }
 

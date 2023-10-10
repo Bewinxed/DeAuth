@@ -1,7 +1,9 @@
 import type { Prisma } from '@prisma/client';
 import { error, json } from '@sveltejs/kit';
+
 import { is_authorized } from 'src/lib/security/is_authorized.js';
 import { prisma } from 'src/lib/server/prisma.js';
+import type { ApiCreatePayload } from 'src/types/crud.js';
 
 export const GET = async ({ locals, params }) => {
 	const session = await locals.auth.validate();
@@ -29,7 +31,7 @@ export const PUT = async ({ locals, params, request }) => {
 
     await is_authorized(session, params.org_id, params.app_id )
 
-    const payload = await request.json() as Prisma.redirect_urlCreateWithoutApplicationInput
+    const payload = await request.json() as ApiCreatePayload<Prisma.redirect_urlCreateWithoutApplicationInput>
 
     const redirect_url = await prisma.redirect_url.create({
         data: {
@@ -41,7 +43,7 @@ export const PUT = async ({ locals, params, request }) => {
     return json(redirect_url)
 };
 
-export const DELETE = async ({ locals, params, request, url }) => {
+export const DELETE = async ({ locals, params, url }) => {
     const session = await locals.auth.validate();
     if (!session) {
         throw error(401, 'Unauthorized');
@@ -98,5 +100,4 @@ export const PATCH = async ({ locals, params, request, url }) => {
 }
 
 
-
-
+// export default new CrudController('redirect_url', ['GET', 'PUT', 'DELETE', 'PATCH'])

@@ -1,13 +1,8 @@
 <script lang="ts">
-	import ViewTransition from '$components/ViewTransition.svelte';
-	import { themeChange } from 'theme-change'
-	import '@fontsource-variable/figtree';
-	import '@fontsource-variable/rubik';
-	import '@fontsource/inter';
-	import { Toaster } from 'svelte-french-toast';
-	import '../app.css';
 	import DrawerWrapper from '$components/DrawerWrapper.svelte';
+	import ViewTransition from '$components/ViewTransition.svelte';
 	import { set_svetch } from '$lib/context';
+	import '@fontsource/iosevka';
 	import type { WalletAdapter } from '@solana/wallet-adapter-base';
 	import { clusterApiUrl } from '@solana/web3.js';
 	import {
@@ -16,10 +11,12 @@
 	} from '@svelte-on-solana/wallet-adapter-ui';
 	import { setWalletConnectVisible as set_wallet_connect_visible } from 'src/lib/components/context';
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { Toaster } from 'svelte-french-toast';
+	import { themeChange } from 'theme-change';
+	import '../app.css';
 	import Drawer from './Drawer.svelte';
 	import NavigationBar from './NavigationBar.svelte';
-
+	
 	const localStorageKey = 'walletAdapter';
 	const network = clusterApiUrl('mainnet-beta'); // localhost or mainnet
 
@@ -49,7 +46,16 @@
 
 <svelte:head>
 	<title>DeAuth</title>
+	<link
+		rel="stylesheet"
+		href="/css/clash-display.css"
+	/>
+	<link
+		rel="stylesheet"
+		href="/css/archivo.css"
+	/>
 </svelte:head>
+
 
 <ViewTransition />
 <WalletProvider
@@ -61,10 +67,10 @@
 <Toaster />
 <DrawerWrapper>
 	<NavigationBar />
-	<main class="sticky top-0 flex flex-1 max-w-[100vw] ">
+	<main class="sticky top-0 flex flex-1 overflow-x-clip ">
 		<Drawer />
-		<div class="flex flex-1">
+		<!-- <div class="flex "> -->
 			<slot />
-		</div>
+		<!-- </div> -->
 	</main>
 </DrawerWrapper>

@@ -100,7 +100,7 @@
 			</div>
 			<a
 				href="/"
-				class="btn btn-ghost text-xl normal-case">DeAuth</a
+				class="font-display btn btn-ghost text-xl normal-case">DeAuth</a
 			>
 		</div>
 		<div class="navbar-center hidden lg:flex">
@@ -210,10 +210,12 @@
 				>
 					<WalletMultiButton
 						><span>
-							<Icon
-								icon="formkit:solana"
-								class="inline h-6 w-6"
-							/>
+							<figure class="h-6 w-6">
+								<Icon
+									icon="formkit:solana"
+									class="h-6 w-6"
+								/>
+							</figure>
 						</span></WalletMultiButton
 					>
 				</div>

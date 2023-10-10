@@ -1,4 +1,5 @@
-import type { Prisma } from '@prisma/client';
+import type { OAuthProvider, Prisma } from '@prisma/client';
+import type { JsonObject } from '@prisma/client/runtime/library';
 import type { Session } from 'lucia';
 import { auth } from 'src/lib/server/lucia';
 import { prisma } from 'src/lib/server/prisma';
@@ -43,16 +44,21 @@ export async function connect_existing_user(
 
 export async function handle_existing_session({
 	application,
-	auth_request,
-	session
+	provider_account_id,
+	provider,
+	session,
+	provider_user
 }: {
 	application: Prisma.ApplicationGetPayload<{
 		include: {
 			app_role: true;
 		};
 	}>;
-	auth_request: Prisma.AuthRequestGetPayload<object>;
+
+	provider_account_id: string;
+	provider: OAuthProvider;
 	session: Session;
+	provider_user: JsonObject;
 }): Promise<
 	Prisma.UserGetPayload<{
 		include: {
@@ -63,7 +69,7 @@ export async function handle_existing_session({
 	const existing_keys: Prisma.KeyGetPayload<object>[] =
 		await prisma.key.findMany({
 			where: {
-				id: `${auth_request.provider}:${auth_request.provider_account_id}`
+				id: `${provider}:${provider_account_id}`
 			}
 		});
 	if (existing_keys.length > 0) {
@@ -75,22 +81,46 @@ export async function handle_existing_session({
 				// );
 			}
 		}
-		return find_user_by_id(session.user.id)
+		return find_user_by_id(session.user.id);
 	}
 
 	return await add_key_to_user({
-		authRequest: auth_request,
-		session
+		provider_account_id,
+		provider,
+		session,
+		provider_user
 	}).then(
 		async () =>
-			await prisma.member
-				.create({
+			await prisma.user
+				.update({
+					where: {
+						id: session.user.id
+					},
+
 					data: {
-						application_id: application.id,
-						user_id: session.user.id,
-						role_assignments: {
-							create: {
-								app_role_id: application.app_role[0].id
+						memberships: {
+							upsert: {
+								where: {
+									user_id_application_id: {
+										user_id: session.user.id,
+										application_id: application.id
+									}
+								},
+								create: {
+									application_id: application.id,
+									role_assignments: {
+										create: {
+											app_role_id: application.app_role[0].id
+										}
+									}
+								},
+								update: {
+									role_assignments: {
+										create: {
+											app_role_id: application.app_role[0].id
+										}
+									}
+								}
 							}
 						}
 					}
@@ -100,11 +130,15 @@ export async function handle_existing_session({
 }
 
 async function add_key_to_user({
-	authRequest,
-	session
+	provider_account_id,
+	provider,
+	session,
+	provider_user
 }: {
-	authRequest: Prisma.AuthRequestGetPayload<object>;
+	provider_account_id: string;
+	provider: OAuthProvider;
 	session: Session;
+	provider_user: JsonObject;
 }) {
 	await prisma.user.update({
 		where: {
@@ -116,23 +150,23 @@ async function add_key_to_user({
 				update: await auth
 					.createKey({
 						userId: session.user.userId,
-						providerId: authRequest.provider,
+						providerId: provider,
 						password: null,
-						providerUserId: authRequest.provider_account_id
+						providerUserId: provider_account_id
 					})
-					.then(async (key) => ({
-						where: {
-							id: `${key.providerId}:${key.providerUserId}`
-						},
-						data: {
-							provider: authRequest.provider,
-							additional_data: {
-								public_key: authRequest?.provider_account_id,
-								balance: 0
-							},
-							account_id: authRequest?.provider_account_id
-						}
-					}))
+					.then(
+						async (key) =>
+							({
+								where: {
+									id: `${key.providerId}:${key.providerUserId}`
+								},
+								data: {
+									provider: provider,
+									account_id: provider_account_id,
+									additional_data: provider_user
+								}
+							}) as Prisma.KeyUpdateArgs
+					)
 			}
 		}
 	});
@@ -140,14 +174,22 @@ async function add_key_to_user({
 
 export async function handle_no_session({
 	application,
-	auth_request: auth_request
+	provider,
+	provider_account_id,
+	provider_user
 }: {
 	application: Prisma.ApplicationGetPayload<{
 		include: {
-			app_role: true;
+			app_role: {
+				where: {
+					default_for_new_member: true;
+				};
+			};
 		};
 	}>;
-	auth_request: Prisma.AuthRequestGetPayload<object>;
+	provider: OAuthProvider;
+	provider_account_id: string;
+	provider_user: JsonObject;
 }): Promise<
 	Prisma.UserGetPayload<{
 		include: {
@@ -158,39 +200,103 @@ export async function handle_no_session({
 	const existing_keys: Prisma.KeyGetPayload<object>[] =
 		await prisma.key.findMany({
 			where: {
-				id: `${auth_request.provider}:${auth_request.provider_account_id}`
+				id: `${provider}:${provider_account_id}`
 			}
 		});
 	// try to upsert the user, along with roles and assignments
 	const existingUserId = existing_keys[0]?.user_id;
+	const default_roles = application.app_role.reduce(
+		(acc: Prisma.app_role_assignmentCreateManyMemberInput[], role) => {
+			if (role.default_for_new_member) {
+				acc.push({
+					app_role_id: role.id
+				});
+			}
+			return acc;
+		},
+		[]
+	);
 	if (existingUserId) {
-		console.log(`Found existing user ${existingUserId}`);
-		
-		await prisma.member
-			.create({
+		console.debug(`Found existing user ${existingUserId}`);
+		await prisma.user
+			.update({
+				where: {
+					id: existingUserId
+				},
 				data: {
-					application_id: application.id,
-					user_id: existingUserId,
-					role_assignments: {
-						create: {
-							app_role_id: application.app_role[0].id
+					memberships: {
+						upsert: {
+							where: {
+								user_id_application_id: {
+									user_id: existingUserId,
+									application_id: application.id
+								}
+							},
+							create: {
+								application_id: application.id,
+								role_assignments: {
+									createMany: {
+										// only add default roles
+										skipDuplicates: true,
+										data: default_roles
+									}
+								}
+							},
+							update: {
+								role_assignments: {
+									createMany: {
+										skipDuplicates: true,
+										data: default_roles
+									}
+								}
+							}
+						}
+					},
+					key: {
+						update: {
+							where: {
+								id: `${provider}:${provider_account_id}`
+							},
+							data: {
+								provider: provider,
+								account_id: provider_account_id,
+								additional_data: provider_user
+							}
+						}
+					}
+				},
+				include: {
+					memberships: {
+						where: {
+							application_id: application.id
+						},
+						include: {
+							role_assignments: {
+								where: {
+									app_role_id: application.app_role[0].id
+								}
+							}
 						}
 					}
 				}
 			})
-			.catch(() =>
-				console.debug(
-					`User ${existingUserId} already has role ${application.app_role[0].id}`
-				)
-			);
+
 		return find_user_by_id(existingUserId);
 	}
 
-	return await create_new_user(auth_request).then(
+	return await create_new_user({
+		provider,
+		provider_account_id,
+		provider_user,
+		application_id: application.id
+	}).then(
 		async () =>
 			await handle_no_session({
 				application,
-				auth_request: auth_request
+
+				provider_user,
+				provider_account_id,
+				provider
 			})
 	);
 }
@@ -204,16 +310,24 @@ export async function find_user_by_id(
 	});
 }
 
-export async function create_new_user(
-	auth_request: Prisma.AuthRequestGetPayload<object>
-) {
+export async function create_new_user({
+	provider,
+	provider_account_id,
+	provider_user,
+	application_id
+}: {
+	provider: OAuthProvider;
+	provider_account_id: string;
+	provider_user: JsonObject;
+	application_id: string;
+}) {
 	return await auth
 		.createUser({
 			userId: uuid(),
 			key: {
 				password: null,
-				providerId: auth_request.provider,
-				providerUserId: auth_request.provider_account_id
+				providerId: provider,
+				providerUserId: provider_account_id
 			},
 			attributes: {
 				// get random image from https://doodleipsum.com/500/avatar-2
@@ -233,11 +347,12 @@ export async function create_new_user(
 					key: {
 						update: {
 							where: {
-								id: `${auth_request.provider}:${auth_request.provider_account_id}`
+								id: `${provider}:${provider_account_id}`
 							},
 							data: {
-								provider: auth_request.provider,
-								account_id: auth_request?.provider_account_id
+								provider: provider,
+								account_id: provider_account_id,
+								additional_data: provider_user
 							}
 						}
 					},
@@ -246,11 +361,11 @@ export async function create_new_user(
 							where: {
 								user_id_application_id: {
 									user_id: user.id,
-									application_id: auth_request.application_id
+									application_id: application_id
 								}
 							},
 							create: {
-								application_id: auth_request.application_id
+								application_id: application_id
 							},
 							update: {}
 						}

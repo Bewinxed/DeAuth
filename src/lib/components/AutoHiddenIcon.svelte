@@ -17,7 +17,7 @@
 	class:bg-base-200="{aria_current}"
 	class="tooltip flex place-content-center place-items-center {$drawer_open
 		? 'w-full justify-start'
-		: 'btn-sm md:justify-center'} btn btn-ghost tooltip-right w-full rounded-[inherit] transition-all duration-300 before:capitalize after:capitalize @[19rem]:before:hidden @[19rem]:after:hidden md:h-3 {$$restProps.class}"
+		: 'btn-sm md:justify-center'} capitalize btn btn-ghost tooltip-right w-full rounded-[inherit] transition-all duration-300 before:capitalize after:capitalize @[19rem]:before:hidden @[19rem]:after:hidden md:h-3 {$$restProps.class}"
 	data-tip="{data?.innerText}"
 >
 	<figure class="flex aspect-square place-content-center place-items-center">
@@ -29,8 +29,8 @@
 	<!-- <div class="inline"> -->
 	<span
 		bind:this="{data}"
-		class="hidden w-full text-left @[19rem]:inline md:@[19rem]:w-20"
-		style="width: {data?.innerText.length}ch"><slot /></span
+		class="hidden w-full font-normal text-left @[19rem]:inline md:@[19rem]:w-20"
+		style="width: {data?.innerText.length*1.25}ch"><slot /></span
 	>
 	<!-- </div> -->
 </a>

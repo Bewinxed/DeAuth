@@ -32,7 +32,7 @@
 				</AutoHiddenIcon>
 			</svelte:fragment>
 			<div
-				class="flex flex-col rounded-xl rounded-t-none border text-base-content shadow-inner md:p-1"
+				class="flex flex-col rounded-xl rounded-t-none border text-base-content shadow-inner md:p-1 pt-1"
 			>
 				{#if org.applications.length === 0}
 					<!-- empty state -->
@@ -51,11 +51,12 @@
 					<!-- <div
 						class="place-content-start place-items-start rounded-xl border border-gray-300 shadow-inner"
 					> -->
-					<div class="contents">
+					<div class="md:shadow-inner rounded-2xl p-0.5">
 						{#each org?.applications as application (application.id)}
 							{@const app_active = application.id === $page.params.app_id}
 							<div
-								class="rounded-none first:rounded-t-xl last:rounded-b-xl"
+								class:!rounded-b-none={app_active}
+								class="rounded-none first:rounded-t-xl last:rounded-b-xl only:rounded-b-none"
 								animate:flip
 								transition:fly|local="{{ y: -50 }}"
 							>
@@ -67,8 +68,7 @@
 									<svelte:fragment slot="title">
 										<AutoHiddenIcon
 											icon="carbon:application"
-											href="/app/orgs/{$page.params
-												.org_id}/apps/{application.id}"
+											href="/app/orgs/{org.id}/apps/{application.id}"
 											class="rounded-[inherit]"
 										>
 											{application.name}
@@ -77,8 +77,7 @@
 									<div class="rounded-b-xl border shadow-inner">
 										<AutoHiddenIcon
 											icon="carbon:rule"
-											href="/app/orgs/{$page.params
-												.org_id}/apps/{application.id}#auth-rules"
+											href="/app/orgs/{org.id}/apps/{application.id}#auth-rules"
 											class="btn-sm rounded-none first:rounded-none last:rounded-b-xl"
 											>Auth Rules</AutoHiddenIcon
 										>
@@ -105,19 +104,19 @@
 											>Redirect URLs</AutoHiddenIcon
 										>
 										<AutoHiddenIcon
-											icon="carbon:cloud-logging"
+											icon="carbon:document"
 											href="/app/orgs/{$page.params
 												.org_id}/apps/{application.id}#login-log"
 											class="btn-sm rounded-none first:rounded-t-xl last:rounded-b-xl"
 											>Login Log</AutoHiddenIcon
 										>
-										<div class="divider my-0"></div>
+										<div class="px-2 border-t"></div>
 										<AutoHiddenIcon
 											icon="carbon:cloud-logging"
 											href="/app/orgs/{$page.params
 												.org_id}/apps/{application.id}/access_control"
 											class="btn-sm rounded-none first:rounded-t-xl last:rounded-b-xl"
-											>Access Controls</AutoHiddenIcon
+											>Permissions</AutoHiddenIcon
 										>
 										<AutoHiddenIcon
 											icon="carbon:network-admin-control"

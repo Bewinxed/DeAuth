@@ -54,12 +54,14 @@ export default {
 			}
 		}),
 
-		fontFamily: {
-			// use inter
-			sans: ['Figtree Variable', 'sans-serif'],
-			serif: ['Figtree Variable', 'serif']
-		},
 		extend: {
+			fontFamily: {
+				// use inter
+				display: ['ClashDisplay-Variable', 'Archivo-Variable', 'sans-serif'],
+				sans: ['Archivo-Variable', 'sans-serif'],
+				serif: ['Archivo-Variable', 'serif'],
+				mono: ['Iosevka', 'monospace']
+			},
 			dropShadow: {
 				'glow-solanagreen': [
 					'0 0px 2px rgba(20,241, 149, 0.7)',

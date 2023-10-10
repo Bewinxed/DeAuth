@@ -19,7 +19,7 @@
 	id="{$$restProps.id}"
 	class="flex place-content-start place-items-center justify-between gap-2 p-4"
 >
-	<div>
+	<div class="flex place-content-start place-items-center gap-2">
 		<PrettyIcon icon="carbon:link"></PrettyIcon>
 		<h1 class="text-xl font-bold">Redirect Urls</h1>
 	</div>
@@ -80,7 +80,7 @@
 				<div
 					animate:flip
 					transition:fly
-					class="flex justify-between rounded-lg border border-b-2 px-4 py-2 shadow "
+					class="flex justify-between rounded-lg border border-b-2 px-4 py-2 shadow"
 				>
 					<span class="break-all">
 						<Icon
@@ -100,6 +100,7 @@
 						<div class="card-actions">
 							<PromiseButton
 								icon="carbon:trash-can"
+								square
 								class="btn btn-error btn-sm"
 								tooltip="{'delete'}"
 								promise="{async () => {

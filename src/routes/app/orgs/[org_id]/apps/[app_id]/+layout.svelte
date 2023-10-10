@@ -27,7 +27,7 @@
 				<div>
 					<span>
 						<a
-							class="break-all text-xl font-bold"
+							class="break-all text-xl font-bold font-display"
 							href="/app/{$organization?.id}/orgs/{$application.id}"
 							style:--org="app-name-{$application.id}">{$application.name}</a
 						>

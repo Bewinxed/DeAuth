@@ -30,7 +30,7 @@ export const GET = async (request) => {
 		httpOnly: true,
 		secure: !dev,
 		path: "/",
-		maxAge: 60 * 60
+		maxAge: 60 * 60,
 	});
 
 	return new Response(`${url}${params ? `&${params.toString()}` : ''}`, {

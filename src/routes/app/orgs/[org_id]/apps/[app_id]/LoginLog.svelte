@@ -19,7 +19,7 @@
 >
 	<div class="flex place-content-start place-items-center gap-2">
 		<PrettyIcon icon="carbon:cloud-logging"></PrettyIcon>
-		<h1 class="text-xl font-bold">Login Log</h1>
+		<h1 class=" text-xl font-bold">Login Log</h1>
 	</div>
 	<div></div>
 	<!-- <figure class="w-4 h-4 inline text-base-content"><Icon icon="carbon:chevron-right" class="h-4 w-4"></Icon></figure> -->
@@ -43,7 +43,7 @@
 						</span>
 					{/if}
 					<div
-						class="tooltip-primary tooltip break-all"
+						class="tooltip tooltip-primary break-all"
 						data-tip="{log.user_id}"
 					>
 						{log.user_id?.slice(0, 5)}...{log.user_id?.slice(-5)}
@@ -59,6 +59,7 @@
 						<div class="card-actions">
 							<PromiseButton
 								icon="carbon:trash-can"
+								square
 								class="btn btn-error btn-sm"
 								tooltip="{'delete'}"
 								promise="{async () => {

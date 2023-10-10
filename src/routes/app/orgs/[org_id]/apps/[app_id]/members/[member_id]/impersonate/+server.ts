@@ -90,7 +90,7 @@ export const GET= async ({locals, params, cookies}) => {
             access_token_expires_in,
             application_id: params.app_id,
             auth_request_id: auth_request.id,
-            provider_id: auth_request.provider_account_id,
+            provider_account_id: auth_request.provider_account_id,
             impersonating_user_id: session.user.userId
         }
     })

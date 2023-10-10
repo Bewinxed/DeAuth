@@ -6,10 +6,24 @@ export const load = async ({ parent, params, depends }) => {
 			id: params.org_id
 		},
 		include: {
-			members: true,
+			members: {
+				where: {
+					role: {
+						equals: 'OWNER'
+					},
+					
+				},
+				include: {
+					user: true,
+					
+					
+				}
+			},
 			applications: true,
 			owner: true,
 			subscription: true,
+			branding: true,
+			
 		}
 	});
 

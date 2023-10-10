@@ -46,7 +46,7 @@
 	>
 		<div class="flex place-content-start place-items-center gap-2">
 			<PrettyIcon icon="carbon:building"></PrettyIcon>
-			<h1 class="text-xl font-bold">Organizations</h1>
+			<h1 class=" text-xl font-bold">Organizations</h1>
 			<!-- <figure class="w-4 h-4 inline text-base-content"><Icon icon="carbon:chevron-right" class="h-4 w-4"></Icon></figure> -->
 		</div>
 		<div>
@@ -115,7 +115,7 @@
 						/>
 					</figure>
 					<div class="card-body justify-between shadow-inner">
-						<h2 class="card-title">
+						<h2 class="card-title font-display">
 							<a
 								style:--org="org-name-{organization.id}"
 								href="{$page.url.pathname}/orgs/{organization.id}"

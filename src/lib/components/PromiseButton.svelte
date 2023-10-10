@@ -12,6 +12,7 @@
 	export let grace: number | null = null;
 	export let icon: string;
 	export let show_error: boolean = false;
+	export let square = false;
 
 	let grace_remaining = grace;
 
@@ -165,6 +166,7 @@
 >
 	<button
 		on:click="{handleButtonClick}"
+		class:btn-square="{square}"
 		class:btn-error="{state === 'error' ||
 			$$restProps.class.includes('btn-error')}"
 		class:btn-success="{state === 'success' ||

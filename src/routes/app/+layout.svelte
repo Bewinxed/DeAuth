@@ -3,6 +3,7 @@
 	import { getOrganizations, setOrganizations } from '$components/data_contexts';
 	import { afterUpdate, onDestroy, onMount } from 'svelte';
 	import OrganizationDrawer from './orgs/OrganizationDrawer.svelte';
+	
 
 	export let data;
 
@@ -26,6 +27,8 @@
 		drawer.pop();
 	});
 </script>
+
+
 
 <div class="contents">
 	<slot />

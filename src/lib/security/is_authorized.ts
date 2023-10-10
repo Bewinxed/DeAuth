@@ -2,7 +2,7 @@ import { error } from "@sveltejs/kit";
 import type { Session } from "lucia";
 import { prisma } from "../server/prisma";
 
-export async function is_authorized(session: Session, org_id: string | null, app_id: string | null) {
+export async function is_authorized(session: Session, org_id: string | null | undefined, app_id: string | null | undefined) {
 	if (app_id) {
 		const isOwner = await prisma.application.findFirst({
 			where: {

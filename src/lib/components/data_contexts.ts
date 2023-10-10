@@ -4,12 +4,19 @@ import type { Prisma } from '@prisma/client'
 
 type Organization = Prisma.OrganizationGetPayload<{
 	include: {
-		members: true;
+		members: {
+			where: {
+				role: {
+					equals: 'OWNER';
+				}
+			},
+			include: {
+				user: true
+			}
+		};
 		applications: true;
 		branding: true;
-		AuthRequest: {
-			take: 10;
-		};
+		
 		owner: true;
 		subscription: true;
 	};
@@ -22,13 +29,19 @@ type LayoutOrganizations = Prisma.OrganizationGetPayload<{
     }
 }>[]
 
-type Application = Prisma.ApplicationGetPayload<{
+export type LayoutApplication = Prisma.ApplicationGetPayload<{
 	include: {
 		redirect_urls: true;
 		authentication_rule: true;
-		app_role: true;
+		app_role: {
+			include: {
+				app_role_assignment: true;
+				assigned_permissions: true;
+			}
+		};
 		branding: true;
-		auth_request: true
+		auth_request: true;
+		permissions: true;
 	};
 }>;
 
@@ -51,9 +64,14 @@ export function setOrganization(data: Organization) {
 	setContext('organization', organization)
 }
 
-export function setApplication(data: Application | LoginApplication) {
-	const applications = writable<Application | LoginApplication | undefined>(data)
+export function setApplication(data: LayoutApplication | LoginApplication) {
+	const applications = writable<LayoutApplication | LoginApplication | undefined>(data)
     setContext('application', applications)
+}
+
+
+export function getApplication() {
+    return getContext<Writable<LayoutApplication>>('application')
 }
 
 export function getOrganizations() {
@@ -63,8 +81,4 @@ export function getOrganizations() {
 
 export function getOrganization() {
     return getContext<Writable<Organization>>('organization')
-}
-
-export function getApplication() {
-    return getContext<Writable<Application>>('application')
 }

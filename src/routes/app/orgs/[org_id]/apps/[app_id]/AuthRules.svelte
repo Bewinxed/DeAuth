@@ -12,7 +12,6 @@
 	import { fly } from 'svelte/transition';
 
 	const application = getApplication();
-	
 
 	const svetch = get_svetch();
 </script>
@@ -25,7 +24,7 @@
 	<div class="flex place-content-start place-items-center justify-between">
 		<div class="flex flex-row place-content-start place-items-center gap-2">
 			<PrettyIcon icon="carbon:rule"></PrettyIcon>
-			<h1 class="text-xl font-bold">Authentication Rules</h1>
+			<h1 class="text-xl font-bold">Authentication Methods</h1>
 		</div>
 		<div class="dropdown dropdown-end dropdown-hover">
 			<label
@@ -41,7 +40,7 @@
 				id="dropdown-1"
 				class="menu dropdown-content join rounded-box z-[1] w-52 gap-1 border bg-base-100 p-2 shadow"
 			>
-				{#each object_entries(provider_icons).filter(([provider, icon]) => !$application.authentication_rule.find((r) => r.provider === provider)) as [provider, icon] (provider)}
+				{#each object_entries(provider_icons).filter(([provider, icon]) => !$application.authentication_rule.find((r) => r.provider === provider) && provider !== 'ip_address') as [provider, icon] (provider)}
 					<li
 						animate:flip
 						transition:fly
@@ -74,7 +73,7 @@
 								{icon}
 								class="h-4 w-4"
 							></Icon>
-							<span>{provider}</span>
+							<span class="capitalize">{provider}</span>
 						</button>
 					</li>
 				{/each}
@@ -83,9 +82,11 @@
 	</div>
 
 	<p class="text-sm italic">
-		By selecting from the list of oAuth providers, you can give your users more
-		options to authenticate with, you can also set some as required, users won't
-		be authenticated unless they have at all of the required providers.
+		How will your users sign in?<br /><br />
+		By selecting from the list of oAuth providers, you can give your users more options
+		to authenticate with, you can also set some as <strong>required</strong>,
+		users won't be authenticated unless they have at all of the required
+		providers.
 	</p>
 
 	<!-- <figure class="w-4 h-4 inline text-base-content"><Icon icon="carbon:chevron-right" class="h-4 w-4"></Icon></figure> -->
@@ -104,7 +105,7 @@
 					transition:fly
 					class="flex w-full justify-between rounded-lg border border-b-2 px-4 py-2 shadow"
 				>
-					<span class="inline-flex place-items-center gap-2">
+					<span class="inline-flex place-items-center gap-2 capitalize">
 						<Icon
 							icon="{provider_icons[auth_rule.provider]}"
 							class="mr-1 inline"
@@ -160,6 +161,7 @@
 								<PromiseButton
 									confirm="{1}"
 									icon="carbon:trash-can"
+									square
 									class="btn btn-square btn-error btn-sm"
 									tooltip="{'delete'}"
 									promise="{async () => {

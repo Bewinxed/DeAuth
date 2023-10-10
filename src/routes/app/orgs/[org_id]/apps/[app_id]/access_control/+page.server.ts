@@ -8,10 +8,22 @@ export const load = async ({params, parent, depends}) => {
         take: 30
     });
 
+    const resources = await prisma.appResources.findMany({
+        where: {
+            application_id: params.app_id,
+            
+        },
+        include: {
+            permissions: true,
+            
+        }
+    });
+
     depends('app:access_controls');
 
     return {
-        access_controls,
+        resources,
+                access_controls,
         ...await parent()
     }
     

@@ -36,17 +36,21 @@ export const POST = async ({ locals, request, params }) => {
 
 	await is_authorized(session, org_id, null);
 
-	const payload = (await request.json()) as Pick<
-		Prisma.applicationCreateInput,
-		'name'
-	>;
+	const payload =
+		(await request.json()) as Prisma.ApplicationCreateWithoutOrganizationInput;
 
+		// Create Application
 	const application = await prisma.application.create({
 		data: {
 			...payload,
+			organization: {
+				connect: {
+					id: org_id
+				}
+			},
 			access_token_secret: crypto.randomBytes(32).toString('hex'),
 			refresh_token_secret: crypto.randomBytes(32).toString('hex'),
-			organization_id: org_id,
+			// organization_id: org_id,
 			authentication_rule: {
 				createMany: {
 					data: [
@@ -64,28 +68,47 @@ export const POST = async ({ locals, request, params }) => {
 			app_role: {
 				create: [
 					{
-						role: 'OWNER',
-						
+						name: 'Owner',
 					},
+					{
+						name: 'Admin',
+					},
+					{
+						name: 'Member',
+						default_for_new_member: true
+					}
 				]
-			},
+			}
 		},
-	include: {
-		app_role: true
-	}})
+		include: {
+			app_role: true
+		}
+	});
 
-	await prisma.member.create({
+	type RoleAssignmentCreateMap = ReturnType<typeof prisma.member.create>
+
+	const owner_member = await prisma.member.create({
 		data: {
 			application_id: application.id,
 			user_id: session.user.userId,
 			role_assignments: {
-				create: {
-					app_role_id: application.app_role[0].id,
-					
+				create: application.app_role.reduce((acc, role) => {
+					if (role.default_for_new_member) {
+						acc.push({
+							app_role_id: role.id
+						});
+					}
+					return acc;
 				}
+				, [])
+				// filter undefined
+				
 			}
 		}
-	})
+	});
+	
+
+	
 
 	return json(application);
 };
@@ -126,7 +149,7 @@ export const PATCH = async ({ locals, request, url }) => {
 
 	await is_authorized(session, org_id, id);
 
-	const payload = (await request.json()) as Prisma.applicationUpdateInput;
+	const payload = (await request.json()) as Prisma.ApplicationUpdateInput;
 
 	const application = await prisma.application.update({
 		where: {

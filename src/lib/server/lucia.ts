@@ -24,7 +24,7 @@ export const auth = lucia({
 		return data;
 	},
     getSessionAttributes: (data) => {
-        return {public_key: data.provider_id}},
+        return {public_key: data.provider_account_id}},
         csrfProtection: true,
         
 

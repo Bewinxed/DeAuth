@@ -63,7 +63,7 @@
 	<div class="flex flex-col place-content-start place-items-start gap-2">
 		<div class="flex place-content-start place-items-center gap-2">
 			<PrettyIcon icon="carbon:virtual-column-key"></PrettyIcon>
-			<h1 class="text-xl font-bold">Active Sessions</h1>
+			<h1 class=" text-xl font-bold">Active Sessions</h1>
 		</div>
 		<p class="text-sm italic">
 			Find below all active sessions for your application, You can disable any
@@ -205,6 +205,7 @@
 									<div class="card-actions">
 										<PromiseButton
 											icon="carbon:trash-can"
+											square
 											class="btn btn-error btn-sm"
 											tooltip="{'delete'}"
 											promise="{async () => {

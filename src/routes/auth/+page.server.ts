@@ -66,7 +66,7 @@ export const load = async ({ url }) => {
 					},
 					member: {
 						create: {
-							id: 1,
+							id: DEFAULT_APP_ID,
 							user_id: DEFAULT_APP_ID,
 						}
 					},
@@ -76,7 +76,7 @@ export const load = async ({ url }) => {
 							app_role_assignment: {
 								create: {
 									id: 1,
-									member_id: 1,
+									member_id: DEFAULT_APP_ID,
 									
 								}
 							}
@@ -88,7 +88,7 @@ export const load = async ({ url }) => {
 					name: 'DeAuth',
 					member: {
 						create: {
-							id: 1,
+							id: DEFAULT_APP_ID,
 							user_id: DEFAULT_APP_ID,
 						}
 					},
@@ -99,7 +99,7 @@ export const load = async ({ url }) => {
 								
 								create: {
 									id: 1,
-									member_id: 1,
+									member_id: DEFAULT_APP_ID,
 									
 								}
 							}

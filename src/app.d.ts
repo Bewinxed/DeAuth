@@ -17,7 +17,7 @@ declare global {
 			impersonated_by_id?: string;
 		};
 		type DatabaseSessionAttributes = {
-			provider_id: string;
+			provider_account_id: string;
 			access_token: string;
 			auth_request_id: number;
 			application_id: string;
