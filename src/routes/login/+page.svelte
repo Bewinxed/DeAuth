@@ -80,13 +80,13 @@
 >
 	<div class="relative h-20 w-80">
 		<h1
-			class="absolute left-0 top-0 z-10 bg-gradient-to-br from-solanapurple via-solanablue to-solanagreen bg-clip-text font-sans text-[5rem] font-black text-transparent text-white shadow-primary drop-shadow-lg"
+			class="absolute left-0 top-0 z-10 bg-gradient-to-br from-solanapurple via-solanablue to-solanagreen bg-clip-text font-display text-[5rem] font-black text-transparent text-white shadow-primary drop-shadow-lg"
 			style="transform: translate(${x * 0.01}px, ${y * 0.01}px);"
 		>
 			DeAuth
 		</h1>
 		<h1
-			class="absolute left-0.5 top-0 z-10 font-sans text-[4.9rem] font-black text-white drop-shadow-glow-solanablue"
+			class="absolute left-0.5 top-0 z-10 font-display text-[4.9rem] font-black text-white drop-shadow-glow-solanablue"
 			style="transform: translate(${x * 0.01}px, ${y * 0.01}px);"
 		>
 			DeAuth
@@ -96,12 +96,12 @@
 		<h1
 			class="absolute left-0 top-0 z-10 bg-gradient-to-br from-solanapurple via-solanablue to-solanagreen bg-clip-text text-center font-sans text-xl font-black text-transparent text-white shadow-primary drop-shadow-lg"
 		>
-			We'll log them in, you take care of the rest
+			Your secure portal to web3
 		</h1>
 		<h1
 			class="absolute left-0 top-0 z-10 text-center font-sans text-xl font-black text-white drop-shadow-glow-solanablue"
 		>
-			We'll log them in, you take care of the rest
+			Your secure portal to web3
 		</h1>
 	</div>
 	<div
@@ -114,7 +114,7 @@
 			<h1 class="mb-4 font-sans text-2xl font-bold">Welcome back</h1>
 			<PromiseButton
 				class="btn btn-neutral"
-				icon="akar-icons:github-fill"
+				icon="formkit:solana"
 				promise="{async () => {
 					await fetch('/api/login/solana', {}).then(async (res) => {
 						if (res.ok) {
@@ -123,7 +123,6 @@
 					});
 				}}"
 			>
-				
 				Sign in with Solana</PromiseButton
 			>
 			<PromiseButton
@@ -137,7 +136,6 @@
 					});
 				}}"
 			>
-				
 				Sign in with Discord</PromiseButton
 			>
 		</div>
