@@ -18,7 +18,7 @@
 		transition:fly|local="{{ y: -50 }}"
 	>
 		<Collapsible
-			btn_classes="{org_active ? 'bg-base-200' : ''}"
+			btn_classes="{org_active ? 'bg-base-100' : ''}"
 			class="rounded-[inherit] hover:bg-[--bc]"
 			open="{org_active}"
 		>
@@ -51,7 +51,7 @@
 					<!-- <div
 						class="place-content-start place-items-start rounded-xl border border-gray-300 shadow-inner"
 					> -->
-					<div class="md:shadow-inner rounded-2xl p-0.5">
+					<div class="md:shadow-inner border rounded-2xl ">
 						{#each org?.applications as application (application.id)}
 							{@const app_active = application.id === $page.params.app_id}
 							<div
@@ -61,7 +61,7 @@
 								transition:fly|local="{{ y: -50 }}"
 							>
 								<Collapsible
-									btn_classes="{app_active ? 'bg-base-200' : ''}"
+									btn_classes="{app_active ? 'bg-base-100' : ''}"
 									class="rounded-[inherit] hover:bg-[--bc] "
 									open="{app_active}"
 								>
@@ -74,7 +74,7 @@
 											{application.name}
 										</AutoHiddenIcon>
 									</svelte:fragment>
-									<div class="rounded-b-xl border shadow-inner">
+									<div class="rounded-b-xl shadow-inner">
 										<AutoHiddenIcon
 											icon="carbon:rule"
 											href="/app/orgs/{org.id}/apps/{application.id}#auth-rules"

@@ -11,42 +11,43 @@
 	import InviteUser from './InviteUser.svelte';
 	import ModalButton from './ModalButton.svelte';
 	import Secrets from './Secrets.svelte';
+	import AnimatedAnchor from 'src/lib/components/AnimatedAnchor.svelte';
 	const svetch = get_svetch();
 	const application = getApplication();
 </script>
 
 <div class="p-4">
 	<div class="flex flex-wrap justify-start gap-4 p-4">
-		<a
+		<AnimatedAnchor
 			href="{$page.url.pathname}/sessions"
-			class="btn btn-outline"
+			class="btn btn-outline chonk"
 		>
 			<Icon
 				icon="carbon:cloud-logging"
 				class="inline"
 			/>
 			<span class="ml-2">Session Management</span>
-		</a>
-		<a
+		</AnimatedAnchor>
+		<AnimatedAnchor
 			href="{$page.url.pathname}/access_control"
-			class="btn btn-outline"
+			class="btn btn-outline chonk"
 		>
 			<Icon
 				icon="carbon:network-admin-control"
 				class="inline"
 			/>
 			<span class="ml-2">Access Control</span>
-		</a>
-		<a
+		</AnimatedAnchor>
+		<AnimatedAnchor
 			href="{$page.url.pathname}/members"
-			class="btn btn-outline"
+			class="btn btn-outline chonk"
 		>
 			<Icon
 				icon="carbon:user"
 				class="inline"
 			/>
 			<span class="ml-2">Members</span>
-		</a>
+		</AnimatedAnchor>
 		<!-- invite users -->
 		<ModalButton
 			icon="carbon:user"

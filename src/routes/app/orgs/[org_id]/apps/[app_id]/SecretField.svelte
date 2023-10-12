@@ -100,7 +100,7 @@
 			type="text"
 			name="{id}"
 			placeholder=""
-			class="input-disabled h-full w-full truncate rounded-md border bg-base-200 p-2 pr-6 font-[monospace] text-sm shadow-inner transition-all"
+			class="input-disabled h-full w-full truncate rounded-md border bg-base-100 p-2 pr-6 font-[monospace] text-sm shadow-inner transition-all"
 			bind:value="{visible_value}"
 		/>
 	</div>
@@ -108,7 +108,7 @@
 		<div transition:slide="{{ axis: 'x' }}">
 			<button
 				use:clickToCopy="{`#${id}`}"
-				class="btn btn-neutral btn-outline join-item"
+				class="btn chonk btn-neutral btn-outline join-item"
 				on:blur="{async (e) => {
 					const target = e.currentTarget;
 
@@ -134,7 +134,7 @@
 
 	<PromiseButton
 		icon="carbon:recycle"
-		class="btn btn-outline join-item w-full"
+		class="btn chonk btn-outline join-item w-full"
 		promise="{renew_secret}"
 	></PromiseButton>
 
@@ -149,6 +149,6 @@
 				await reveal_secret();
 			}
 		}}"
-		class="btn btn-neutral btn-outline join-item"
+		class="btn chonk btn-neutral btn-outline join-item"
 	></PromiseButton>
 </div>

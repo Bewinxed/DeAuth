@@ -7,6 +7,9 @@
 	export let required = false;
 	export let hidden_fields: (keyof T)[] = [];
 	export let required_fields: (keyof T)[] = required ? object_keys(object) : [];
+	export let type_overrides: Record<keyof T, string> = {}
+	export let button = false;
+	export let button_text = '';
 
 	export function object_keys<T>(obj: T) {
 		// @ts-ignore
@@ -34,6 +37,7 @@
 
 {#each form as { name, type, value } (name)}
 	{@const string_name = name.toString()}
+	
 	{#if type === 'string'}
 		<div class="form-control w-full max-w-sm">
 			<label
@@ -49,10 +53,10 @@
 			<input
 				class:hidden
 				required="{required_fields.includes(name)}"
-				type="text"
+				type="{type_overrides[name] ?? type}"
 				class="input input-bordered w-full max-w-sm"
 				name="{string_name}"
-				bind:value
+				value
 			/>
 		</div>
 	{:else if type === 'number'}
@@ -80,7 +84,9 @@
 				class="label"
 				for="{string_name}"
 			>
-				<span class="label-text capitalize">{string_name.replaceAll('_', ' ')}</span></label
+				<span class="label-text capitalize"
+					>{string_name.replaceAll('_', ' ')}</span
+				></label
 			>
 			<input
 				class:hidden
@@ -98,7 +104,9 @@
 				class="label"
 				for="{string_name}"
 			>
-				<span class="label-text capitalize">{string_name.replaceAll('_', ' ')}</span></label
+				<span class="label-text capitalize"
+					>{string_name.replaceAll('_', ' ')}</span
+				></label
 			>
 			class:hidden
 			<input
@@ -134,6 +142,13 @@
 		fields="{hidden_fields}"
 		hidden
 	/>
+{/if}
+{#if button}
+	<div class="modal-action">
+		<button class="chonk btn btn-primary btn-wide">
+			{button_text}
+		</button>
+	</div>
 {/if}
 
 <style>

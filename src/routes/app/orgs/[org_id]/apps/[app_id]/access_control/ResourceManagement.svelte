@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import PrettyIcon from '$components/PrettyIcon.svelte';
+	import figure from '$components/PrettyIcon.svelte';
 	import { getApplication } from '$components/data_contexts';
 	import Icon from '@iconify/svelte';
 	import type { Prisma } from '@prisma/client';
@@ -11,7 +11,10 @@
 	import { crud_icons, promise_toast } from 'src/lib/utils/ui_helpers';
 	import toast from 'svelte-french-toast';
 	import { flip } from 'svelte/animate';
-	import { fly } from 'svelte/transition';
+	import { crossfade, fly, scale } from 'svelte/transition';
+	import ModalButton from '../ModalButton.svelte';
+	import AutoForm from 'src/lib/components/AutoForm.svelte';
+	const [send, receive] = crossfade({ ...fly, duration: 125 });
 	export let resources: Prisma.AppResourcesGetPayload<{
 		include: {
 			permissions: true;
@@ -23,39 +26,63 @@
 		};
 	}>[];
 
-	let create_resource = false;
-
 	const application = getApplication();
 
-	const blank_resource: (typeof resources)[number] = {
-		id: 0,
-		created_at: new Date(),
-		updated_at: new Date(),
-		key: '',
-		description: '',
-		application_id: $application.id,
-		modified_by_user_id: $page.data.session.user.id,
-		permissions: []
-	};
+	async function group_role_permissions_by_resource(
+		role: (typeof roles)[number]
+	) {
+		// for the role, group role => list of resources => list of permission that the role has for that resource
+		const role_permission_map = new Map<
+			(typeof resources)[number],
+			(typeof role)['assigned_permissions']
+		>();
 
-	async function groupRolePermissionsByResource(role: (typeof roles)[number]) {
-		// group assigned permissions by resource
-		return role.assigned_permissions.reduce(
-			(acc, permission) => {
-				const resource = resources.find((r) =>
-					r.permissions.find((p) => p.id === permission.permission_id)
-				);
-				if (resource) {
-					if (acc[resource.id]) {
-						acc[resource.id].push(permission);
-					} else {
-						acc[resource.id] = [permission];
-					}
-				}
-				return acc;
-			},
-			{} as Record<number, (typeof role)['assigned_permissions']>
+		const permissionResourceMap = new Map(
+			resources.flatMap((r) => r.permissions.map((p) => [p.id, r]))
 		);
+
+		for (const permission of role.assigned_permissions) {
+			const resource = permissionResourceMap.get(permission.permission_id);
+			if (resource) {
+				if (role_permission_map.has(resource)) {
+					role_permission_map.set(resource, [
+						...role_permission_map.get(resource)!,
+						permission
+					]);
+				} else {
+					role_permission_map.set(resource, [permission]);
+				}
+			}
+		}
+		return role_permission_map;
+	}
+
+	async function updateRolePermissions(
+		role_id: number,
+		permissions: (typeof resources)[number]['permissions']
+	) {
+		await svetch
+			.put('app/orgs/:org_id/apps/:app_id/app_roles/:app_role_id/permissions', {
+				path: {
+					app_id: $page.params.app_id,
+					org_id: $page.params.org_id,
+					app_role_id: role_id.toString()
+				},
+				body: permissions
+			})
+			.then((res) => {
+				if (res.data) {
+					roles = roles.map((role) => {
+						if (res.data && role.id === role_id) {
+							role.assigned_permissions = [
+								...role.assigned_permissions,
+								...res.data
+							];
+						}
+						return role;
+					});
+				} else throw res.error?.message;
+			});
 	}
 
 	async function handleDropResourceOnRole(
@@ -202,18 +229,56 @@
 	>
 </div>
 <div class="flex flex-col gap-2 sm:flex-row">
-	<ul class="menu menu-sm w-full rounded-lg border bg-base-100 shadow">
-		<h1 class="border-b text-lg font-semibold">
-			<Icon
-				icon="carbon:software-resource"
-				class=" inline"
-			/>
-			Resources
-		</h1>
+	<ul class="menu menu-sm w-full rounded-lg border bg-base-100 shadow-md">
+		<div
+			class="place-contents-center flex place-items-center justify-between gap-2 border-b p-1 text-lg font-semibold"
+		>
+			<h1 class="place-contents-center flex place-items-center gap-[inherit]">
+				<Icon
+					icon="carbon:software-resource"
+					class=" inline"
+				/>
+				Resources
+			</h1>
+			<ModalButton
+				icon="carbon:link"
+				item_name="resource"
+				tooltip="create a new resource"
+				class="btn btn-square btn-xs"
+			>
+				<Icon
+					icon="carbon:add"
+					class="inline"
+				/>
+				<svelte:fragment slot="modal">
+					<form on:submit="{handleSubmit}">
+						<AutoForm
+							required
+							fields="{['key', 'description']}"
+							hidden_fields="{['application_id']}"
+							object="{{
+								id: 0,
+								created_at: new Date(),
+								updated_at: new Date(),
+								key: '',
+								description: '',
+								application_id: $application.id,
+								modified_by_user_id: $page.data.session.user.id,
+								permissions: []
+							}}"
+						/>
+						<div class="modal-action">
+							<button class="btn btn-primary"> Edit </button>
+						</div>
+					</form>
+				</svelte:fragment>
+			</ModalButton>
+		</div>
+
 		{#each resources as resource}
 			<li class="justify-start">
 				<div
-					class="justify-start"
+					class="justify-start gap-1 px-1"
 					role="listitem"
 					draggable="{true}"
 					on:dragstart="{(e) => {
@@ -226,97 +291,108 @@
 						console.log('set to link');
 					}}"
 				>
-				<ContextMenu
-				hover
-				title="Add Operation"
-				class="btn btn-ghost btn-xs "
-			>
-				<Icon
-					icon="carbon:overflow-menu-horizontal"
-					class="h-4 w-4"
-				></Icon>
-				<svelte:fragment slot="menu">
-					{#each object_entries(crud_icons).filter(([key, icon]) => !resource.permissions.find((p) => p.operation === key)) as [key, icon]}
-						<li>
-							<button
-								class="capitalize"
-								on:click="{async () => {
-									await svetch
-										.put(
-											'app/orgs/:org_id/apps/:app_id/resources/:resource_id',
-											{
+					<ContextMenu
+						hover
+						title="Add Operation"
+						class="btn btn-ghost btn-xs "
+					>
+						<Icon
+							icon="carbon:overflow-menu-horizontal"
+							class="h-4 w-4"
+						></Icon>
+						<svelte:fragment slot="menu">
+							{#each object_entries(crud_icons).filter(([key, icon]) => !resource.permissions.find((p) => p.operation === key)) as [key, icon] (key)}
+								<li
+									animate:flip
+									out:send="{{ key: `${resource.id}-${key}` }}"
+								>
+									<button
+										class="capitalize"
+										on:click="{async () => {
+											await svetch
+												.put(
+													'app/orgs/:org_id/apps/:app_id/resources/:resource_id',
+													{
+														path: {
+															app_id: $page.params.app_id,
+															org_id: $page.params.org_id,
+															resource_id: resource.id.toString()
+														},
+														body: {
+															operation: key
+														}
+													}
+												)
+												.then((res) => {
+													if (res.data) {
+														resources = resources.map((r) => {
+															if (res.data && r.id === res.data.resource_id) {
+																r.permissions = [...r.permissions, res.data];
+															}
+															return r;
+														});
+													}
+												});
+										}}"
+									>
+										<figure class="btn btn-xs">
+											<Icon
+												{icon}
+												class="h-4 w-4"
+											></Icon>
+										</figure>
+										{key}
+									</button>
+								</li>
+							{/each}
+							<li class="mt-1 border-t border-t-error text-error">
+								<button
+									class="rounded-t-none"
+									on:click="{async () => {
+										await svetch
+											.delete('app/orgs/:org_id/apps/:app_id/resources', {
 												path: {
 													app_id: $page.params.app_id,
-													org_id: $page.params.org_id,
-													resource_id: resource.id.toString()
+													org_id: $page.params.org_id
 												},
-												body: {
-													operation: key
+												query: {
+													id: resource.id.toString()
 												}
-											}
-										)
-										.then((res) => {
-											if (res.data) {
-												resources = resources.map((r) => {
-													if (res.data && r.id === res.data.resource_id) {
-														r.permissions = [...r.permissions, res.data];
-													}
-													return r;
-												});
-											}
-										});
-								}}"
-							>
-								<PrettyIcon
-									size="small"
-									{icon}
-								></PrettyIcon>
-								{key}
-							</button>
-						</li>
-					{/each}
-					<li class="text-error">
-						<button
-					class=""
-					on:click="{async () => {
-						await svetch
-							.delete('app/orgs/:org_id/apps/:app_id/resources', {
-								path: {
-									app_id: $page.params.app_id,
-									org_id: $page.params.org_id
-								},
-								query: {
-									id: resource.id.toString()
-								}
-							})
-							.then((res) => {
-								if (res.data) {
-									resources = resources.filter((r) => r.id !== resource.id);
-								}
-							});
-					}}"
-				>
-				<Icon
-				icon="carbon:trash-can"
-				class="h-4 w-4"
-			/>
-			Delete
-				</button>
-					</li>
-				</svelte:fragment>
-			</ContextMenu>
+											})
+											.then((res) => {
+												if (res.data) {
+													resources = resources.filter(
+														(r) => r.id !== resource.id
+													);
+												}
+											});
+									}}"
+								>
+									<Icon
+										icon="carbon:trash-can"
+										class="h-4 w-4"
+									/>
+									Delete
+								</button>
+							</li>
+						</svelte:fragment>
+					</ContextMenu>
 					<a
 						class="inline-flex place-content-center place-items-center gap-1"
 						href="{void 0}"
 					>
 						{resource.key}
 					</a>
-					
 				</div>
 
 				<ul>
 					{#each resource.permissions as permission, i (`permission-${permission.id}`)}
-						<li class="justify-start">
+						<li
+							animate:flip
+							out:send="{{ key: `${resource.id}-${permission.operation}` }}"
+							in:receive="{{ key: `${resource.id}-${permission.operation}` }}"
+							class="justify-start"
+						>
 							<a
 								draggable="{true}"
 								on:dragstart="{(e) => {
@@ -329,13 +405,13 @@
 									);
 									if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
 								}}"
-								class="inline-flex w-32 justify-start gap-1"
+								class="inline-flex w-32 justify-start gap-1 px-1"
 								href="{void 0}"
 							>
 								<ContextMenu
 									hover
-									title="Edit Resource Permission"
-									class="btn btn-ghost btn-xs"
+									title="Resource"
+									class="btn btn-ghost btn-xs "
 								>
 									<Icon
 										icon="carbon:overflow-menu-horizontal"
@@ -399,9 +475,7 @@
 									</svelte:fragment>
 								</ContextMenu>
 								<div>
-									<div
-										class="inline-flex place-content-center place-items-center gap-1"
-									>
+									<div class="badge badge-outline badge-md gap-1 font-mono">
 										<Icon
 											icon="{crud_icons[permission.operation]}"
 											class="inline"
@@ -416,18 +490,79 @@
 			</li>
 		{/each}
 	</ul>
-	<ul class="menu menu-sm w-full rounded-lg border bg-base-100 shadow">
-		<h1 class="border-b text-lg font-semibold">
-			<Icon
-				icon="carbon:user-role"
-				class=" inline"
-			/>
-			Roles
-		</h1>
-		{#each roles as role}
-			{#await groupRolePermissionsByResource(role) then role_permissions_groupby_resource}
+
+	<ul class="menu menu-sm w-full rounded-lg border bg-base-100 shadow-md">
+		<div
+			class="place-contents-center flex place-items-center justify-between gap-2 border-b p-1 text-lg font-semibold"
+		>
+			<h1 class="place-contents-center flex place-items-center gap-[inherit]">
+				<Icon
+					icon="carbon:user-role"
+					class=" inline"
+				/>
+				Roles
+			</h1>
+			<ModalButton
+				icon="carbon:link"
+				item_name="role"
+				class="btn btn-square btn-xs"
+			>
+				<svelte:fragment slot="modal">
+					<form
+						class="form-control gap-4"
+						on:submit|preventDefault="{async (e) => {
+							const form = e.currentTarget;
+							if (!(form instanceof HTMLFormElement)) return;
+							const formData = new FormData(form);
+							const name = formData.get('name');
+							if (!name) return;
+							await svetch
+								.put('app/orgs/:org_id/apps/:app_id/app_roles', {
+									path: {
+										app_id: $page.params.app_id,
+										org_id: $page.params.org_id
+									},
+									body: {
+										name: name.toString()
+									}
+								})
+								.then((res) => {
+									if (res.data) {
+										$application.app_role = [
+											...$application.app_role,
+											{
+												...res.data,
+												app_role_assignment: [],
+												assigned_permissions: []
+											}
+										];
+									}
+								});
+						}}"
+					>
+						<AutoForm
+							object="{{
+								name: '',
+								default_for_new_member: false,
+								application_id: $page.params.app_id
+							}}"
+							fields="{['name', 'default_for_new_member']}"
+							hidden_fields="{['application_id']}"
+						></AutoForm>
+						<button class="btn btn-primary"> Add Redirect </button>
+					</form>
+				</svelte:fragment>
+				<Icon
+					icon="carbon:add"
+					class="inline"
+				/>
+			</ModalButton>
+		</div>
+		{#each roles as role, i}
+			{#await group_role_permissions_by_resource(role) then role_permissions_groupby_resource}
 				<li class="transition-colors aria-[dropEffect=link]:hover">
 					<div
+						class="justify-start gap-1 px-1"
 						role="listitem"
 						on:dragenter="{(e) => {
 							// prevent pointer events on child elements
@@ -445,203 +580,148 @@
 							e.currentTarget.classList.remove('btn-neutral');
 							e.currentTarget.classList.remove('text-neutral-contents');
 						}}"
-						on:drop|preventDefault="{(e) => {
+						on:drop|preventDefault="{async (e) => {
 							if (e.dataTransfer) {
-								console.log(e.dataTransfer);
 								const { action, data } = JSON.parse(
 									e.dataTransfer.getData('text/plain')
 								);
-								console.log(data);
-								if (action === 'resource_to_role') {
-									promise_toast(handleDropResourceOnRole(data, role.id), {
-										loading: 'Adding resource to role...',
-										success: 'Resource added to role'
-									});
-								} else if (action === 'permission_to_role') {
-									promise_toast(handleDropPermissionOnRole(data, role.id), {
-										loading: 'Adding permission to role...',
-										success: 'Permission added to role'
-									});
-								}
+								const permissions =
+									action === 'resource_to_role' ? data.permissions : [data];
+								await promise_toast(
+									updateRolePermissions(role.id, permissions),
+									{
+										loading: `Adding ${
+											action === 'resource_to_role' ? 'resource' : 'permission'
+										} to role...`,
+										success: `${
+											action === 'resource_to_role' ? 'Resource' : 'Permission'
+										} added to role`
+									}
+								);
 							}
 							e.dataTransfer?.clearData();
 							e.currentTarget.classList.remove('btn-neutral');
 							e.currentTarget.classList.remove('text-neutral-contents');
 						}}"
 					>
-						<a
-							class="inline-flex place-content-center place-items-center gap-1"
-							href="{void 0}"
+						<ContextMenu
+							hover
+							title="Role"
+							class="btn btn-ghost btn-xs "
 						>
-							<button
-								class="btn btn-square btn-ghost btn-xs p-0"
-								on:click="{async () => {
-									toast.promise(
-										svetch
-											.delete('app/orgs/:org_id/apps/:app_id/app_roles', {
-												path: {
-													app_id: $page.params.app_id,
-													org_id: $page.params.org_id
-												},
-												query: {
-													id: role.id.toString()
-												}
-											})
-											.then((res) => {
-												if (res.data) {
-													roles = roles.filter((r) => r.id !== role.id);
-												} else throw res.error;
-											}),
-										{
-											loading: 'Deleting role...',
-											success: 'Role deleted',
-											error: 'Failed to delete role'
-										}
-									);
-								}}"
-							>
-								<Icon
-									icon="carbon:close"
-									class="h-4 w-4"
-								></Icon>
-							</button>
-							{role.name}
-						</a>
-						<div class="dropdown dropdown-bottom w-fit">
-							<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-							<!-- svelte-ignore a11y-label-has-associated-control -->
-							<label
-								tabindex="0"
-								class="btn btn-square btn-outline btn-xs m-1"
-								><Icon
-									icon="carbon:add"
-									class="h-4 w-4"
-								></Icon></label
-							>
-							<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-							<ul
-								tabindex="0"
-								class="menu dropdown-content rounded-box z-[1] w-52 bg-base-100 p-2 shadow"
-							>
+							<Icon
+								icon="carbon:overflow-menu-horizontal"
+								class="h-4 w-4"
+							></Icon>
+							<svelte:fragment slot="menu">
 								<li>
-									<a
-										class="border-b"
-										href="{void 0}"
-									>
-										Add Operation
+									<a href="{void 0}">
+										<Icon
+											icon="carbon:edit"
+											class="h-4 w-4"
+										/>
+										Edit
 									</a>
 								</li>
-								<!-- {#each object_entries(crud_icons).filter(([key, icon]) => !role.assigned_permissions.find((p) => p.operation === key)) as [key, icon]}
-										<li>
-											<button
-												on:click="{async () => {
-													await svetch
-														.put(
-															'app/orgs/:org_id/apps/:app_id/resources/:resource_id',
-															{
-																path: {
-																	app_id: $page.params.app_id,
-																	org_id: $page.params.org_id,
-																	resource_id: role.id.toString()
-																},
-																body: {
-																	operation: key
-																}
-															}
-														)
-														.then((res) => {
-															if (res.data) {
-																resources = resources.map((r) => {
-																	if (
-																		res.data &&
-																		r.id === res.data.resource_id
-																	) {
-																		r.permissions = [
-																			...r.permissions,
-																			res.data
-																		];
-																	}
-																	return r;
-																});
-															}
-														});
-												}}"
-											>
-												<PrettyIcon
-													size="small"
-													{icon}
-												></PrettyIcon>
-												{key}
-											</button>
-										</li>
-									{/each} -->
-							</ul>
-						</div>
+								<li class="text-error">
+									<button
+										class="capitalize"
+										on:click="{async () => {
+											await svetch
+												.delete('app/orgs/:org_id/apps/:app_id/app_roles', {
+													path: {
+														app_id: $page.params.app_id,
+														org_id: $page.params.org_id
+													},
+													query: {
+														id: role.id.toString()
+													}
+												})
+												.then((res) => {
+													if (res.data) {
+														roles = roles.filter((r) => r.id !== role.id);
+													} else throw res.error;
+												});
+										}}"
+									>
+										<Icon
+											icon="carbon:trash-can"
+											class="h-4 w-4"
+										/>
+										Delete
+									</button>
+								</li></svelte:fragment
+							>
+						</ContextMenu>
+						{role.name}
 					</div>
 					<ul>
-						{#each object_entries(role_permissions_groupby_resource) as [resource_id, role_permissions] (`resource-${resource_id}`)}
-							{@const resource = resources.find(
-								(resource) => resource.id === parseInt(resource_id)
-							)}
-							<li
-								animate:flip="{{
-									duration: 300
-								}}"
-								transition:fly
-								class="justify-start"
-							>
+						{#each role_permissions_groupby_resource.entries() as [resource, role_permissions] (`resource-${resource.id}`)}
+							<li class="justify-start">
 								{#if resource}
-									<a
-										class="inline-flex justify-start gap-1"
-										href="{void 0}"
-									>
-										<div class="dropdown-bottom dropdown">
-											<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-											<!-- svelte-ignore a11y-label-has-associated-control -->
-											<label
-												tabindex="0"
-												class="btn btn-square btn-ghost btn-xs m-1"
-												><Icon
-													icon="carbon:overflow-menu-horizontal"
-													class="h-4 w-4"
-												></Icon></label
-											>
-											<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-											<ul
-												tabindex="0"
-												class="menu dropdown-content rounded-box z-[1] w-fit bg-base-100 p-2 shadow"
-											>
-												<li class="place-content-start place-items-center">
+									<a href="{void 0}">
+										<ContextMenu
+											hover
+											title="{role.name}:{resource.key}"
+											class="btn btn-ghost btn-xs "
+										>
+											<Icon
+												icon="carbon:overflow-menu-horizontal"
+												class="h-4 w-4"
+											></Icon>
+											<svelte:fragment slot="menu">
+												<li>
+													<a href="{void 0}">
+														<Icon
+															icon="carbon:edit"
+															class="h-4 w-4"
+														/>
+														Edit
+													</a>
+												</li>
+												<li class="text-error">
 													<button
-														class="btn btn-ghost btn-xs p-0 px-2 font-serif font-normal capitalize"
+														class="capitalize"
 														on:click="{async () => {
-															await svetch
-																.delete(
-																	'app/orgs/:org_id/apps/:app_id/app_roles/:app_role_id/permissions',
-																	{
-																		path: {
-																			app_id: $page.params.app_id,
-																			org_id: $page.params.org_id,
-																			app_role_id: role.id.toString()
-																		},
-																		body: role.assigned_permissions.map(
-																			(p) => p.id
-																		)
-																	}
-																)
-																.then((res) => {
-																	if (res.data) {
-																		roles = roles.map((r) => {
-																			if (res.data && r.id === role.id) {
-																				r.assigned_permissions = [];
-																			}
-																			return r;
-																		});
-																	} else {
-																		toast.error(res.error.message);
-																		throw res.error;
-																	}
-																});
+															const permissions_to_delete =
+																role_permissions.map((p) => p.id);
+															await promise_toast(
+																svetch
+																	.delete(
+																		'app/orgs/:org_id/apps/:app_id/app_roles/:app_role_id/permissions',
+																		{
+																			path: {
+																				app_id: $page.params.app_id,
+																				org_id: $page.params.org_id,
+																				app_role_id: role.id.toString()
+																			},
+																			body: permissions_to_delete
+																		}
+																	)
+																	.then((res) => {
+																		if (res.data) {
+																			roles = roles.map((r) => {
+																				if (res.data && r.id === role.id) {
+																					r.assigned_permissions =
+																						r.assigned_permissions.filter(
+																							(p) =>
+																								!permissions_to_delete.includes(
+																									p.id
+																								)
+																						);
+																				}
+																				return r;
+																			});
+																		} else {
+																			toast.error(res.error.message);
+																			throw res.error;
+																		}
+																	}),
+																{
+																	loading: 'Deleting permissions...',
+																	success: 'Permissions deleted'
+																}
+															);
 														}}"
 													>
 														<Icon
@@ -651,46 +731,56 @@
 														Delete
 													</button>
 												</li>
-											</ul>
-										</div>
+											</svelte:fragment>
+										</ContextMenu>
+
 										{resource.key}
 									</a>
+
 									<ul>
-										{#each role_permissions as permission (`role-permission-${permission.id}`)}
+										{#each role_permissions as permission (`${role.id}-${resource.id}-${permission.permission_id}`)}
 											{@const operation_permission = resource.permissions.find(
 												(p) => p.id === permission.permission_id
 											)}
 
 											<li
 												animate:flip
-												transition:fly
+												in:receive="{{
+													key: `${resource.id}-${operation_permission?.operation}`
+												}}"
+												out:send="{{
+													key: `${resource.id}-${operation_permission?.operation}`
+												}}"
 											>
 												{#if operation_permission}
 													<a
 														href="{void 0}"
 														class="justify-start"
 													>
-														<div class="dropdown-bottom dropdown">
-															<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-															<!-- svelte-ignore a11y-label-has-associated-control -->
-															<label
-																tabindex="0"
-																class="btn btn-square btn-ghost btn-xs m-1"
-																><Icon
-																	icon="carbon:overflow-menu-horizontal"
-																	class="h-4 w-4"
-																></Icon></label
-															>
-															<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-															<ul
-																tabindex="0"
-																class="menu dropdown-content rounded-box z-[1] w-fit bg-base-100 p-2 shadow"
-															>
-																<li
-																	class="place-content-start place-items-center"
-																>
+														<ContextMenu
+															hover
+															title="{role.name}:{resource.key}:{operation_permission.operation}"
+															class="btn btn-ghost btn-xs "
+														>
+															<Icon
+																icon="carbon:overflow-menu-horizontal"
+																class="h-4 w-4"
+															></Icon>
+
+															<svelte:fragment slot="menu">
+																<li>
+																	<a href="{void 0}">
+																		<Icon
+																			icon="carbon:edit"
+																			class="h-4 w-4"
+																		/>
+																		Edit
+																	</a>
+
+																</li>
+																<li class="text-error">
 																	<button
-																		class="btn btn-ghost btn-xs p-0 px-2 font-serif font-normal capitalize"
+																		class="capitalize"
 																		on:click="{async () => {
 																			await svetch
 																				.delete(
@@ -734,9 +824,12 @@
 																		Delete
 																	</button>
 																</li>
-															</ul>
-														</div>
-														<span class="badge badge-sm gap-1 font-mono">
+																
+															</svelte:fragment>
+															</ContextMenu>
+														<span
+															class="badge badge-outline badge-md gap-1 font-mono"
+														>
 															<Icon
 																icon="{crud_icons[
 																	operation_permission.operation

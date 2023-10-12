@@ -82,7 +82,11 @@ export const DELETE = async ({ locals, request, params }) => {
 
 	await is_authorized(session, params.org_id, params.app_id);
 
-	const payload = await request.json() as Array<number>;
+	const payload = await request.json() as ((Prisma.AppPermissionAssignmentGetPayload<{
+		select: {
+			id: true;
+		}
+	}>)['id'])[];
 
 	if (!payload || payload.length === 0) {
 		throw error(400, 'Missing ids');
@@ -95,6 +99,10 @@ export const DELETE = async ({ locals, request, params }) => {
 			}
 		}
 	});
+
+	if (resource_permission.count === 0 ){
+		throw error(404, 'No Changes');
+	}
 	return json(resource_permission);
 };
 

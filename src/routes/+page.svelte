@@ -107,9 +107,9 @@
 	bind:scrollY
 />
 
-<div
+<div data-theme={cta_hovered ? 'dark' : ''}
 	class:invert="{cta_hovered}"
-	class="w-full bg-base-100 transition-all duration-500"
+	class="w-full  transition-all duration-500"
 >
 	<main
 		class="container mx-auto my-auto flex w-full snap-y snap-mandatory flex-col gap-8 p-4"
@@ -177,7 +177,7 @@
 									});
 								}
 							}}"
-							class="btn btn-neutral btn-lg animate-float rounded-full drop-shadow-glow-solanablue font-display"
+							class="btn chonk btn-primary btn-lg btn-wide animate-float rounded-full hover:drop-shadow-glow-solanablue font-display"
 						>
 							YES 😭</button
 						>
@@ -203,7 +203,7 @@
 							});
 						}
 					}}"
-					class="btn btn-circle btn-neutral btn-outline animate-float rounded-full"
+					class="btn btn-circle chonk btn-neutral btn-outline animate-float rounded-full"
 				>
 					<Icon
 						icon="carbon:chevron-down"
@@ -233,7 +233,7 @@
 								behavior: 'smooth'
 							});
 						}}"
-						class="btn btn-circle btn-neutral btn-outline animate-float rounded-full"
+						class="btn btn-circle btn-neutral chonk btn-outline animate-float rounded-full"
 					>
 						<Icon
 							icon="carbon:chevron-up"
@@ -242,7 +242,7 @@
 					</button>
 				</div>
 				<span
-					class="text-center font-display text-[5rem] font-semibold sm:text-[10rem] md:text-[12rem] lg:text-[14rem] xl:text-[20rem]"
+					class="text-center font-display text-[5rem] font-semibold sm:text-[9rem] md:text-[12rem] lg:text-[14rem] xl:text-[16rem]"
 					>Features.</span
 				>
 				<div class="h-fit rounded-full px-8 py-4 text-base-content underline">
@@ -490,7 +490,7 @@
 					href="/app"
 					use:hoverAction
 					id="cta"
-					class="group btn btn-outline btn-lg w-full max-w-screen-sm overflow-hidden rounded-full hover:drop-shadow-glow-solanagreen"
+					class="group btn btn-outline btn-lg w-full max-w-screen-sm overflow-hidden rounded-full hover:drop-shadow-glow-solanagreen chonk"
 				>
 					<span
 						class="text-3xl transition-transform group-hover:-translate-x-5"

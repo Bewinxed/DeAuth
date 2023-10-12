@@ -120,7 +120,7 @@
 	<aside
 		bind:this="{sidebar}"
 		transition:slide="{{ duration: 300, axis: 'x' }}"
-		class="fixed top-0 z-[9] h-full max-h-fit min-h-screen border-r-2 bg-base-100 pt-20 text-base-content {$drawer_open
+		class="fixed top-0 z-[9] h-full max-h-fit min-h-screen border-r-2 bg-gray-50 pt-20 text-base-content {$drawer_open
 			? 'w-80 @container/aside'
 			: 'w-16 @container/aside md:w-20'} transition-all duration-300"
 	>

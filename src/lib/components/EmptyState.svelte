@@ -33,7 +33,7 @@
 	</h1>
 	{#if $$slots.default}
 		<button
-			class="btn btn-primary btn-outline h-fit"
+			class="chonk btn btn-primary h-fit"
 			on:click="{() => {
 				dispatcher('create', {});
 				open = true;
@@ -58,14 +58,16 @@
 				icon="carbon:add"
 				type="submit"
 				form="{form_id}"
-				class="btn btn-primary btn-wide place-self-center justify-self-center"
+				class="chonk btn btn-primary btn-wide place-self-center justify-self-center"
 				{promise}
 				on:click="{() => {
 					dispatcher('create', {});
 					open = true;
 				}}"
 			>
-				Create {item_name}
+				<span>
+					Create {item_name}
+				</span>
 			</PromiseButton>
 		</div>
 	{/if}</Modal

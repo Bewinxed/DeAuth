@@ -3,6 +3,7 @@
 	import { fly } from 'svelte/transition';
 	import PrettyIcon from './PrettyIcon.svelte';
 	import { tweened } from 'svelte/motion';
+	import { Toaster } from 'svelte-french-toast';
 	export let item_name: string;
 	export let icon: string;
 	export let title: string | undefined = undefined;
@@ -105,6 +106,7 @@
 	bind:this="{modal}"
 	aria-hidden="true"
 >
+	<Toaster />
 	{#if open}
 		<div
 			use:swipeToClose

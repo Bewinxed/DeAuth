@@ -3,24 +3,45 @@ export default {
 	daisyui: {
 		themes: [
 			{
-				mytheme: {
-					primary: '#9945ff',
-
-					secondary: '#f59e0b',
-
-					accent: '#14f195',
-
-					neutral: '#2b3440',
-
-					'base-100': '#ffffff',
-
-					info: '#03E1FF',
-
-					success: '#36d399',
-
-					warning: '#fbbd23',
-
-					error: '#f87272'
+				flexoki: {
+					primary: '#796AC0',
+					secondary: '#da702c',
+					accent: '#ce5d97',
+					neutral: '#100f0f',
+					tx: '#100f0f',
+					'tx-muted': '#6F6E69',
+					'tx-faint': '#B7B5AC',
+					'base-100': '#FCFCFC',
+					'base-200': '#F1F1F1',
+					bg: 'FCFCFC',
+					'bg-2': '#F1F1F1',
+					ui: '#E5E5E5',
+					'ui-hover': '#D9D9D9',
+					'ui-active': '#CDCDCD',
+					info: '#3aa99f',
+					success: '#879a39',
+					warning: '#d0a215',
+					error: '#d14d41'
+				},
+				dark: {
+					primary: '#796AC0',
+					secondary: '#da702c',
+					accent: '#ce5d97',
+					neutral: '#100f0f',
+					tx: '#100f0f',
+					'tx-2': '#6F6E69',
+					'tx-3': '#B7B5AC',
+					'base-100': '#FCFCFC',
+					'base-200': '#E5E5E5',
+					bg: 'FCFCFC',
+					'bg-2': '#F1F1F1',
+					ui: '#E5E5E5',
+					'ui-2': '#D9D9D9',
+					'ui-3': '#CDCDCD',
+					info: '#3aa99f',
+					success: '#879a39',
+					warning: '#d0a215',
+					error: '#d14d41'
 				}
 			}
 		]
@@ -81,7 +102,57 @@ export default {
 				solanapurple: '#9945ff',
 				solanagreen: '#14f195',
 				solanablue: '#03E1FF',
-				oledblack: '#000'
+				oledblack: '#000',
+				black: '#100F0F',
+				base: {
+					black: '#111111', // Original: #100F0F
+					950: '#1B1B1B', // Original: #1C1B1A
+					900: '#272727', // Original: #282726
+					850: '#333333', // Original: #343331
+					800: '#3F3F3F', // Original: #403E3C
+					700: '#565656', // Original: #575653
+					600: '#6E6E6E', // Original: #6F6E69
+					500: '#868686', // Original: #878580
+					300: '#B6B6B6', // Original: #B7B5AC
+					200: '#CDCDCD', // Original: #CECDC3
+					150: '#D9D9D9', // Original: #DAD8CE
+					100: '#E5E5E5', // Original: #E6E4D9
+					50: '#F1F1F1', // Original: #F2F0E5
+					paper: '#FCFCFC' // Original: #FFFCF0
+				},
+
+				red: {
+					DEFAULT: '#AF3029',
+					light: '#D14D41'
+				},
+				orange: {
+					DEFAULT: '#BC5215',
+					light: '#DA702C'
+				},
+				yellow: {
+					DEFAULT: '#AD8301',
+					light: '#D0A215'
+				},
+				green: {
+					DEFAULT: '#66800B',
+					light: '#879A39'
+				},
+				cyan: {
+					DEFAULT: '#24837B',
+					light: '#3AA99F'
+				},
+				blue: {
+					DEFAULT: '#205EA6',
+					light: '#4385BE'
+				},
+				purple: {
+					DEFAULT: '#5E409D',
+					light: '#8B7EC8'
+				},
+				magenta: {
+					DEFAULT: '#A02F6F',
+					light: '#CE5D97'
+				}
 			},
 			boxShadow: {
 				// DEFAULT: '1.5px 1.5px 0 0 rgb(0 0 0 / 1)',

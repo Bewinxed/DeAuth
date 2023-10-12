@@ -10,6 +10,10 @@
 	import { flip } from 'svelte/animate';
 	import { fly } from 'svelte/transition';
 	import ModalButton from './ModalButton.svelte';
+	import CrudTableDivs from 'src/lib/components/CrudTableDivs.svelte';
+	import toast from 'svelte-french-toast';
+	import { promise_toast } from 'src/lib/utils/ui_helpers';
+	import AutoForm from 'src/lib/components/AutoForm.svelte';
 	const svetch = new Svetch();
 	let new_redirect: string;
 	const application = getApplication();
@@ -43,7 +47,16 @@
 					/>
 					<button
 						class="btn btn-primary"
-						on:click="{async (e) => {
+						on:click|preventDefault="{async (e) => {
+							const form = e.currentTarget.closest('form');
+							if (!(form instanceof HTMLFormElement)) return;
+							const formData = new FormData(form);
+							// check form validity
+							if (!form.checkValidity()) {
+								form.reportValidity();
+								return;
+							}
+
 							await svetch
 								.put('app/orgs/:org_id/apps/:app_id/redirects', {
 									path: {
@@ -75,127 +88,120 @@
 </header>
 <div class="p-4">
 	{#if $application.redirect_urls.length > 0}
-		<div class="flex place-content-start gap-2">
-			{#each $application.redirect_urls as redirect (redirect.id)}
-				<div
-					animate:flip
-					transition:fly
-					class="flex justify-between rounded-lg border border-b-2 px-4 py-2 shadow"
-				>
-					<span class="break-all">
-						<Icon
-							icon="carbon:link"
-							class="inline"
-						/>
-						{redirect.url}
-					</span>
-					<!-- created at -->
-					<div class="flex place-content-center place-items-center gap-2">
-						<p class="text-sm italic">
-							Created: {redirect.created_at.toLocaleString(undefined, {
-								dateStyle: 'short',
-								timeStyle: 'short'
-							})}
-						</p>
-						<div class="card-actions">
-							<PromiseButton
-								icon="carbon:trash-can"
-								square
-								class="btn btn-error btn-sm"
-								tooltip="{'delete'}"
-								promise="{async () => {
-									await svetch
-										.delete('app/orgs/:org_id/apps/:app_id/redirects', {
-											path: {
-												app_id: $page.params.app_id,
-												org_id: $page.params.org_id
-											},
-											query: {
-												id: redirect.id
-											}
-										})
-										.then((res) => {
-											if (res.data) {
-												$application.redirect_urls =
-													$application.redirect_urls.filter(
-														(r) => r.id !== redirect.id
-													);
-											}
-										});
-								}}"
-							></PromiseButton>
-							<ModalButton
-								title="Edit Redirect"
-								class="btn btn-sm"
-								tooltip="{'edit'}"
-								icon="carbon:edit"
-								item_name="redirect url"
-							>
-								<Icon
-									icon="carbon:edit"
-									class=" inline"
-								/>
-								<svelte:fragment slot="modal">
-									<form
-										class="form-control gap-4"
-										on:submit|preventDefault="{(e) => {
-											const form = e.currentTarget;
-											const formData = new FormData(form);
-											const url = formData.get('url');
-											if (!url) {
-												throw new Error('No url');
-											}
+		{@const type_overrides={
+			url: 'url'
+		}}
+		<CrudTableDivs select
+			key="id"
+			{type_overrides}
+			data="{$application.redirect_urls}"
+			config="{{
+				columns: ['created_at', 'url', 'updated_at'],
+				actions: ['create', 'update', 'delete']
+			}}"
+			on:create="{async (e) => {
+				const { data } = e.detail;
+				const url = data.url;
+				await promise_toast(
+					svetch
+						.put('app/orgs/:org_id/apps/:app_id/redirects', {
+							path: {
+								app_id: $page.params.app_id,
+								org_id: $page.params.org_id
+							},
+							body: {
+								url: url?.toString()
+							}
+						})
+						.then((res) => {
+							if (res.data) {
+								$application.redirect_urls = [
+									...$application.redirect_urls,
+									res.data
+								];
+							}
+						}),
+					{
+						loading: 'Adding Url',
+						success: 'Added Url'
+					}
+				);
+			}}"
+			on:update="{async (e) => {
+				const { data } = e.detail;
+				const url = data.url;
+				await promise_toast(
+					svetch
+						.patch('app/orgs/:org_id/apps/:app_id/redirects', {
+							path: {
+								app_id: $page.params.app_id,
+								org_id: $page.params.org_id
+							},
+							query: {
+								id: data.id
+							},
+							body: {
+								id: data.id,
+								url: url?.toString()
+							}
+						})
+						.then((res) => {
+							if (res.data) {
+								$application.redirect_urls = $application.redirect_urls.map(
+									(r) => {
+										if (r.id === data.id) {
+											return { ...r, url: data.url };
+										}
+										return r;
+									}
+								);
+							}
+						}),
+					{
+						loading: 'Updating Url',
+						success: 'Updated Url'
+					}
+				);
+			}}"
+			on:delete="{async (e) => {
+				const { data } = e.detail;
+				await promise_toast(
+					svetch
+						.delete('app/orgs/:org_id/apps/:app_id/redirects', {
+							path: {
+								app_id: $page.params.app_id,
+								org_id: $page.params.org_id
+							},
+							query: {
+								id: data.id
+							}
+						})
+						.then((res) => {
+							if (res.data) {
+								$application.redirect_urls = $application.redirect_urls.filter(
+									(r) => r.id !== data.id
+								);
+							}
+						}),
+					{
+						loading: 'Deleting Url',
+						success: 'Deleted Url'
+					}
+				);
+			}}"
+		>
+			<AutoForm
+				object="{{
+					url: ''
+				}}"
+				button
+				{type_overrides}
+				button_text="Add Redirect"
+			/>
+			
+		</CrudTableDivs>
 
-											svetch
-												.patch('app/orgs/:org_id/apps/:app_id/redirects', {
-													path: {
-														app_id: $page.params.app_id,
-														org_id: $page.params.org_id
-													},
-													query: {
-														id: redirect.id
-													},
-													body: {
-														id: redirect.id,
-														url: url?.toString()
-													}
-												})
-												.then((res) => {
-													if (res.data) {
-														$application.redirect_urls =
-															$application.redirect_urls.map((r) => {
-																if (r.id === redirect.id) {
-																	return { ...r, url: redirect.url };
-																}
-																return r;
-															});
-														customDispatch(e, 'close');
-													}
-												});
-										}}"
-									>
-										<label
-											class="label"
-											for="url"
-										>
-											<span class="label-text capitalize">url</span>
-										</label>
-										<input
-											type="text"
-											name="url"
-											placeholder=""
-											class="input input-bordered"
-											bind:value="{redirect.url}"
-										/>
-										<button class="btn btn-primary"> Edit </button>
-									</form>
-								</svelte:fragment>
-							</ModalButton>
-						</div>
-					</div>
-				</div>
-			{/each}
-		</div>
+		
 	{:else}
 		<EmptyState
 			icon="carbon:link"

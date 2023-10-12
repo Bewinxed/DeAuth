@@ -16,7 +16,7 @@
 	import '../app.css';
 	import Drawer from './Drawer.svelte';
 	import NavigationBar from './NavigationBar.svelte';
-	
+
 	const localStorageKey = 'walletAdapter';
 	const network = clusterApiUrl('mainnet-beta'); // localhost or mainnet
 
@@ -27,7 +27,7 @@
 	set_wallet_connect_visible();
 
 	onMount(async () => {
-		themeChange(false)
+		themeChange(false);
 
 		const { PhantomWalletAdapter, SolflareWalletAdapter, LedgerWalletAdapter } =
 			await import('@solana/wallet-adapter-wallets');
@@ -39,8 +39,6 @@
 		];
 
 		wallets = walletsMap;
-
-		
 	});
 </script>
 
@@ -56,7 +54,6 @@
 	/>
 </svelte:head>
 
-
 <ViewTransition />
 <WalletProvider
 	{localStorageKey}
@@ -64,13 +61,49 @@
 	autoConnect
 />
 <ConnectionProvider {network} />
-<Toaster />
+<Toaster  />
 <DrawerWrapper>
 	<NavigationBar />
-	<main class="sticky top-0 flex flex-1 overflow-x-clip ">
+	<main class="sticky top-0 flex flex-1 overflow-x-clip">
 		<Drawer />
 		<!-- <div class="flex "> -->
-			<slot />
+		<slot />
 		<!-- </div> -->
 	</main>
 </DrawerWrapper>
+
+<!--translate 3d-->
+
+<style>
+	:global(.chonk) {
+		transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		box-shadow:
+			0px 0.1em 0px 0px rgba(0, 0, 0, 0.2),
+			inset 0px -0.2em 0px rgba(0, 0, 0, 0.3),
+			inset 0px 0.15em 0px rgba(0, 0, 0, 0),
+			inset 0px 0.25em 0px rgba(255, 255, 255, 0);
+		/* spring animation */
+
+		&:hover {
+			@apply -translate-y-0.5;
+
+			/* inner bottom white border */
+
+			box-shadow:
+				0px 0.2em 0px 0px rgba(0, 0, 0, 0.2),
+				inset 0px -0.45em 0px rgba(0, 0, 0, 0.2),
+				inset 0px 0.15em 0px rgba(0, 0, 0, 0.2),
+				inset 0px 0.35em 0px rgba(255, 255, 255, 0);
+
+			&:active {
+				@apply -translate-y-0 scale-[97%];
+				box-shadow:
+					0px 0.1em 0px 0px rgba(0, 0, 0, 0.2),
+					inset 0px -0.1em 0px rgba(0, 0, 0, 0.3),
+					inset 0px 0.15em 0px rgba(0, 0, 0, 0),
+					inset 0px 0.25em 0px rgba(255, 255, 255, 0.3),
+					0px 0px 0px 0.075em rgba(0, 0, 0, 0.5);
+			}
+		}
+	}
+</style>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { invalidate } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { invalidate, onNavigate } from '$app/navigation';
+	import { navigating, page } from '$app/stores';
 	import { getOrganizations } from '$components/data_contexts.js';
 	import PromiseButton from '$components/PromiseButton.svelte';
 	import { Svetch } from 'src/lib/api/client';
@@ -86,7 +86,7 @@
 							</div>
 							<button
 								type="submit"
-								class="btn btn-primary btn-wide place-self-center justify-self-center"
+								class="btn chonk btn-primary btn-wide place-self-center justify-self-center"
 							>
 							</button>
 						</form>
@@ -99,9 +99,13 @@
 		<div class="flex flex-wrap place-content-start gap-2">
 			{#each $organizations as organization (organization.id)}
 				<div
+					class:shadow-2xl="{$navigating?.to?.params?.org_id ===
+						organization.id}"
+					class:scale-110="{$navigating?.to?.params?.org_id ===
+						organization.id}"
 					animate:flip
 					out:fly
-					class="card card-compact border bg-base-100 shadow-xl md:w-48"
+					class="card card-compact border shadow-xl md:w-48"
 					style:--org="org-{organization.id}"
 				>
 					<figure
@@ -127,6 +131,7 @@
 							<!-- PromiseButton for edit/delete -->
 
 							<PromiseButton
+							icon="carbon:trash-can"
 								grace="{2}"
 								confirm="{2}"
 								promise="{() =>
@@ -140,27 +145,16 @@
 											invalidate('user:orgs');
 										})}"
 								tooltip="Delete"
-								class="btn btn-error btn-sm"
+								class="btn chonk !btn-square border  btn-error btn-sm"
 							>
-								<svelte:fragment slot="icon">
-									<Icon
-										icon="carbon:trash-can"
-										class=" inline"
-									/>
-								</svelte:fragment>
 							</PromiseButton>
 							<PromiseButton
+							icon="carbon:edit"
 								confirm="{5}"
 								promise="{() => svetch.editOrganization(organization.id)}"
 								tooltip="Edit"
-								class="btn btn-sm"
+								class="btn !btn-square border border-neutral chonk btn-sm"
 							>
-								<svelte:fragment slot="icon">
-									<Icon
-										icon="carbon:edit"
-										class=" inline"
-									/>
-								</svelte:fragment>
 							</PromiseButton>
 						</div>
 					</div>

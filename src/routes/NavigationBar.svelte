@@ -44,7 +44,7 @@
 >
 	<div
 		class:rounded-t-none="{scrolled}"
-		class="navbar max-h-12 rounded-xl border border-gray-300 bg-base-100 shadow"
+		class="navbar max-h-12 rounded-xl border border-gray-300 shadow bg-primary text-base-paper"
 	>
 		<div class="navbar-start">
 			{#if $drawer.length > 0}
@@ -85,7 +85,7 @@
 				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 				<ul
 					tabindex="0"
-					class="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
+					class="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-primary text-base-paper p-2 shadow"
 				>
 					<li><a href="/app">App</a></li>
 					<li>
@@ -178,7 +178,7 @@
 				<slot />
 				<ul
 					tabindex="0"
-					class="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
+					class="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-primary p-2 shadow"
 				>
 					<li>
 						<a

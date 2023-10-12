@@ -4,7 +4,7 @@
 	import PrettyIcon from '$components/PrettyIcon.svelte';
 	import { getApplication } from '$components/data_contexts';
 	import AutoForm from 'src/lib/components/AutoForm.svelte';
-	import CrudTable from 'src/lib/components/CrudTable.svelte';
+	import CrudTableDivs from 'src/lib/components/CrudTableDivs.svelte';
 	import { get_svetch } from 'src/lib/context';
 
 	const application = getApplication();
@@ -78,15 +78,15 @@
 					class="btn btn-primary"
 					
 				>
-					Add Redirect
+					Add Role
 				</button>
 			</form>
 		</EmptyState>
 	{:else}
-		<CrudTable
+		<CrudTableDivs
 			class="max-h-96"
 			pin_cols
-			
+			size="sm"
 			select
 			paginate
 			hover
@@ -102,7 +102,7 @@
 				]
 			}}"
 			on:update="{async (e) => {
-				const name = e.detail.data.get('name');
+				const name = e.detail.data.name;
 				if (!name) throw new Error('name is required');
 				await svetch
 					.put('app/orgs/:org_id/apps/:app_id/app_roles', {
@@ -119,7 +119,7 @@
 							// modify the item
 							$application.app_role = $application.app_role.map((role) => {
 								if (res.data && role.id === res.data.id) {
-									return res.data;
+									return {...res.data, app_role_assignment: [], assigned_permissions: []};
 								}
 								return role;
 							});
@@ -146,7 +146,7 @@
 					});
 			}}"
 			on:create="{async (e) => {
-				const name = e.detail.data.get('name');
+				const name = e.detail.data.name
 				if (!name) return;
 				await svetch
 					.put('app/orgs/:org_id/apps/:app_id/app_roles', {
@@ -160,7 +160,7 @@
 					})
 					.then((res) => {
 						if (res.data) {
-							$application.app_role = [...$application.app_role, res.data];
+							$application.app_role = [...$application.app_role, { ...res.data, app_role_assignment: [], assigned_permissions: [] }];
 						}
 					});
 			}}"
@@ -182,25 +182,7 @@
 			<div class="modal-action">
 				<button class="btn btn-primary"> Edit </button>
 			</div>
-			<svelte:fragment slot="edit">
-				<div class="form-control">
-					<label
-						class="label"
-						for="name"
-					>
-						<span class="label-text capitalize">name</span>
-					</label>
-					<input
-						type="text"
-						name="name"
-						placeholder=""
-						class="input input-bordered"
-					/>
-				</div>
-				<div class="modal-action">
-					<button class="btn btn-primary"> Edit </button>
-				</div>
-			</svelte:fragment>
-		</CrudTable>
+			
+		</CrudTableDivs>
 	{/if}
 </div>

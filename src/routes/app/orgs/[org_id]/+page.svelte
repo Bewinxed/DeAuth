@@ -7,7 +7,7 @@
 
 	import { enhance } from '$app/forms';
 	import { invalidate } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { navigating, page } from '$app/stores';
 	import Icon from '@iconify/svelte';
 	import { Svetch } from 'src/lib/api/client';
 	import PromiseButton from '$components/PromiseButton.svelte';
@@ -67,7 +67,7 @@
 				icon="carbon:link"
 				item_name="application"
 				title="Create Application"
-				class="btn btn-sm"
+				class="btn btn-square btn-md"
 				tooltip="Create"
 			>
 				<Icon
@@ -112,7 +112,11 @@
 					<div
 						animate:flip
 						out:fly
-						class="card card-compact border bg-base-100 shadow-xl md:w-48"
+						class:shadow-2xl="{$navigating?.to?.params?.app_id ===
+							application.id}"
+						class:scale-110="{$navigating?.to?.params?.app_id ===
+							application.id}"
+						class="card card-compact border shadow-xl md:w-48"
 						style:--org="app-{application.id}"
 					>
 						<figure
@@ -126,7 +130,7 @@
 							/>
 						</figure>
 						<div class="card-body justify-between shadow-inner">
-							<h2 class="font-display card-title">
+							<h2 class="card-title font-display">
 								<a
 									style:--org="app-name-{application.id}"
 									href="{$page.url.pathname}/apps/{application.id}"
@@ -159,11 +163,11 @@
 												invalidate('user:apps');
 											})}"
 									tooltip="Delete"
-									class="btn btn-error btn-sm"
+									class="chonk btn btn-square btn-error btn-sm"
 								></PromiseButton>
 								<ModalButton
 									title="Edit Application"
-									class="btn btn-sm"
+									class="btn btn-square btn-sm"
 									tooltip="Edit"
 									icon="carbon:edit"
 									item_name="application"

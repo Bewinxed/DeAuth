@@ -29,7 +29,7 @@
 		<div class="dropdown dropdown-end dropdown-hover">
 			<label
 				for="dropdown-1"
-				class="btn btn-outline"
+				class="btn btn-outline chonk"
 			>
 				<Icon
 					icon="carbon:add"
@@ -162,7 +162,7 @@
 									confirm="{1}"
 									icon="carbon:trash-can"
 									square
-									class="btn btn-square btn-error btn-sm"
+									class="btn btn-square chonk border-none btn-error btn-sm"
 									tooltip="{'delete'}"
 									promise="{async () => {
 										await svetch

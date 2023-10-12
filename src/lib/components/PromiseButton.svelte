@@ -186,7 +186,7 @@
 
 		<div>
 			<figure
-				class="transition-container overflow-hidden tabular-nums text-[inherit] transition-all"
+				class="transition-container overflow-hidden tabular-nums text-[inherit] "
 			>
 				{#key state}
 					<span

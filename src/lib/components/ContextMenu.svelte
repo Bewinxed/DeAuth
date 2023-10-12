@@ -1,5 +1,5 @@
 <script lang="ts">
-	import autoAnimate from '@formkit/auto-animate';
+	// import autoAnimate from '@formkit/auto-animate';
 
 	export let title = '';
 	export let description = '';
@@ -18,17 +18,14 @@
 		tabindex="0"
 		class="dropdown-content z-[1] w-52 bg-transparent p-1"
 	>
-		<ul
-			class="menu rounded-box bg-base-100 p-2 shadow-xl "
-			use:autoAnimate
-		>
+		<ul class="menu rounded-box bg-base-100 p-2 shadow-xl">
 			{#if title}
 				<li>
 					<a
-						class="mb-1 rounded-b-none border-b"
+						class="mb-1 rounded-b-none border-b pointer-events-none cursor-default"
 						href="{void 0}"
 					>
-						<span class="font-bold">{title}</span>
+						<span class="text-sm font-semibold">{title}</span>
 						{#if description}
 							<span class="text-xs">{description}</span>
 						{/if}

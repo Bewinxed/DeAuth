@@ -63,25 +63,26 @@
 	<!-- <figure class="w-4 h-4 inline text-base-content"><Icon icon="carbon:chevron-right" class="h-4 w-4"></Icon></figure> -->
 </header>
 
+<Resources
+		bind:roles={$application.app_role}
+		bind:resources="{data.resources}"
+		id="resources"
+	/>
+<Roles id="roles" />
 {#each access_types as { access_type, icon, caption }, i (access_type)}
 	{@const access_type_list = data.access_controls.filter((a) => {
 		if (a.access_type === access_type) {
 			return a;
 		}
 	})}
-	<Resources
-		bind:roles={$application.app_role}
-		bind:resources="{data.resources}"
-		id="resources"
-	/>
-	<Roles id="roles" />
+	
 
 	<!-- <AppPermissions
 		data="{data.permissions}"
 		id="permissions"
 	/> -->
 	<header
-		class="flex place-content-start place-items-center justify-between gap-2 p-4"
+		class="flex place-content-start place-items-center justify-between gap-2 p-4 "
 	>
 		<div class="flex place-content-center place-items-center gap-2">
 			<PrettyIcon
