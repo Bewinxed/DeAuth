@@ -11,7 +11,7 @@
 	} from '@solana/wallet-standard-features';
 	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 	import base58 from 'bs58';
-
+	const organization = getOrganization();
 	let isVerifying = false;
 	let verified = false;
 	let signature: string;
@@ -189,7 +189,7 @@
 				if (err.message.includes('reject')) {
 					isVerifying = false;
 					verified = false;
-					toast.error("Message Signing Request Rejected")
+					toast.error('Message Signing Request Rejected');
 					throw err;
 				}
 				console.log(err);
@@ -211,7 +211,10 @@
 	import { page } from '$app/stores';
 	import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
 	import { get_wallet_connect_visible } from 'src/lib/components/context';
-	import { getApplication } from 'src/lib/components/data_contexts';
+	import {
+		getApplication,
+		getOrganization
+	} from 'src/lib/components/data_contexts';
 	import { goto, invalidateAll } from '$app/navigation';
 	import type { UserWithProfile } from '../store';
 	import type { Writable } from 'svelte/store';
@@ -294,6 +297,11 @@
 	<div class="card-actions mt-4 justify-end">
 		<button
 			class="btn btn-primary"
+			class:bg-[var(--org-primary)]="{$organization.branding?.primary_color}"
+			class:hover:bg-[var(--org-primary)]="{$organization.branding
+				?.primary_color}"
+			class:border-neutral="{$organization.branding?.primary_color}"
+			class:text-neutral="{$organization.branding?.primary_color}"
 			on:click="{stepController.previousStep}"
 		>
 			<Icon
@@ -306,6 +314,11 @@
 			<button
 				transition:slide="{{ axis: 'x' }}"
 				class="btn btn-primary"
+				class:bg-[var(--org-primary)]="{$organization.branding?.primary_color}"
+				class:hover:bg-[var(--org-primary)]="{$organization.branding
+					?.primary_color}"
+				class:border-neutral="{$organization.branding?.primary_color}"
+				class:text-neutral="{$organization.branding?.primary_color}"
 				on:click="{stepController.nextStep}"
 			>
 				<Icon

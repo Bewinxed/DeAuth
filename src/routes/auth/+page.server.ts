@@ -132,6 +132,15 @@ export const load = async ({ url }) => {
 			throw error(404, 'Application not found');
 		});
 
+	const organization = await prisma.organization.findFirstOrThrow({
+		where: {
+			id: application.organization_id,
+		},
+		include: {
+			branding: true
+		}
+	});
+
 	const redirect_uri = url.searchParams.get('redirect_uri');
 
 	if (!redirect_uri) {
@@ -155,6 +164,7 @@ export const load = async ({ url }) => {
 		throw error(400, 'Missing redirect_uri');
 	}
 	return {
+		organization,
 		application,
 		redirect_uri,
 		scope,

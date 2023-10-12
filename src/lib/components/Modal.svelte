@@ -106,8 +106,8 @@
 	bind:this="{modal}"
 	aria-hidden="true"
 >
-	<Toaster />
 	{#if open}
+		<Toaster />
 		<div
 			use:swipeToClose
 			in:fly="{{ x: 0, y: 100, duration: 200, delay: 200 }}"
@@ -135,7 +135,7 @@
 					></Icon>
 				</button>
 			</div>
-			<div class="p-4 shadow-inner">
+			<div on:touchmove|stopPropagation class="p-4 shadow-inner">
 				<slot />
 			</div>
 			{#if $$slots.action}

@@ -99,7 +99,8 @@
 					'name',
 					'updated_at',
 					'default_for_new_member'
-				]
+				],
+				editable_fields: ['name', 'default_for_new_member'],
 			}}"
 			on:update="{async (e) => {
 				const name = e.detail.data.name;

@@ -8,10 +8,19 @@
 	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 	import base58 from 'bs58';
 	import AuthWizard from './AuthWizard.svelte';
-	import { setApplication } from 'src/lib/components/data_contexts.js';
+	import {
+	getApplication,
+		getOrganization,
+		setApplication,
+		setOrganization
+	} from 'src/lib/components/data_contexts.js';
 	export let data;
 
 	setApplication(data.application);
+	setOrganization(data.organization);
+
+	const organization = getOrganization();
+	const application = getApplication()
 
 	let isVerifying = false;
 	let verified = false;
@@ -26,7 +35,8 @@
 		// @ts-ignore
 		if ($walletStore?.adapter?._wallet?.signIn) {
 			// @ts-ignore
-			const output: SolanaSignInOutput = await $walletStore.adapter._wallet?.signIn(message);
+			const output: SolanaSignInOutput =
+				await $walletStore.adapter._wallet?.signIn(message);
 
 			if (!$walletStore?.publicKey) {
 				throw new Error('Wallet not connected');
@@ -62,10 +72,15 @@
 				});
 			}
 		}
-		throw new Error('Wallet does not support SIWS, Falling back to legacy signing');
+		throw new Error(
+			'Wallet does not support SIWS, Falling back to legacy signing'
+		);
 	};
 
-	const siws_legacy = async (message: SolanaSignInInput, legacy_message: string) => {
+	const siws_legacy = async (
+		message: SolanaSignInInput,
+		legacy_message: string
+	) => {
 		if (!$walletStore.publicKey) return;
 		// If the signIn feature is not available, return true
 		// if $walletStore?.adapter?._wallet?.signIn exists
@@ -121,7 +136,11 @@
 	};
 
 	export const signMessage = async () => {
-		if (!$walletStore || !$walletStore.publicKey || !$walletStore.adapter?._wallet) {
+		if (
+			!$walletStore ||
+			!$walletStore.publicKey ||
+			!$walletStore.adapter?._wallet
+		) {
 			throw new Error('Wallet not connected');
 		}
 
@@ -185,6 +204,14 @@
 	};
 </script>
 
-<AuthWizard />
-
-
+<div
+	style:--org-primary="{$organization?.branding?.primary_color}"
+	style:--org-secondary="{$organization?.branding?.secondary_color}"
+	style:--org-background="{$organization?.branding?.background_color}"
+	style:--app-primary="{$application?.branding?.primary_color}"
+	style:--app-secondary="{$application?.branding?.secondary_color}"
+	style:--app-background="{$application?.branding?.background_color}"
+	class="bg-gradient-to-b from-white via-[var(--org-background)] to-[var(--org-background)] h-screen"
+>
+	<AuthWizard />
+</div>

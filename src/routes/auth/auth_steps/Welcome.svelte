@@ -8,7 +8,10 @@
 	import { get_svetch } from 'src/lib/context';
 	import type { UserWithProfile } from '../store';
 	import { fly, scale, slide } from 'svelte/transition';
-	import { getApplication } from 'src/lib/components/data_contexts';
+	import {
+		getApplication,
+		getOrganization
+	} from 'src/lib/components/data_contexts';
 	import DoodleIpsum from 'src/lib/components/DoodleIpsum.svelte';
 	import {
 		WalletConnectButton,
@@ -19,6 +22,7 @@
 	const stepController = createStepController();
 	const svetch = get_svetch();
 	const application = getApplication();
+	const organization = getOrganization();
 	const wallet_connect_visible = get_wallet_connect_visible();
 
 	// $: if ($wallet_connect_visible !== undefined) {
@@ -108,6 +112,12 @@
 		>
 			<button
 				class="btn btn-primary"
+				class:bg-[var(--org-primary)]="{$organization.branding
+					?.primary_color}"
+				class:hover:bg-[var(--org-primary)]="{$organization.branding
+					?.primary_color}"
+				class:border-neutral="{$organization.branding?.primary_color}"
+				class:text-neutral="{$organization.branding?.primary_color}"
 				on:click="{stepController.nextStep}"
 			>
 				<Icon

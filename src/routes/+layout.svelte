@@ -76,7 +76,7 @@
 
 <style>
 	:global(.chonk) {
-		transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		transition: all 0.125s ease-in;
 		box-shadow:
 			0px 0.1em 0px 0px rgba(0, 0, 0, 0.2),
 			inset 0px -0.2em 0px rgba(0, 0, 0, 0.3),
@@ -88,18 +88,19 @@
 			@apply -translate-y-0.5;
 
 			/* inner bottom white border */
-
+			padding-bottom: 0.3em;
 			box-shadow:
 				0px 0.2em 0px 0px rgba(0, 0, 0, 0.2),
 				inset 0px -0.45em 0px rgba(0, 0, 0, 0.2),
-				inset 0px 0.15em 0px rgba(0, 0, 0, 0.2),
+				inset 0px 0.15em 0px rgba(0, 0, 0, 0.4),
 				inset 0px 0.35em 0px rgba(255, 255, 255, 0);
 
 			&:active {
-				@apply -translate-y-0 scale-[97%];
+				@apply translate-y-0.5;
+				padding-bottom: unset;
 				box-shadow:
 					0px 0.1em 0px 0px rgba(0, 0, 0, 0.2),
-					inset 0px -0.1em 0px rgba(0, 0, 0, 0.3),
+					inset 0px -0.1em 0px rgba(0, 0, 0, 0.4),
 					inset 0px 0.15em 0px rgba(0, 0, 0, 0),
 					inset 0px 0.25em 0px rgba(255, 255, 255, 0.3),
 					0px 0px 0px 0.075em rgba(0, 0, 0, 0.5);

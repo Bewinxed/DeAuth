@@ -6,7 +6,7 @@
 	import DoodleIpsum from 'src/lib/components/DoodleIpsum.svelte';
 	import { fade, fly, scale, slide } from 'svelte/transition';
 	import { getApplication } from 'src/lib/components/data_contexts';
-	import { bounceInOut } from 'svelte/easing';
+	import { bounceIn, bounceInOut } from 'svelte/easing';
 	import Sign from './auth_steps/Sign.svelte';
 	import Profile from './auth_steps/Profile.svelte';
 	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
@@ -48,18 +48,19 @@
 
 {#if mounted}
 	<div
-		transition:fly="{{ y: 200, x: 0, duration: 500, easing: bounceInOut }}"
-		class="bg-brightness-75 relative mx-auto flex w-full flex-1 place-content-center place-items-center bg-[url('/layered-waves-haikei.svg')] bg-cover bg-bottom p-4 sm:p-16"
+		transition:fade="{{ duration: 500 }}"
+		class="background relative mx-auto flex w-full flex-1 place-content-center place-items-center p-4 sm:p-16"
 	>
 		<!-- {#if mounted}
 		<div transition:fade={{ delay: 300, duration: 300 }} class="absolute h-full w-full bg-neutral" />
 	{/if} -->
 
 		<div
+			transition:fly="{{ delay: 250, y: 200, x: 0, duration: 500 }}"
 			class="background-animate card card-normal w-full place-content-center place-items-center gap-0 rounded-xl bg-gradient-to-br from-solanapurple via-oledblack to-solanagreen p-1 shadow-xl shadow-solanapurple sm:w-3/4 lg:w-2/3 xl:w-2/4 2xl:w-2/5"
 		>
 			<div
-				class="flex h-full w-full flex-1 flex-col place-content-center place-items-center justify-between rounded-lg bg-base-200"
+				class="flex h-full w-full flex-1 flex-col place-content-center place-items-center justify-between rounded-lg bg-[var(--org-background)]"
 			>
 				{#if current_page > 0}
 					<div
@@ -306,6 +307,22 @@
 		}
 		50% {
 			background-position: 100% 50%;
+		}
+	}
+
+	.background {
+		&::before {
+			content: '';
+			background-image: url('/layered-waves-haikei.svg');
+			background-size: cover;
+			background-position: bottom;
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
+			left: 0px;
+			opacity: 0.90;
+			mix-blend-mode: multiply;
 		}
 	}
 </style>

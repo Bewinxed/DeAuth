@@ -13,6 +13,8 @@
 	import Modal from '$components/Modal.svelte';
 	import ModalButton from './orgs/[org_id]/apps/[app_id]/ModalButton.svelte';
 	import { customDispatch, formPromise } from 'src/lib/utils/event_helpers';
+	import AutoForm from 'src/lib/components/AutoForm.svelte';
+	import toast from 'svelte-french-toast';
 	const organizations = getOrganizations();
 
 	async function handleSubmit(e: Event) {
@@ -21,6 +23,11 @@
 		if (!(form instanceof HTMLFormElement)) return;
 		const formData = new FormData(form);
 		const name = formData.get('name') as string;
+		if (!name) {
+			toast.error('Name is required');
+			return;
+		}
+
 		const svetch = new Svetch();
 		svetch
 			.post('app/orgs', {
@@ -86,7 +93,7 @@
 							</div>
 							<button
 								type="submit"
-								class="btn chonk btn-primary btn-wide place-self-center justify-self-center"
+								class="chonk btn btn-primary btn-wide place-self-center justify-self-center"
 							>
 							</button>
 						</form>
@@ -131,7 +138,7 @@
 							<!-- PromiseButton for edit/delete -->
 
 							<PromiseButton
-							icon="carbon:trash-can"
+								icon="carbon:trash-can"
 								grace="{2}"
 								confirm="{2}"
 								promise="{() =>
@@ -145,17 +152,15 @@
 											invalidate('user:orgs');
 										})}"
 								tooltip="Delete"
-								class="btn chonk !btn-square border  btn-error btn-sm"
-							>
-							</PromiseButton>
+								class="chonk btn !btn-square btn-error  btn-sm border"
+							></PromiseButton>
 							<PromiseButton
-							icon="carbon:edit"
+								icon="carbon:edit"
 								confirm="{5}"
 								promise="{() => svetch.editOrganization(organization.id)}"
 								tooltip="Edit"
-								class="btn !btn-square border border-neutral chonk btn-sm"
-							>
-							</PromiseButton>
+								class="chonk btn !btn-square btn-sm border border-neutral"
+							></PromiseButton>
 						</div>
 					</div>
 				</div>
@@ -171,7 +176,6 @@
 	{:else}
 		<EmptyState
 			form_id="create-org"
-			promise="{handleSubmit}"
 			item_name="organization"
 			caption="You have no organizations. Create one now to get started, Organizations are used to group applications together, you can manage roles and add custom branding to it, as well as to individual applications."
 			icon="carbon:building"
@@ -179,44 +183,15 @@
 				id="create-org"
 				class="form-control gap-4"
 				method="post"
-				use:enhance="{({
-					formElement,
-					formData,
-					action,
-					cancel,
-					submitter
-				}) => {
-					// `formElement` is this `<form>` element
-					// `formData` is its `FormData` object that's about to be submitted
-					// `action` is the URL to which the form is posted
-					// calling `cancel()` will prevent the submission
-					// `submitter` is the `HTMLElement` that caused the form to be submitted
-
-					return async ({ result, update }) => {
-						// invalidate('user:orgs');
-						update({
-							reset: false
-						});
-						// `result` is an `ActionResult` object
-						// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
-					};
-				}}"
+				on:submit|preventDefault="{handleSubmit}"
 			>
-				<div class="form-control">
-					<label
-						class="label"
-						for="name"
-					>
-						<span class="label-text capitalize">name</span>
-					</label>
-					<input
-						type="text"
-						name="name"
-						placeholder=""
-						class="input input-bordered"
-						value="Untitled Organization"
-					/>
-				</div>
+				<AutoForm
+					button
+					object="{{
+						name: 'Untitled Organization'
+					}}"
+					fields="{['name']}"
+				></AutoForm>
 			</form></EmptyState
 		>
 	{/if}

@@ -23,7 +23,7 @@
 		actions: (Exclude<CrudOperation, 'all'> | 'custom')[];
 		editable_fields?: (keyof T)[];
 		hidden_fields?: (keyof T)[];
-		type_overrides: Record<keyof T, string>
+		type_overrides?: Record<keyof T, string>
 	} = {
 		columns: [],
 		actions: [],

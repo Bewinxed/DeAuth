@@ -29,40 +29,42 @@ export const PUT = async ({ locals, params, request, url }) => {
 		throw error(401, 'Unauthorized');
 	}
 
-	const app_id = url.searchParams.get('app_id');
+	const app_id: string | null | undefined = url.searchParams.get('app_id');
 	const { org_id } = params;
-	const payload = (await request.json()) as Prisma.redirect_urlCreateWithoutApplicationInput;
-
-	const branding = await prisma.branding.create({
-		data: payload
-	});
+	const payload = (await request.json()) as Prisma.BrandingUncheckedCreateInput;
 
 	await is_authorized(session, org_id, app_id);
 
-	if (app_id) {
-		await prisma.application.update({
-			where: {
-				id: app_id
-			},
-			data: {
-				branding_id: branding.id
-			}
-		});
-	} else {
-		await prisma.organization.update({
-			where: {
-				id: org_id
-			},
-			data: {
-				branding_id: branding.id
-			}
-		});
-	}
+	const branding = await prisma.branding.upsert({
+		where: {
+			id: payload.id
+		},
+		create: {
+			...payload,
+			organization: org_id
+				? {
+						connect: {
+							id: org_id
+						}
+				  }
+				: undefined,
+			application: app_id
+				? {
+						connect: {
+							id: app_id
+						}
+				  }
+				: undefined
+		},
+		update: {
+			...payload,
+		}
+	});
 
 	return json(branding);
 };
 
-export const DELETE = async ({ locals, params, request, url }) => {
+export const DELETE = async ({ locals, params, url }) => {
 	const session = await locals.auth.validate();
 	if (!session) {
 		throw error(401, 'Unauthorized');
@@ -107,7 +109,6 @@ export const PATCH = async ({ locals, params, request, url }) => {
 			id: parseInt(id)
 		},
 		data: payload
-		
 	});
 	return json({ id: branding.id });
 };

@@ -4,6 +4,7 @@
 	export let item_name: string;
 	export let icon: string;
 	export let title: string | undefined = undefined;
+	export let outline = true;
 	let open = false;
 </script>
 
@@ -13,7 +14,9 @@
 		data-tip="{tooltip}"
 	>
 		<button
-			class="btn btn-outline relative font-display chonk transition-all hover:-translate-y-[0.1em]
+			style="{$$restProps.style}"
+			class:btn-outline="{outline}"
+			class="chonk btn relative font-display transition-all hover:-translate-y-[0.1em]
 			 {$$restProps.class}"
 			on:click="{() => {
 				open = true;
@@ -24,7 +27,8 @@
 	</div>
 {:else}
 	<button
-		class="btn btn-outline relative font-display chonk transition-all hover:-translate-y-[0.1em]
+		class:btn-outline="{outline}"
+		class="chonk btn relative font-display transition-all hover:-translate-y-[0.1em]
 		{$$restProps.class}"
 		on:click="{() => {
 			open = true;

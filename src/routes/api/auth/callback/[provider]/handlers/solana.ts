@@ -39,6 +39,8 @@ export const solana_handler = async ({
 			solanaTokens: { access_token, refresh_token, access_token_expires_in }
 		} = await solana_oauth.validateCallback(signature);
 
+		
+
 		return {
 			tokens: {
 				access_token: access_token,

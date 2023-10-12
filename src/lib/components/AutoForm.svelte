@@ -7,7 +7,7 @@
 	export let required = false;
 	export let hidden_fields: (keyof T)[] = [];
 	export let required_fields: (keyof T)[] = required ? object_keys(object) : [];
-	export let type_overrides: Record<keyof T, string> = {}
+	export let type_overrides: Record<keyof T, string> = {};
 	export let button = false;
 	export let button_text = '';
 
@@ -37,9 +37,9 @@
 
 {#each form as { name, type, value } (name)}
 	{@const string_name = name.toString()}
-	
+
 	{#if type === 'string'}
-		<div class="form-control w-full max-w-sm">
+		<div class="form-control w-full max-w-md">
 			<label
 				class:hidden
 				class="label"
@@ -54,13 +54,13 @@
 				class:hidden
 				required="{required_fields.includes(name)}"
 				type="{type_overrides[name] ?? type}"
-				class="input input-bordered w-full max-w-sm"
+				class="input input-bordered w-full max-w-md"
 				name="{string_name}"
 				value
 			/>
 		</div>
 	{:else if type === 'number'}
-		<div class="form-control w-full max-w-sm">
+		<div class="form-control w-full max-w-md">
 			<label
 				class:hidden
 				class="label"
@@ -74,11 +74,11 @@
 				type="number"
 				name="{string_name}"
 				bind:value
-				class="input input-bordered w-full max-w-sm"
+				class="input input-bordered w-full max-w-md"
 			/>
 		</div>
 	{:else if type === 'boolean'}
-		<div class="form-control w-full max-w-sm">
+		<div class="form-control w-full max-w-md">
 			<label
 				class:hidden
 				class="label"
@@ -98,7 +98,7 @@
 			/>
 		</div>
 	{:else if type === 'object'}
-		<div class="form-control w-full max-w-sm">
+		<div class="form-control w-full max-w-md">
 			<label
 				class:hidden
 				class="label"
@@ -108,16 +108,16 @@
 					>{string_name.replaceAll('_', ' ')}</span
 				></label
 			>
-			class:hidden
+
 			<input
 				type="text"
 				name="{string_name}"
 				{value}
-				class="input input-bordered w-full max-w-sm"
+				class="input input-bordered w-full max-w-md"
 			/>
 		</div>
 	{:else if value instanceof Date}
-		<div class="form-control w-full max-w-sm">
+		<div class="form-control w-full max-w-md">
 			<label
 				class:hidden
 				class="label"
@@ -131,7 +131,7 @@
 				type="date"
 				name="{string_name}"
 				{value}
-				class="input input-bordered w-full max-w-sm"
+				class="input input-bordered w-full max-w-md"
 			/>
 		</div>
 	{/if}
@@ -144,9 +144,9 @@
 	/>
 {/if}
 {#if button}
-	<div class="modal-action">
+	<div class="modal-action justify-center">
 		<button class="chonk btn btn-primary btn-wide">
-			{button_text}
+			{button_text.length > 0 ? button_text : 'Submit'}
 		</button>
 	</div>
 {/if}

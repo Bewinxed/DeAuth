@@ -235,7 +235,7 @@ model Organization {
   updated_at           DateTime       @updatedAt
   modified_by_user_id  String?
   subscription         subscription[]
-  branding_id          Int?
+  branding_id          Int?           @unique
   branding             Branding?      @relation(fields: [branding_id], references: [id])
   Invites              Invites[]
   AuditLog             AuditLog[]
@@ -258,15 +258,18 @@ model authentication_rule {
 }
 
 model Branding {
-  id                  Int            @id @default(autoincrement())
-  created_at          DateTime       @default(now())
+  id                  Int           @id @default(autoincrement())
+  created_at          DateTime      @default(now())
   logo                String? // URL of the logo image
   primary_color       String? // Primary color hex code
   secondary_color     String? // Secondary color hex code
+  background_color    String? // Background color hex code
   font                String? // Font to be used
-  organization        Organization[]
-  application         Application[]
-  updated_at          DateTime       @updatedAt
+  organization        Organization?
+  application         Application?
+  organization_id     String?       @unique
+  application_id      String?       @unique
+  updated_at          DateTime      @updatedAt
   modified_by_user_id String?
 
   @@map("branding")
@@ -303,8 +306,9 @@ model Application {
 
   redirect_urls redirect_url[]
   created_at    DateTime       @default(now())
-  branding_id   Int?
-  branding      Branding?      @relation(fields: [branding_id], references: [id])
+
+  branding    Branding? @relation(fields: [branding_id], references: [id])
+  branding_id Int?      @unique
 
   app_role             app_role[]
   auth_request         AuthRequest[]
@@ -389,8 +393,8 @@ enum CrudOperation {
 }
 
 model AppResources {
-  id                  Int          @id @default(autoincrement())
-  key                String
+  id                  Int             @id @default(autoincrement())
+  key                 String
   description         String?
   application_id      String
   application         Application     @relation("ApplicationResources", fields: [application_id], references: [id], onDelete: Cascade)
@@ -399,9 +403,8 @@ model AppResources {
   modified_by_user_id String?
   permissions         AppPermission[] @relation("PermissionResources")
 
-  @@map("app_resources")
-
   @@unique([application_id, key])
+  @@map("app_resources")
 }
 
 model AppPermission {
@@ -421,8 +424,8 @@ model AppPermission {
   modified_by_user_id  String?
   assignments          AppPermissionAssignment[]
 
-  @@map("app_permissions")
   @@unique([application_id, resource_id, operation])
+  @@map("app_permissions")
 }
 
 model AppPermissionAssignment {
@@ -430,17 +433,17 @@ model AppPermissionAssignment {
   permission_id       Int
   permission          AppPermission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
   app_role_id         Int?
-  app_role            app_role?      @relation(fields: [app_role_id], references: [id], onDelete: Cascade)
+  app_role            app_role?     @relation(fields: [app_role_id], references: [id], onDelete: Cascade)
   member_id           String?
-  member              Member?        @relation(fields: [member_id], references: [id], onDelete: Cascade)
+  member              Member?       @relation(fields: [member_id], references: [id], onDelete: Cascade)
   user_role           user_role?    @relation(fields: [user_role_id], references: [id], onDelete: Cascade)
   user_role_id        Int?
   created_at          DateTime      @default(now())
   updated_at          DateTime      @updatedAt
   modified_by_user_id String?
 
-  @@map("app_permission_assignments")
   @@unique([permission_id, app_role_id])
   @@unique([permission_id, member_id])
   @@unique([permission_id, user_role_id])
+  @@map("app_permission_assignments")
 }

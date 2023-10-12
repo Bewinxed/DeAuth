@@ -89,44 +89,8 @@ export async function handle_existing_session({
 		provider,
 		session,
 		provider_user
-	}).then(
-		async () =>
-			await prisma.user
-				.update({
-					where: {
-						id: session.user.id
-					},
-
-					data: {
-						memberships: {
-							upsert: {
-								where: {
-									user_id_application_id: {
-										user_id: session.user.id,
-										application_id: application.id
-									}
-								},
-								create: {
-									application_id: application.id,
-									role_assignments: {
-										create: {
-											app_role_id: application.app_role[0].id
-										}
-									}
-								},
-								update: {
-									role_assignments: {
-										create: {
-											app_role_id: application.app_role[0].id
-										}
-									}
-								}
-							}
-						}
-					}
-				})
-				.then(() => find_user_by_id(existing_keys[0]?.user_id))
-	);
+	}).then(() => find_user_by_id(existing_keys[0]?.user_id))
+	;
 }
 
 async function add_key_to_user({

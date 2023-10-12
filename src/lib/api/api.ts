@@ -971,7 +971,10 @@ branding_id: null | number;
   logo: null | string;
   primary_color: null | string;
   secondary_color: null | string;
+  background_color: null | string;
   font: null | string;
+  organization_id: null | string;
+  application_id: null | string;
   updated_at: Date;
   modified_by_user_id: null | string;
 },
@@ -989,12 +992,25 @@ branding_id: null | number;
       parameters: {
         path: { org_id: string;  },
         body: {
-  url: string;
+  id?: number;
   created_at?: string | Date;
+  logo?: null | string;
+  primary_color?: null | string;
+  secondary_color?: null | string;
+  background_color?: null | string;
+  font?: null | string;
+  organization_id?: null | string;
+  application_id?: null | string;
   updated_at?: string | Date;
   modified_by_user_id?: null | string;
+  organization?: {
+    
+  };
+  application?: {
+    
+  };
 },
-        query: { app_id: any; },
+        query: { app_id?: string | null | undefined; },
       },
       responses: {
         200: {
@@ -1003,7 +1019,10 @@ branding_id: null | number;
   logo: null | string;
   primary_color: null | string;
   secondary_color: null | string;
+  background_color: null | string;
   font: null | string;
+  organization_id: null | string;
+  application_id: null | string;
   updated_at: Date;
   modified_by_user_id: null | string;
 },
@@ -2185,6 +2204,9 @@ modified_by_user_id: null | string;
         },
         401: {
           message: 'Unauthorized',
+        },
+        404: {
+          message: 'No Changes',
         },
       }
     },

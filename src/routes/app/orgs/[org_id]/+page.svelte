@@ -15,6 +15,9 @@
 	import { flip } from 'svelte/animate';
 	import { fly } from 'svelte/transition';
 	import ModalButton from './apps/[app_id]/ModalButton.svelte';
+	import AutoForm from 'src/lib/components/AutoForm.svelte';
+	import { handle_form_submit } from 'src/lib/utils/ui_helpers.js';
+	import Branding from './Branding.svelte';
 	export let data;
 	const organization = getOrganization();
 	let modal_open = false;
@@ -26,8 +29,10 @@
 				? e.currentTarget?.closest('form')
 				: undefined;
 		if (!(form instanceof HTMLFormElement)) throw new Error('No form found');
-		const formData = new FormData(form);
-		const name = formData.get('name') as string;
+		const data =
+			handle_form_submit<(typeof $organization.applications)[number]>(e);
+		const name = data.name;
+
 		const svetch = new Svetch();
 		svetch
 			.post('app/orgs/:org_id/apps', {
@@ -80,24 +85,23 @@
 						class="form-control gap-4"
 						on:submit|preventDefault="{handleSubmit}"
 					>
-						<label
-							class="label"
-							for="name"
-						>
-							<span class="label-text capitalize">name</span>
-						</label>
-						<input
-							type="text"
-							name="name"
-							placeholder=""
-							class="input input-bordered"
-							value="Untitled Application"
+						<AutoForm
+							button
+							required_fields="{['name']}"
+							fields="{[
+								'name',
+								'website',
+								'privacy_policy_url',
+								'terms_of_service_url'
+							]}"
+							hidden_fields="{['id']}"
+							object="{$organization.applications[0] ?? {
+								name: 'Untitled Application',
+								website: '',
+								privacy_policy_url: '',
+								terms_of_service_url: ''
+							}}"
 						/>
-						<button
-							class="btn btn-primary w-full place-self-center justify-self-center"
-						>
-							Create Application
-						</button>
 					</form>
 				</svelte:fragment>
 			</ModalButton>
@@ -116,7 +120,7 @@
 							application.id}"
 						class:scale-110="{$navigating?.to?.params?.app_id ===
 							application.id}"
-						class="card card-compact border shadow-xl md:w-48"
+						class="card card-compact border shadow-xl md:w-36"
 						style:--org="app-{application.id}"
 					>
 						<figure
@@ -180,29 +184,25 @@
 										<form
 											method="post"
 											class="form-control gap-4"
+											on:submit="{handleSubmit}"
 										>
-											<label for="name">Name</label>
-											<div class="form-control">
-												<label
-													class="label"
-													for="name"
-												>
-													<span class="label-text capitalize">name</span>
-												</label>
-												<input
-													type="text"
-													name="name"
-													placeholder=""
-													class="input input-bordered"
-													value="Untitled Application"
-												/>
-											</div>
-											<button
-												class="btn btn-primary"
-												on:click|preventDefault="{handleSubmit}"
-											>
-												Create Application
-											</button>
+											<AutoForm
+												button
+												required_fields="{['name']}"
+												fields="{[
+													'name',
+													'website',
+													'privacy_policy_url',
+													'terms_of_service_url'
+												]}"
+												hidden_fields="{['id']}"
+												object="{application ?? {
+													name: 'Untitled Application',
+													website: '',
+													privacy_policy_url: '',
+													terms_of_service_url: ''
+												}}"
+											/>
 										</form>
 									</svelte:fragment>
 								</ModalButton>
@@ -215,36 +215,31 @@
 			<EmptyState
 				item_name="application"
 				icon="icon-park-outline:api-app"
-				><form class="flex flex-col gap-4">
-					<div class="form-control gap-4">
-						<label
-							class="label"
-							for="name"
-						>
-							<span class="label-text capitalize">name</span>
-						</label>
-						<input
-							type="text"
-							name="name"
-							placeholder=""
-							class="input input-bordered"
-							value="Untitled Application"
-						/>
-						<PromiseButton
-							icon="carbon:add"
-							promise="{handleSubmit}"
-							class="btn btn-primary btn-wide place-self-center justify-self-center"
-							on:click="{(e) => {
-								customDispatch(e, 'close');
-							}}"
-						>
-							Create Application
-						</PromiseButton>
-					</div>
+				><form
+					class="flex flex-col gap-4"
+					on:submit="{handleSubmit}"
+				>
+					<AutoForm
+						button
+						required_fields="{[
+							'name',
+							'website',
+							'privacy_policy_url',
+							'terms_of_service_url'
+						]}"
+						hidden_fields="{['id']}"
+						object="{$organization.applications[0] ?? {
+							name: 'Untitled Application',
+							privacy_policy_url: '',
+							terms_of_service_url: '',
+							website: ''
+						}}"
+					/>
 				</form></EmptyState
 			>
 		{/if}
 	</div>
+	<Branding branding="{$organization.branding}" />
 {:else}
 	<p>No organization found</p>
 {/if}

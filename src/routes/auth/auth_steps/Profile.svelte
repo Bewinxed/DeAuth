@@ -14,7 +14,9 @@
 	import { fly, slide } from 'svelte/transition';
 	import type { UserWithProfile } from '../store';
 	import NftList from './NftList.svelte';
+	import { getOrganization } from 'src/lib/components/data_contexts';
 	const stepController = createStepController();
+	const organization = getOrganization();
 
 	const svetch = get_svetch();
 
@@ -202,6 +204,11 @@
 		in:fly="{{ x: 100 }}"
 		out:fly="{{ x: -100 }}"
 		class="btn btn-outline"
+		class:bg-[var(--org-primary)]="{$organization.branding?.primary_color}"
+		class:hover:bg-[var(--org-primary)]="{$organization.branding
+			?.primary_color}"
+		class:border-neutral="{$organization.branding?.primary_color}"
+		class:text-neutral="{$organization.branding?.primary_color}"
 	>
 		<Icon
 			icon="carbon:arrow-right
@@ -215,6 +222,11 @@
 	<div class="card-actions justify-end">
 		<button
 			class="btn btn-primary"
+			class:bg-[var(--org-primary)]="{$organization.branding?.primary_color}"
+			class:hover:bg-[var(--org-primary)]="{$organization.branding
+				?.primary_color}"
+			class:border-neutral="{$organization.branding?.primary_color}"
+			class:text-neutral="{$organization.branding?.primary_color}"
 			on:click="{() => {
 				clearInterval(countdown_interval);
 				stepController.previousStep();

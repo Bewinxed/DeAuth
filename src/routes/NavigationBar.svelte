@@ -44,7 +44,7 @@
 >
 	<div
 		class:rounded-t-none="{scrolled}"
-		class="navbar max-h-12 rounded-xl border border-gray-300 shadow bg-primary text-base-paper"
+		class="navbar max-h-12 rounded-xl border border-gray-300 bg-primary text-base-paper shadow"
 	>
 		<div class="navbar-start">
 			{#if $drawer.length > 0}
@@ -85,7 +85,7 @@
 				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 				<ul
 					tabindex="0"
-					class="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-primary text-base-paper p-2 shadow"
+					class="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-primary p-2 text-base-paper shadow"
 				>
 					<li><a href="/app">App</a></li>
 					<li>
@@ -100,7 +100,7 @@
 			</div>
 			<a
 				href="/"
-				class="font-display btn btn-ghost text-xl normal-case">DeAuth</a
+				class="btn btn-ghost font-display text-xl normal-case">DeAuth</a
 			>
 		</div>
 		<div class="navbar-center hidden lg:flex">
@@ -190,6 +190,11 @@
 						</a>
 					</li>
 					<li><a>Settings</a></li>
+					<li>
+						<a href="/login?redirect_uri={$page.url.pathname}"
+							>Connect Account</a
+						>
+					</li>
 					{#if $page.data.session}
 						<form
 							method="post"

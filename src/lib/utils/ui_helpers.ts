@@ -132,3 +132,24 @@ export const promise_toast = (promise: Promise<unknown>, opts?: {
 			});
 	});
 }
+
+// handle form submit, check form validity, if not, report validity, return form fields
+export function handle_form_submit<T>(event: Event<EventTarget>, required_fields: (keyof T)[] = []) {
+	event.preventDefault();
+	const form = event.target as HTMLFormElement;
+	if (!form) {
+		throw new Error('Could not find form');
+	}
+	if (!form.checkValidity()) {
+		form.reportValidity();
+		throw new Error('Form is invalid');
+	}
+	const form_data = new FormData(form);
+	const form_fields = Object.fromEntries(form_data.entries()) as T;
+	for (const field of required_fields) {
+		if (!form_fields[field]) {
+			throw new Error(`Missing required field: ${String(field)}`);
+		}
+	}
+	return form_fields as T
+}
