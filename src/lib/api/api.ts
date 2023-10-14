@@ -970,8 +970,13 @@ branding_id: null | number;
   created_at: Date;
   logo: null | string;
   primary_color: null | string;
+  primary_color_text: null | 'dark' | 'light';
   secondary_color: null | string;
+  secondary_color_text: null | 'dark' | 'light';
   background_color: null | string;
+  background_color_text: null | 'dark' | 'light';
+  background_image: null | string;
+  background_image_text: null | 'dark' | 'light';
   font: null | string;
   organization_id: null | string;
   application_id: null | string;
@@ -991,25 +996,7 @@ branding_id: null | number;
     PUT: {
       parameters: {
         path: { org_id: string;  },
-        body: {
-  id?: number;
-  created_at?: string | Date;
-  logo?: null | string;
-  primary_color?: null | string;
-  secondary_color?: null | string;
-  background_color?: null | string;
-  font?: null | string;
-  organization_id?: null | string;
-  application_id?: null | string;
-  updated_at?: string | Date;
-  modified_by_user_id?: null | string;
-  organization?: {
-    
-  };
-  application?: {
-    
-  };
-},
+        body?: never,
         query: { app_id?: string | null | undefined; },
       },
       responses: {
@@ -1018,8 +1005,13 @@ branding_id: null | number;
   created_at: Date;
   logo: null | string;
   primary_color: null | string;
+  primary_color_text: null | 'dark' | 'light';
   secondary_color: null | string;
+  secondary_color_text: null | 'dark' | 'light';
   background_color: null | string;
+  background_color_text: null | 'dark' | 'light';
+  background_image: null | string;
+  background_image_text: null | 'dark' | 'light';
   font: null | string;
   organization_id: null | string;
   application_id: null | string;
@@ -1116,14 +1108,8 @@ branding_id: null | number;
       },
       responses: {
         200: {
-  id: number;
-  from_user_id: string;
-  application_id: null | string;
-  organization_id: null | string;
-  key_id: string;
-  created_at: Date;
-  updated_at: Date;
-  modified_by_user_id: null | string;
+  username: null | string;
+  avatar_url: null | string;
 },
       }
       errors: {
@@ -1158,6 +1144,53 @@ branding_id: null | number;
       errors: {
         400: {
           message: 'Missing id',
+        },
+        401: {
+          message: 'Unauthorized',
+        },
+      }
+    },
+  },
+  'app/orgs/:org_id/members': {
+    GET: {
+      parameters: {
+        path: { org_id: string;  },
+        query: { limit: any; skip: any; sortBy?: import("/home/bewinxed/Downloads/GuardianGeckoBot/templates/solana-oauth/node_modules/.prisma/client/index").Prisma.SessionOrderByWithRelationInput | undefined; query: any; },
+      },
+      responses: {
+        200: Array<
+  { 
+  user: {
+    key: Array<
+      {
+        id: string;
+      }
+    >;
+    username: null | string;
+    avatar_url: null | string;
+  };
+  role_assignments: Array<
+    {
+      id: number;
+      app_role_id: number;
+      member_id: string;
+      created_at: Date;
+      updated_at: Date;
+      modified_by_user_id: null | string;
+    }
+  >;
+  id: string;
+  user_id: string;
+  application_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+   }
+>,
+      }
+      errors: {
+        400: {
+          message: 'Limit cannot be greater than 100',
         },
         401: {
           message: 'Unauthorized',

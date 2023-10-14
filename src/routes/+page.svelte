@@ -23,10 +23,10 @@
 	) {
 		let offset: number;
 		if (target) {
-			const targetElement = document.querySelector(target);
+			const targetElement = document.querySelector(target) as HTMLElement | null;
 			if (targetElement) {
 				offset = getOffsetTop(targetElement);
-				console.log(offset);
+				// console.log(offset);
 			} else {
 				console.error('Element with specified ID not found');
 				return;
@@ -107,16 +107,17 @@
 	bind:scrollY
 />
 
-<div data-theme={cta_hovered ? 'dark' : ''}
+<div
+	data-theme="{cta_hovered ? 'dark' : ''}"
 	class:invert="{cta_hovered}"
-	class="w-full  transition-all duration-500"
+	class="w-full transition-all duration-500"
 >
 	<main
 		class="container mx-auto my-auto flex w-full snap-y snap-mandatory flex-col gap-8 p-4"
 	>
 		<section
 			id="landing"
-			class="container relative h-screen snap-center"
+			class="container relative min-h-screen snap-center py-8"
 		>
 			<div class="flex w-full flex-col place-content-center place-items-center">
 				<span
@@ -141,7 +142,7 @@
 							y: 300,
 							easing: quintIn
 						}}"
-						class="text-left text-lg font-semibold font-serif"
+						class="text-left font-serif text-lg font-semibold"
 						>Have you been trying to implement web3 login? with social login?
 						signing messages? ledger support? security?<br /></span
 					>
@@ -177,7 +178,7 @@
 									});
 								}
 							}}"
-							class="btn chonk btn-primary btn-lg btn-wide animate-float rounded-full hover:drop-shadow-glow-solanablue font-display"
+							class="chonk btn btn-primary btn-lg btn-wide animate-float rounded-full font-display hover:drop-shadow-glow-solanablue"
 						>
 							YES 😭</button
 						>
@@ -203,7 +204,7 @@
 							});
 						}
 					}}"
-					class="btn btn-circle chonk btn-neutral btn-outline animate-float rounded-full"
+					class="chonk btn btn-circle btn-neutral btn-outline animate-float rounded-full"
 				>
 					<Icon
 						icon="carbon:chevron-down"
@@ -215,15 +216,16 @@
 		<!-- bento card grids -->
 		<section
 			id="features"
-			class="flex h-screen w-full snap-center flex-col gap-8"
+			class="relative flex min-h-screen w-full snap-center flex-col gap-8 py-8"
 		>
 			<!-- features title -->
 			<header
-				class="relative flex w-full flex-col place-content-center place-items-center"
+				class="flex w-full flex-col place-content-center place-items-center"
 			>
 				<!-- up button -->
 				<div
-					class="absolute left-1/2 right-1/2 top-[5%] mx-auto w-fit -translate-x-1/2"
+					id="features-up-button"
+					class="absolute left-1/2 right-1/2 top-[2%] mx-auto w-fit -translate-x-1/2"
 				>
 					<button
 						on:click="{() => {
@@ -233,7 +235,7 @@
 								behavior: 'smooth'
 							});
 						}}"
-						class="btn btn-circle btn-neutral chonk btn-outline animate-float rounded-full"
+						class="chonk btn btn-circle btn-neutral btn-outline animate-float rounded-full"
 					>
 						<Icon
 							icon="carbon:chevron-up"
@@ -241,6 +243,7 @@
 						/>
 					</button>
 				</div>
+
 				<span
 					class="text-center font-display text-[5rem] font-semibold sm:text-[9rem] md:text-[12rem] lg:text-[14rem] xl:text-[16rem]"
 					>Features.</span
@@ -380,7 +383,7 @@
 					</div>
 				</div>
 				<div
-					class="group card-body place-content-center rounded-3xl border-2 bg-base-100 p-8 text-base-content border-primary shadow-inner"
+					class="group card-body place-content-center rounded-3xl border-2 border-primary bg-base-100 p-8 text-base-content shadow-inner"
 				>
 					<!-- <figure class="h-10">
 					<Icon
@@ -482,7 +485,121 @@
 			</div>
 			<!-- huge button -->
 			<div
-				class="flex place-content-center place-items-center {cta_hovered
+				class="absolute bottom-[10%] left-1/2 right-1/2 mx-auto w-fit -translate-x-1/2"
+			>
+				<button
+					use:onScroll="{{
+						target: '#roadmap'
+					}}"
+					on:click="{() => {
+						// smooth scroll to features
+						const features = document.getElementById('roadmap');
+						if (features) {
+							// scroll 100px above
+							features.scrollIntoView({
+								behavior: 'smooth',
+								block: 'start',
+								inline: 'nearest'
+							});
+						}
+					}}"
+					class="chonk btn btn-circle btn-neutral btn-outline animate-float rounded-full"
+				>
+					<Icon
+						icon="carbon:chevron-down"
+						class="inline"
+					/>
+				</button>
+			</div>
+		</section>
+		<section
+			id="roadmap"
+			class="relative flex min-h-screen w-full snap-center flex-col gap-8 py-8"
+		>
+			<!-- features title -->
+			<header
+				class="flex w-full flex-col place-content-center place-items-center"
+			>
+				<!-- up button -->
+				<div
+					class="absolute left-1/2 right-1/2 top-[0%] mx-auto w-fit -translate-x-1/2"
+				>
+					<button
+						on:click="{() => {
+							// scroll to top of page
+							const features = document.getElementById('features');
+							if (features) {
+								// scroll 100px above
+								features.scrollIntoView({
+									behavior: 'smooth',
+									block: 'start',
+									inline: 'nearest'
+								});
+							}
+						}}"
+						class="chonk btn btn-circle btn-neutral btn-outline animate-float rounded-full"
+					>
+						<Icon
+							icon="carbon:chevron-up"
+							class="inline"
+						/>
+					</button>
+				</div>
+				<span
+					class="text-center font-display text-[5rem] font-semibold sm:text-[9rem] md:text-[12rem] lg:text-[14rem] xl:text-[16rem]"
+					>Roadmap.</span
+				>
+				<div class="h-fit rounded-full px-8 py-4 text-base-content underline">
+					<span
+						class="text-center text-[1rem] font-semibold sm:text-[2rem] md:text-[1rem] lg:text-[2rem]"
+						>On our way to become the #1 auth platform for web3.</span
+					>
+				</div>
+			</header>
+			<!-- huge card for title -->
+			<div
+				class="flex w-full flex-col place-content-center place-items-center gap-8 px-28"
+			>
+				<ul class="steps steps-vertical">
+					<li class="step step-primary">
+						<span
+							><Icon
+								icon="carbon:checkmark"
+								class="mr-1 inline"
+							/>Developer Satisfaction Testing</span
+						>
+					</li>
+					<li class="step">
+						<span
+							><Icon
+								icon="carbon:blockchain"
+								class="mr-1 inline"
+							/>Deploy smart contract</span
+						>
+					</li>
+					<li class="step">
+						<span
+							><Icon
+								icon="carbon:rocket"
+								class="mr-1 inline"
+							/>Convert all logic to be onchain</span
+						>
+					</li>
+
+					<li class="step">
+						<span
+							><Icon
+								icon="carbon:development"
+								class="mr-1 inline"
+							/>Develop SDKs for all major frameworks</span
+						>
+					</li>
+				</ul>
+			</div>
+
+			<!-- huge button -->
+			<div
+				class="flex min-h-[50vw] place-content-center place-items-center {cta_hovered
 					? ''
 					: ''}"
 			>
@@ -490,7 +607,7 @@
 					href="/app"
 					use:hoverAction
 					id="cta"
-					class="group btn btn-outline btn-lg w-full max-w-screen-sm overflow-hidden rounded-full hover:drop-shadow-glow-solanagreen chonk"
+					class="chonk group btn btn-outline btn-lg w-full max-w-screen-sm overflow-hidden rounded-full hover:drop-shadow-glow-solanagreen"
 				>
 					<span
 						class="text-3xl transition-transform group-hover:-translate-x-5"

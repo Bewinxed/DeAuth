@@ -69,7 +69,7 @@
 			} else {
 				// Reset modal position if not swiped too far
 				setModalPosition(0);
-				console.log(`position`, node.offsetHeight);
+				// console.log(`position`, node.offsetHeight);
 			}
 		};
 
@@ -135,7 +135,10 @@
 					></Icon>
 				</button>
 			</div>
-			<div on:touchmove|stopPropagation class="p-4 shadow-inner">
+			<div
+				on:touchmove|stopPropagation
+				class="p-4 shadow-inner"
+			>
 				<slot />
 			</div>
 			{#if $$slots.action}

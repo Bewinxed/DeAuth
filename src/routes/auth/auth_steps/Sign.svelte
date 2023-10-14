@@ -296,12 +296,21 @@
 	</div>
 	<div class="card-actions mt-4 justify-end">
 		<button
-			class="btn btn-primary"
-			class:bg-[var(--org-primary)]="{$organization.branding?.primary_color}"
-			class:hover:bg-[var(--org-primary)]="{$organization.branding
-				?.primary_color}"
-			class:border-neutral="{$organization.branding?.primary_color}"
-			class:text-neutral="{$organization.branding?.primary_color}"
+			class="btn"
+			class:btn-primary="{!(
+				$organization.branding?.primary_color ??
+				$application.branding?.primary_color
+			)}"
+			class:bg-[var(--branding-primary)]="{$organization.branding
+				?.primary_color ?? $application.branding?.primary_color}"
+			class:text-[var(--branding-primary-text)]="{$organization.branding
+				?.primary_color_text ?? $application.branding?.primary_color_text}"
+			class:hover:bg-[var(--branding-secondary)]="{$organization.branding
+				?.secondary_color ?? $application.branding?.secondary_color}"
+			class:hover:text-[var(--branding-secondary-text)]="{$organization.branding
+				?.secondary_color_text ?? $application.branding?.secondary_color_text}"
+			class:border-[var(--branding-secondary)]="{$organization.branding
+				?.secondary_color ?? $application.branding?.secondary_color}"
 			on:click="{stepController.previousStep}"
 		>
 			<Icon
@@ -313,12 +322,22 @@
 		{#if $page.data.session?.user}
 			<button
 				transition:slide="{{ axis: 'x' }}"
-				class="btn btn-primary"
-				class:bg-[var(--org-primary)]="{$organization.branding?.primary_color}"
-				class:hover:bg-[var(--org-primary)]="{$organization.branding
-					?.primary_color}"
-				class:border-neutral="{$organization.branding?.primary_color}"
-				class:text-neutral="{$organization.branding?.primary_color}"
+				class="btn"
+				class:btn-primary="{!(
+					$organization.branding?.primary_color ??
+					$application.branding?.primary_color
+				)}"
+				class:bg-[var(--branding-primary)]="{$organization.branding
+					?.primary_color ?? $application.branding?.primary_color}"
+				class:text-[var(--branding-primary-text)]="{$organization.branding
+					?.primary_color_text ?? $application.branding?.primary_color_text}"
+				class:hover:bg-[var(--branding-secondary)]="{$organization.branding
+					?.secondary_color ?? $application.branding?.secondary_color}"
+				class:hover:text-[var(--branding-secondary-text)]="{$organization
+					.branding?.secondary_color_text ??
+					$application.branding?.secondary_color_text}"
+				class:border-[var(--branding-secondary)]="{$organization.branding
+					?.secondary_color ?? $application.branding?.secondary_color}"
 				on:click="{stepController.nextStep}"
 			>
 				<Icon

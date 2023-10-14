@@ -31,16 +31,23 @@ export const PUT = async ({ locals, params, request, url }) => {
 
 	const app_id: string | null | undefined = url.searchParams.get('app_id');
 	const { org_id } = params;
-	const payload = (await request.json()) as Prisma.BrandingUncheckedCreateInput;
+	const {id, ...payload} = (await request.json()) as Prisma.BrandingUncheckedCreateInput;
+
+	console.log(app_id, org_id)
 
 	await is_authorized(session, org_id, app_id);
 
 	const branding = await prisma.branding.upsert({
 		where: {
-			id: payload.id
+			id: id ?? undefined,
+			organization_id: (app_id ? undefined : org_id) ?? undefined,
+			application_id: app_id ?? undefined
+
 		},
 		create: {
 			...payload,
+			organization_id: (app_id ? undefined : org_id) ?? undefined,
+			application_id: app_id ?? undefined,
 			organization: org_id
 				? {
 						connect: {

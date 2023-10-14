@@ -14,9 +14,13 @@
 	import { fly, slide } from 'svelte/transition';
 	import type { UserWithProfile } from '../store';
 	import NftList from './NftList.svelte';
-	import { getOrganization } from 'src/lib/components/data_contexts';
+	import {
+		getApplication,
+		getOrganization
+	} from 'src/lib/components/data_contexts';
 	const stepController = createStepController();
 	const organization = getOrganization();
+	const application = getApplication();
 
 	const svetch = get_svetch();
 
@@ -203,12 +207,21 @@
 		}).toString()}`}"
 		in:fly="{{ x: 100 }}"
 		out:fly="{{ x: -100 }}"
-		class="btn btn-outline"
-		class:bg-[var(--org-primary)]="{$organization.branding?.primary_color}"
-		class:hover:bg-[var(--org-primary)]="{$organization.branding
-			?.primary_color}"
-		class:border-neutral="{$organization.branding?.primary_color}"
-		class:text-neutral="{$organization.branding?.primary_color}"
+		class="btn"
+		class:btn-primary="{!(
+			$organization.branding?.primary_color ??
+			$application.branding?.primary_color
+		)}"
+		class:bg-[var(--branding-primary)]="{$organization.branding
+			?.primary_color ?? $application.branding?.primary_color}"
+		class:text-[var(--branding-primary-text)]="{$organization.branding
+			?.primary_color_text ?? $application.branding?.primary_color_text}"
+		class:hover:bg-[var(--branding-secondary)]="{$organization.branding
+			?.secondary_color ?? $application.branding?.secondary_color}"
+		class:hover:text-[var(--branding-secondary-text)]="{$organization.branding
+			?.secondary_color_text ?? $application.branding?.secondary_color_text}"
+		class:border-[var(--branding-secondary)]="{$organization.branding
+			?.secondary_color ?? $application.branding?.secondary_color}"
 	>
 		<Icon
 			icon="carbon:arrow-right
@@ -221,12 +234,21 @@
 
 	<div class="card-actions justify-end">
 		<button
-			class="btn btn-primary"
-			class:bg-[var(--org-primary)]="{$organization.branding?.primary_color}"
-			class:hover:bg-[var(--org-primary)]="{$organization.branding
-				?.primary_color}"
-			class:border-neutral="{$organization.branding?.primary_color}"
-			class:text-neutral="{$organization.branding?.primary_color}"
+			class="btn"
+			class:btn-primary="{!(
+				$organization.branding?.primary_color ??
+				$application.branding?.primary_color
+			)}"
+			class:bg-[var(--branding-secondary)]="{$organization.branding
+				?.secondary_color ?? $application.branding?.secondary_color}"
+			class:text-[var(--branding-secondary-text)]="{$organization.branding
+				?.secondary_color_text ?? $application.branding?.secondary_color_text}"
+			class:hover:bg-[var(--branding-primary)]="{$organization.branding
+				?.primary_color ?? $application.branding?.primary_color}"
+			class:hover:text-[var(--branding-primary-text)]="{$organization.branding
+				?.primary_color_text ?? $application.branding?.primary_color_text}"
+			class:border-[var(--branding-primary)]="{$organization.branding
+				?.primary_color ?? $application.branding?.primary_color}"
 			on:click="{() => {
 				clearInterval(countdown_interval);
 				stepController.previousStep();

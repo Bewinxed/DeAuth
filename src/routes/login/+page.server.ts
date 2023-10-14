@@ -5,6 +5,7 @@ import { auth } from 'src/lib/server/lucia.js';
 export const load= async ({locals, url, cookies}) => {
     const session = await locals.auth.validate()
 	const redirect_uri = url.searchParams.get("redirect_uri")
+	const app_id = url.searchParams.get("app_id")
 	if (redirect_uri) {
 		cookies.set("original_redirect_uri", redirect_uri, {
 			httpOnly: true,
@@ -14,6 +15,7 @@ export const load= async ({locals, url, cookies}) => {
 		});
 	}
     return {
+		app_id,
         session,
 		redirect_uri
     }

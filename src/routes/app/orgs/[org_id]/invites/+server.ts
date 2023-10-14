@@ -11,8 +11,7 @@ export const GET = async ({ locals, params }) => {
 
 	const invites = await prisma.invites.findMany({
 		where: {
-			organization_id: params.org_id,
-			application_id: null
+			application_id: params.org_id
 		}
 	});
 
@@ -28,19 +27,43 @@ export const PUT = async ({ locals, params, request }) => {
 	await is_authorized(session, params.org_id, null);
 
 	const payload = (await request.json()) as Prisma.InvitesUncheckedCreateInput;
-	const invite = await prisma.invites.create({
-		data: {
-			organization_id: params.org_id,
-			key_id: payload.key_id
-		}
-	}).catch((e) => {
-        // if the key does not exist
-        if (e.code === 'P2002') {
-            throw error(400, 'User does not exist');
+
+    await prisma.invites.deleteMany({
+        where: {
+            key_id: payload.key_id,
+            application_id: params.org_id
         }
-        throw error(500, 'Internal Server Error');
-    });
-	return json(invite);
+    })
+
+	const invite = await prisma.invites
+		.create({
+			data: {
+                from_user_id: session.user.userId,
+				organization_id: params.org_id,
+				key_id: payload.key_id
+			},
+            include: {
+                key: {
+                    include: {
+                        user: {
+                            select: {
+                                avatar_url: true,
+                                username: true
+                            }
+                        }
+                    }
+                }
+            }
+		})
+		.catch((e) => {
+			// if the key does not exist
+			if (e.code === 'P2003') {
+				throw error(400, 'User does not exist');
+			}
+            console.log(e)
+			throw error(500, 'Internal Server Error');
+		});
+	return json(invite.key.user);
 };
 
 export const DELETE = async ({ locals, url }) => {

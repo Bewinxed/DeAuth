@@ -257,20 +257,30 @@ model authentication_rule {
   @@map("authentication_rules")
 }
 
+enum TextColor {
+  dark
+  light
+}
+
 model Branding {
-  id                  Int           @id @default(autoincrement())
-  created_at          DateTime      @default(now())
-  logo                String? // URL of the logo image
-  primary_color       String? // Primary color hex code
-  secondary_color     String? // Secondary color hex code
-  background_color    String? // Background color hex code
-  font                String? // Font to be used
-  organization        Organization?
-  application         Application?
-  organization_id     String?       @unique
-  application_id      String?       @unique
-  updated_at          DateTime      @updatedAt
-  modified_by_user_id String?
+  id                    Int           @id @default(autoincrement())
+  created_at            DateTime      @default(now())
+  logo                  String?
+  primary_color         String?
+  primary_color_text    TextColor?
+  secondary_color       String?
+  secondary_color_text  TextColor?
+  background_color      String?
+  background_color_text TextColor?
+  background_image      String?
+  background_image_text TextColor?
+  font                  String?
+  organization          Organization?
+  application           Application?
+  organization_id       String?       @unique
+  application_id        String?       @unique
+  updated_at            DateTime      @updatedAt
+  modified_by_user_id   String?
 
   @@map("branding")
 }

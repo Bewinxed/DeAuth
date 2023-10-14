@@ -112,7 +112,7 @@
 						organization.id}"
 					animate:flip
 					out:fly
-					class="card card-compact border shadow-xl md:w-48"
+					class="card card-compact w-40 border shadow-xl md:w-48"
 					style:--org="org-{organization.id}"
 				>
 					<figure

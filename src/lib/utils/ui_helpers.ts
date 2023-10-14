@@ -1,4 +1,4 @@
-import type { CrudOperation, OAuthProvider } from "@prisma/client";
+import type { CrudOperation, OAuthProvider, TextColor } from "@prisma/client";
 import toast from "svelte-french-toast";
 
 export function typewriter(opts: {
@@ -152,4 +152,32 @@ export function handle_form_submit<T>(event: Event<EventTarget>, required_fields
 		}
 	}
 	return form_fields as T
+}
+
+function hex_to_rgb(hex: string): [number, number, number] {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+
+    return [r, g, b];
+}
+
+
+export function relative_luminance([r, g, b]: [number, number, number]): number {
+    const rs = r / 255;
+    const gs = g / 255;
+    const bs = b / 255;
+
+    const R = rs <= 0.03928 ? rs / 12.92 : Math.pow((rs + 0.055) / 1.055, 2.4);
+    const G = gs <= 0.03928 ? gs / 12.92 : Math.pow((gs + 0.055) / 1.055, 2.4);
+    const B = bs <= 0.03928 ? bs / 12.92 : Math.pow((bs + 0.055) / 1.055, 2.4);
+
+    return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+}
+
+export function is_color_dark(hex: string): boolean {
+    const rgb = hex_to_rgb(hex);
+    const luminance = relative_luminance(rgb);
+    return luminance > 0.5;
 }

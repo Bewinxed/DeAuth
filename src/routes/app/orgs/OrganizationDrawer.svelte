@@ -32,7 +32,7 @@
 				</AutoHiddenIcon>
 			</svelte:fragment>
 			<div
-				class="flex flex-col rounded-xl rounded-t-none border text-base-content shadow-inner md:p-1 pt-1"
+				class="flex flex-col rounded-xl rounded-t-none border pt-1 text-base-content shadow-inner md:p-1"
 			>
 				{#if org.applications.length === 0}
 					<!-- empty state -->
@@ -51,11 +51,11 @@
 					<!-- <div
 						class="place-content-start place-items-start rounded-xl border border-gray-300 shadow-inner"
 					> -->
-					<div class="md:shadow-inner border rounded-2xl ">
+					<div class="rounded-2xl border md:shadow-inner">
 						{#each org?.applications as application (application.id)}
 							{@const app_active = application.id === $page.params.app_id}
 							<div
-								class:!rounded-b-none={app_active}
+								class:!rounded-b-none="{app_active}"
 								class="rounded-none first:rounded-t-xl last:rounded-b-xl only:rounded-b-none"
 								animate:flip
 								transition:fly|local="{{ y: -50 }}"
@@ -79,7 +79,7 @@
 											icon="carbon:rule"
 											href="/app/orgs/{org.id}/apps/{application.id}#auth-rules"
 											class="btn-sm rounded-none first:rounded-none last:rounded-b-xl"
-											>Auth Rules</AutoHiddenIcon
+											>Auth Methods</AutoHiddenIcon
 										>
 										<!-- access tokens -->
 										<AutoHiddenIcon
@@ -90,18 +90,18 @@
 											>Access Tokens</AutoHiddenIcon
 										>
 										<AutoHiddenIcon
-											icon="carbon:user-role"
-											href="/app/orgs/{$page.params
-												.org_id}/apps/{application.id}#roles"
-											class="btn-sm rounded-none first:rounded-none last:rounded-b-xl"
-											>User Roles</AutoHiddenIcon
-										>
-										<AutoHiddenIcon
 											icon="carbon:link"
 											href="/app/orgs/{$page.params
 												.org_id}/apps/{application.id}#redirect-urls"
 											class="btn-sm rounded-none first:rounded-t-xl last:rounded-b-xl"
 											>Redirect URLs</AutoHiddenIcon
+										>
+										<AutoHiddenIcon
+											icon="carbon:color-palette"
+											href="/app/orgs/{$page.params
+												.org_id}/apps/{application.id}#branding"
+											class="btn-sm rounded-none first:rounded-t-xl last:rounded-b-xl"
+											>Branding</AutoHiddenIcon
 										>
 										<AutoHiddenIcon
 											icon="carbon:document"
@@ -110,7 +110,8 @@
 											class="btn-sm rounded-none first:rounded-t-xl last:rounded-b-xl"
 											>Login Log</AutoHiddenIcon
 										>
-										<div class="px-2 border-t"></div>
+
+										<div class="border-t px-2"></div>
 										<AutoHiddenIcon
 											icon="carbon:cloud-logging"
 											href="/app/orgs/{$page.params
@@ -125,6 +126,7 @@
 											class="btn-sm rounded-none first:rounded-t-xl last:rounded-b-xl"
 											>Sessions</AutoHiddenIcon
 										>
+										<!-- branding -->
 									</div>
 								</Collapsible>
 

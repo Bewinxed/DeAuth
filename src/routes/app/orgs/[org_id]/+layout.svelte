@@ -40,6 +40,7 @@
 
 <div class="flex w-full flex-col">
 	<!-- go back to organizations -->
+	
 	{#if $organization}
 		<div class="flex w-full flex-col place-items-start gap-4 border-b p-4">
 			<Breadcrumbs />
@@ -73,6 +74,7 @@
 			{/if}
 		</div>
 	{/if}
+	
 	<slot />
 </div>
 

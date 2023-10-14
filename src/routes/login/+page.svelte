@@ -1,12 +1,15 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { onDestroy, onMount } from 'svelte';
 
 	import Starfield from '$components/Starfield.svelte';
-	import { bounceInOut, cubicOut } from 'svelte/easing';
-	import { tweened } from 'svelte/motion';
-	import Icon from '@iconify/svelte';
 	import PromiseButton from 'src/lib/components/PromiseButton.svelte';
+	import { bounceInOut } from 'svelte/easing';
+	import { tweened } from 'svelte/motion';
+
+	export let data;
+
+	const { app_id, redirect_uri } = data;
 
 	let x = 0;
 	let y = 0;

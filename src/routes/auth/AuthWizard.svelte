@@ -49,7 +49,7 @@
 {#if mounted}
 	<div
 		transition:fade="{{ duration: 500 }}"
-		class="background relative mx-auto flex w-full flex-1 place-content-center place-items-center p-4 sm:p-16"
+		class="background relative mx-auto flex h-full w-full flex-1 place-content-center place-items-center p-4 sm:p-16"
 	>
 		<!-- {#if mounted}
 		<div transition:fade={{ delay: 300, duration: 300 }} class="absolute h-full w-full bg-neutral" />
@@ -60,7 +60,7 @@
 			class="background-animate card card-normal w-full place-content-center place-items-center gap-0 rounded-xl bg-gradient-to-br from-solanapurple via-oledblack to-solanagreen p-1 shadow-xl shadow-solanapurple sm:w-3/4 lg:w-2/3 xl:w-2/4 2xl:w-2/5"
 		>
 			<div
-				class="flex h-full w-full flex-1 flex-col place-content-center place-items-center justify-between rounded-lg bg-[var(--org-background)]"
+				class="flex h-full w-full flex-1 flex-col place-content-center place-items-center justify-between rounded-lg bg-[var(--branding-background)]"
 			>
 				{#if current_page > 0}
 					<div
@@ -138,7 +138,10 @@
 						{/if}
 					</div>
 				{:else}
-					<div transition:slide="{{ axis: 'y' }}">
+					<div
+						class="text-[var(--branding-background-text)]"
+						transition:slide="{{ axis: 'y' }}"
+					>
 						<div
 							class="relative flex w-full flex-col place-content-center place-items-center p-4"
 						>
@@ -289,7 +292,7 @@
 
 <style lang="postcss">
 	:global(html) {
-		background-color: theme(colors.gray.100);
+		background-color: var(--branding-background) !important;
 	}
 
 	.background-animate {
@@ -321,7 +324,7 @@
 			right: 0px;
 			bottom: 0px;
 			left: 0px;
-			opacity: 0.90;
+			opacity: 0.9;
 			mix-blend-mode: multiply;
 		}
 	}

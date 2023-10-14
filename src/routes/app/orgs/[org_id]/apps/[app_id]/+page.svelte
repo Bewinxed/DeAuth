@@ -12,15 +12,19 @@
 	import ModalButton from './ModalButton.svelte';
 	import Secrets from './Secrets.svelte';
 	import AnimatedAnchor from 'src/lib/components/AnimatedAnchor.svelte';
+	import Branding from '../../Branding.svelte';
 	const svetch = get_svetch();
 	const application = getApplication();
 </script>
 
 <div class="p-4">
-	<div class="flex flex-wrap justify-start gap-4 p-4">
+	<nav
+		style:--org="{'page-action-bar'}"
+		class="flex flex-wrap justify-start gap-4 p-4"
+	>
 		<AnimatedAnchor
 			href="{$page.url.pathname}/sessions"
-			class="btn btn-outline chonk"
+			class="chonk btn btn-outline"
 		>
 			<Icon
 				icon="carbon:cloud-logging"
@@ -30,7 +34,7 @@
 		</AnimatedAnchor>
 		<AnimatedAnchor
 			href="{$page.url.pathname}/access_control"
-			class="btn btn-outline chonk"
+			class="chonk btn btn-outline"
 		>
 			<Icon
 				icon="carbon:network-admin-control"
@@ -40,7 +44,7 @@
 		</AnimatedAnchor>
 		<AnimatedAnchor
 			href="{$page.url.pathname}/members"
-			class="btn btn-outline chonk"
+			class="chonk btn btn-outline"
 		>
 			<Icon
 				icon="carbon:user"
@@ -60,10 +64,10 @@
 			/>
 			Invite Users
 			<svelte:fragment slot="modal">
-				<InviteUser/>
+				<InviteUser />
 			</svelte:fragment>
 		</ModalButton>
-	</div>
+	</nav>
 	<div class="divider"></div>
 	<AuthRules id="auth-rules" />
 	<div class="divider"></div>
@@ -71,11 +75,16 @@
 	<div class="divider"></div>
 	<RedirectUrls id="redirect-urls" />
 	<div class="divider"></div>
+	<Branding branding="{$application.branding}" />
+	<div class="divider"></div>
 	<LoginLog id="login-log" />
 </div>
 
 <style>
 	:global(html) {
 		scroll-behavior: smooth;
+	}
+	nav {
+		view-transition-name: var(--org);
 	}
 </style>

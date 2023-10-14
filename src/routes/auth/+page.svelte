@@ -9,7 +9,7 @@
 	import base58 from 'bs58';
 	import AuthWizard from './AuthWizard.svelte';
 	import {
-	getApplication,
+		getApplication,
 		getOrganization,
 		setApplication,
 		setOrganization
@@ -20,7 +20,7 @@
 	setOrganization(data.organization);
 
 	const organization = getOrganization();
-	const application = getApplication()
+	const application = getApplication();
 
 	let isVerifying = false;
 	let verified = false;
@@ -205,13 +205,27 @@
 </script>
 
 <div
-	style:--org-primary="{$organization?.branding?.primary_color}"
-	style:--org-secondary="{$organization?.branding?.secondary_color}"
-	style:--org-background="{$organization?.branding?.background_color}"
-	style:--app-primary="{$application?.branding?.primary_color}"
-	style:--app-secondary="{$application?.branding?.secondary_color}"
-	style:--app-background="{$application?.branding?.background_color}"
-	class="bg-gradient-to-b from-white via-[var(--org-background)] to-[var(--org-background)] h-screen"
+	style:--branding-primary="{$application.branding?.primary_color ??
+		$organization.branding?.primary_color}"
+	style:--branding-secondary="{$application.branding?.secondary_color ??
+		$organization.branding?.secondary_color}"
+	style:--branding-background="{$application.branding?.background_color ??
+		$organization.branding?.background_color}"
+	style:--branding-primary-text="{($application.branding?.primary_color_text ??
+		$application.branding?.primary_color_text) === 'dark'
+		? 'black'
+		: 'white'}"
+	style:--branding-secondary-text="{($application.branding
+		?.secondary_color_text ?? $application.branding?.secondary_color_text) ===
+	'dark'
+		? 'black'
+		: 'white'}"
+	style:--branding-background-text="{($application.branding
+		?.background_color_text ?? $application.branding?.background_color_text) ===
+	'dark'
+		? 'black'
+		: 'white'}"
+	class="min-h-screen bg-gradient-to-b from-transparent via-[var(--branding-background)] to-[var(--branding-background)]"
 >
 	<AuthWizard />
 </div>

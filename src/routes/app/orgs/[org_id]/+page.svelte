@@ -13,12 +13,14 @@
 	import PromiseButton from '$components/PromiseButton.svelte';
 	import { getOrganization } from '$components/data_contexts.js';
 	import { flip } from 'svelte/animate';
-	import { fly } from 'svelte/transition';
+	import { fly, slide } from 'svelte/transition';
 	import ModalButton from './apps/[app_id]/ModalButton.svelte';
 	import AutoForm from 'src/lib/components/AutoForm.svelte';
 	import { handle_form_submit } from 'src/lib/utils/ui_helpers.js';
 	import Branding from './Branding.svelte';
+	import InviteUser from './apps/[app_id]/InviteUser.svelte';
 	export let data;
+	let customize_branding = false;
 	const organization = getOrganization();
 	let modal_open = false;
 
@@ -59,6 +61,58 @@
 </script>
 
 {#if $organization}
+	<nav
+		style:--org="page-action-bar"
+		class="flex flex-wrap justify-start gap-4 p-4"
+	>
+		<!-- invite users -->
+		<ModalButton
+			icon="carbon:user"
+			item_name="invite"
+			class="btn btn-outline"
+		>
+			<Icon
+				icon="carbon:send"
+				class=" inline"
+			/>
+			Invite Users
+			<svelte:fragment slot="modal">
+				<InviteUser />
+			</svelte:fragment>
+		</ModalButton>
+		<button
+			aria-pressed="{customize_branding}"
+			class:bg-neutral="{customize_branding}"
+			class:text-neutral-content="{customize_branding}"
+			class="chonk btn btn-outline"
+			on:click="{() => {
+				customize_branding = !customize_branding;
+			}}"
+		>
+			<figure class="transition-container">
+				{#key customize_branding}
+					<span
+						transition:fly="{{ y: 50 }}"
+						class="transition:fly"
+						><Icon
+							icon="{customize_branding
+								? 'carbon:chevron-up'
+								: 'carbon:color-palette'}"
+							class=" inline"
+						/></span
+					>
+				{/key}
+			</figure>
+
+			Customize Branding
+		</button>
+	</nav>
+	{#if customize_branding}
+		<div transition:slide="{{ axis: 'y' }}">
+			<Branding branding="{$organization.branding}" />
+		</div>
+	{/if}
+	<div class="divider"></div>
 	<header
 		style:--org="page-content-header"
 		class="flex place-content-start place-items-center justify-between gap-2 p-4"
@@ -120,7 +174,7 @@
 							application.id}"
 						class:scale-110="{$navigating?.to?.params?.app_id ===
 							application.id}"
-						class="card card-compact border shadow-xl md:w-36"
+						class="card-compact card w-40 border shadow-xl md:w-48"
 						style:--org="app-{application.id}"
 					>
 						<figure
@@ -239,7 +293,6 @@
 			>
 		{/if}
 	</div>
-	<Branding branding="{$organization.branding}" />
 {:else}
 	<p>No organization found</p>
 {/if}
@@ -252,6 +305,9 @@
 		view-transition-name: var(--org);
 	}
 	div > * > h2 > a {
+		view-transition-name: var(--org);
+	}
+	nav {
 		view-transition-name: var(--org);
 	}
 </style>
