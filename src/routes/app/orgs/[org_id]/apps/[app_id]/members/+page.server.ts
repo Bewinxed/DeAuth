@@ -17,7 +17,7 @@ export const load = async ({ params, parent, depends, url }) => {
 			role_assignments: true
 		},
 		take: 10,
-		skip: 10
+		skip: 0
 	});
 
 	depends('app:users');

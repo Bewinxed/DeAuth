@@ -98,7 +98,7 @@
 									/>
 								</div>
 								{#await svetch
-									.get( 'app/orgs/:org_id/apps/:app_id/users/:user_id', { path: { app_id: $page.params.app_id, org_id: $page.params.org_id, user_id: session.user_id }, query: { id: session.user_id } } )
+									.get( 'api/sessions/:session_id/member', { path: { session_id: session.id }, query: {  } } )
 									.then((res) => {
 										if (res.data) {
 											return res.data;
@@ -106,22 +106,24 @@
 										throw res.error;
 									})}
 									<span class="loading loading-dots loading-xs"></span>
-								{:then user}
+								{:then member}
 									<div class="flex items-center space-x-3">
 										<figure class="avatar block">
 											<div class="w-8 rounded">
 												<img
-													src="{user.avatar_url}"
-													alt="{user.id}'s avatar"
+													src="{member.avatar_url}"
+													alt="{member.id}'s avatar"
 													class="avatar"
 												/>
 											</div>
 										</figure>
 										<div>
-											<span class="font-bold">{user.username ?? 'User'}</span>
+											<span class="font-bold"
+												>{member.username ?? 'User'}</span
+											>
 											<div
 												class="tooltip tooltip-primary"
-												data-tip="{user.id}"
+												data-tip="{member.id}"
 											>
 												<Icon
 													icon="carbon:information"
@@ -130,9 +132,9 @@
 											</div>
 
 											<div class="flex gap-1">
-												{#each user.member[0].role_assignments as role}
+												{#each (member.roles ?? []) as role}
 													{@const app_role = $application.app_role.find(
-														(r) => r.id === role.app_role_id
+														(r) => r.name === role
 													)}
 													{#if app_role}
 														<span
@@ -210,21 +212,19 @@
 											tooltip="{'delete'}"
 											promise="{async () => {
 												await svetch
-													.delete('app/orgs/:org_id/apps/:app_id/redirects', {
+													.delete('api/sessions/:session_id', {
 														path: {
-															app_id: $page.params.app_id,
-															org_id: $page.params.org_id
-														},
-														query: {
-															id: session.id
+															session_id: session.id
 														}
 													})
 													.then((res) => {
 														if (res.data) {
-															$application.redirect_urls =
-																$application.redirect_urls.filter(
-																	(r) => r.id !== session.id
-																);
+															$sessions = {
+																...$sessions,
+																[current_page]: $sessions[current_page]?.filter(
+																	(s) => s.id !== session.id
+																)
+															};
 														}
 													});
 											}}"

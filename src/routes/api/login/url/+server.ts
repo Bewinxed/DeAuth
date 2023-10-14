@@ -1,17 +1,14 @@
-import { generateState } from "@lucia-auth/oauth/dist/core/oauth2";
+import { dev } from "$app/environment";
 import { error, type RequestHandler } from "@sveltejs/kit";
-import { solana_oauth } from "src/lib/server/lucia";
 import { prisma } from "src/lib/server/prisma";
-import crypto from 'crypto';
-import { v4 as uuid } from 'uuid';
 
 export const GET: RequestHandler = async ({request, url, cookies}) => {
     // get authorization headers
-    const access_token = request.headers.get("authorization");
+    const access_token = url.searchParams.get("access_token");
     if (!access_token) {
         throw error(401, 'Unauthorized');
     }
-    const refresh_token = request.headers.get("refresh_token");
+    const refresh_token = url.searchParams.get("refresh_token");
     if (!refresh_token) {
         throw error(401, 'Unauthorized');
     }
@@ -52,7 +49,7 @@ export const GET: RequestHandler = async ({request, url, cookies}) => {
         throw error(400, "Missing state")
     }
 
-    const new_url = new URL("https://www.deauth.xyz/auth")
+    const new_url = new URL( dev ? "http://127.0.0.1:5173/auth" : "https://www.deauth.xyz/auth")
     new_url.searchParams.set("state", state)
     new_url.searchParams.set("app_id", app_id)
     new_url.searchParams.set("redirect_uri", redirect_uri)

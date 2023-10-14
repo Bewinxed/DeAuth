@@ -372,6 +372,40 @@ export interface APIPaths {
       }
     },
   },
+  'api/login/url': {
+    GET: {
+      parameters: {
+        path?: never,
+        query: { access_token?: string | null; refresh_token?: string | null; app_id?: string | null; redirect_uri?: string | null; state?: string | null; },
+      },
+      responses: {
+        200: string,
+      }
+      errors: {
+        400: {
+          message: "Missing app_id",
+        } | {
+          message: "Missing redirect_uri",
+        } | {
+          message: "Invalid redirect_uri",
+        } | {
+          message: "Missing state",
+        },
+        401: {
+          message: 'Unauthorized',
+        } | {
+          message: 'Unauthorized',
+        } | {
+          message: "Invalid access_token",
+        } | {
+          message: "Invalid refresh_token",
+        },
+        404: {
+          message: "Application not found",
+        },
+      }
+    },
+  },
   'api/nfts/:public_key': {
     GET: {
       parameters: {
@@ -504,20 +538,7 @@ export interface APIPaths {
         query?: never,
       },
       responses: {
-        200: {
-  id: string;
-  created_at: Date;
-  active_expires: bigint;
-  idle_expires: bigint;
-  auth_request_id: null | number;
-  application_id: string;
-  user_id: string;
-  provider_account_id: string;
-  access_token: string;
-  refresh_token: string;
-  access_token_expires_in: number;
-  impersonating_user_id: null | string;
-},
+        200: string,
       }
       errors: {
         404: {
@@ -638,6 +659,57 @@ suspended_by_user_id: null | string;
           message: 'User not found nor created',
         } | {
           message: 'Session not found nor created',
+        },
+      }
+    },
+  },
+  'api/sessions/:session_id/member': {
+    GET: {
+      parameters: {
+        path: { session_id: string;  },
+        query: { access_token?: string | undefined; },
+      },
+      responses: {
+        200: {
+  id: string;
+  username?: null | string;
+  avatar_url?: null | string;
+  created_at: Date;
+  roles?: string[];
+  permissions: string[];
+},
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+        404: {
+          message: 'Session not found',
+        } | {
+          message: 'Member not found',
+        },
+      }
+    },
+  },
+  'api/sessions/:session_id/refresh': {
+    GET: {
+      parameters: {
+        path: { session_id: string;  },
+        query: { refresh_token?: string | null; },
+      },
+      responses: {
+        200: {
+          access_token_expires_in: number,
+        },
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        } | {
+          message: "Invalid refresh_token",
+        },
+        404: {
+          message: "Session not found",
         },
       }
     },
@@ -2346,6 +2418,31 @@ created_at: Date;
 updated_at: Date;
 modified_by_user_id: null | string;
  },
+      }
+      errors: {
+        401: {
+          message: 'Unauthorized',
+        },
+        404: {
+          message: 'User not found',
+        },
+      }
+    },
+    PUT: {
+      parameters: {
+        path: { org_id: string; app_id: string; member_id: string; role_id: string;  },
+        body?: never,
+        query?: never,
+      },
+      responses: {
+        200: {
+  id: number;
+  app_role_id: number;
+  member_id: string;
+  created_at: Date;
+  updated_at: Date;
+  modified_by_user_id: null | string;
+},
       }
       errors: {
         401: {

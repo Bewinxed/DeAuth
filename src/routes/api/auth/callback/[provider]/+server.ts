@@ -1,5 +1,5 @@
 // src/routes/auth/callback/+server.ts
-import type { OAuthProvider } from '@prisma/client';
+import type { OAuthProvider, Prisma } from '@prisma/client';
 import { error } from '@sveltejs/kit';
 import type { Auth } from 'lucia';
 import { auth, discord_oauth, solana_oauth } from 'src/lib/server/lucia';
@@ -209,3 +209,5 @@ export const GET: RequestHandler = async (request) => {
 		}
 	});
 };
+
+

@@ -126,6 +126,14 @@
 											class="btn-sm rounded-none first:rounded-t-xl last:rounded-b-xl"
 											>Sessions</AutoHiddenIcon
 										>
+										<!-- users -->
+										<AutoHiddenIcon
+											icon="carbon:user"
+											href="/app/orgs/{$page.params
+												.org_id}/apps/{application.id}/members"
+											class="btn-sm rounded-none first:rounded-t-xl last:rounded-b-xl"
+											>Members</AutoHiddenIcon
+										>
 										<!-- branding -->
 									</div>
 								</Collapsible>

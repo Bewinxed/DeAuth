@@ -89,8 +89,7 @@ export async function handle_existing_session({
 		provider,
 		session,
 		provider_user
-	}).then(() => find_user_by_id(existing_keys[0]?.user_id))
-	;
+	}).then(() => find_user_by_id(existing_keys[0]?.user_id));
 }
 
 async function add_key_to_user({
@@ -182,68 +181,67 @@ export async function handle_no_session({
 	);
 	if (existingUserId) {
 		console.debug(`Found existing user ${existingUserId}`);
-		await prisma.user
-			.update({
-				where: {
-					id: existingUserId
-				},
-				data: {
-					memberships: {
-						upsert: {
-							where: {
-								user_id_application_id: {
-									user_id: existingUserId,
-									application_id: application.id
-								}
-							},
-							create: {
-								application_id: application.id,
-								role_assignments: {
-									createMany: {
-										// only add default roles
-										skipDuplicates: true,
-										data: default_roles
-									}
-								}
-							},
-							update: {
-								role_assignments: {
-									createMany: {
-										skipDuplicates: true,
-										data: default_roles
-									}
+		await prisma.user.update({
+			where: {
+				id: existingUserId
+			},
+			data: {
+				memberships: {
+					upsert: {
+						where: {
+							user_id_application_id: {
+								user_id: existingUserId,
+								application_id: application.id
+							}
+						},
+						create: {
+							application_id: application.id,
+							role_assignments: {
+								createMany: {
+									// only add default roles
+									skipDuplicates: true,
+									data: default_roles
 								}
 							}
-						}
-					},
-					key: {
+						},
 						update: {
-							where: {
-								id: `${provider}:${provider_account_id}`
-							},
-							data: {
-								provider: provider,
-								account_id: provider_account_id,
-								additional_data: provider_user
+							role_assignments: {
+								createMany: {
+									skipDuplicates: true,
+									data: default_roles
+								}
 							}
 						}
 					}
 				},
-				include: {
-					memberships: {
+				key: {
+					update: {
 						where: {
-							application_id: application.id
+							id: `${provider}:${provider_account_id}`
 						},
-						include: {
-							role_assignments: {
-								where: {
-									app_role_id: application.app_role[0].id
-								}
+						data: {
+							provider: provider,
+							account_id: provider_account_id,
+							additional_data: provider_user
+						}
+					}
+				}
+			},
+			include: {
+				memberships: {
+					where: {
+						application_id: application.id
+					},
+					include: {
+						role_assignments: {
+							where: {
+								app_role_id: application.app_role[0].id
 							}
 						}
 					}
 				}
-			})
+			}
+		});
 
 		return find_user_by_id(existingUserId);
 	}
@@ -339,3 +337,85 @@ export async function create_new_user({
 			return user;
 		});
 }
+
+export function member_with_permissions(
+	member: Prisma.MemberGetPayload<{
+		include: {
+			user: {
+				select: {
+					username: true;
+					avatar_url: true;
+				};
+			};
+			role_assignments: {
+				select: {
+					app_role: {
+						include: {
+							assigned_permissions: {
+								include: {
+									permission: {
+										include: {
+											resource: {
+												select: {
+													key: true;
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+			assigned_permissions: {
+				include: {
+					app_role: {
+						select: {
+							name: true;
+						};
+					};
+					permission: {
+						include: {
+							resource: {
+								select: {
+									key: true;
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	}>
+): OAuthMember {
+	return {
+		id: member.id,
+		username: member.user.username,
+		avatar_url: member.user.avatar_url,
+		created_at: member.created_at,
+		roles: member.role_assignments.map((role) => role.app_role.name),
+		// join the key and the operation as key:operation and return as array of strings
+		permissions: [
+			...member.assigned_permissions.map(
+				(permission) =>
+					`${permission.permission.resource.key}:${permission.permission.operation}`
+			),
+			...member.role_assignments.map((role) =>
+				role.app_role.assigned_permissions.map(
+					(permission) =>
+						`${permission.permission.resource.key}:${permission.permission.operation}`
+				)
+			).flat()
+		]
+	};
+}
+
+type OAuthMember = {
+	id: string;
+	username?: string | null;
+	avatar_url?: string | null;
+	created_at: Date;
+	roles?: string[];
+	permissions: string[];
+};

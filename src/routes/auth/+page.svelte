@@ -225,7 +225,7 @@
 	'dark'
 		? 'black'
 		: 'white'}"
-	class="min-h-screen bg-gradient-to-b from-transparent via-[var(--branding-background)] to-[var(--branding-background)]"
+	class="min-h-screen w-full bg-gradient-to-b from-transparent via-[var(--branding-background)] to-[var(--branding-background)]"
 >
 	<AuthWizard />
 </div>

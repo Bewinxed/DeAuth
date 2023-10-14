@@ -16,7 +16,12 @@ export const GET = async ({ params }) => {
         throw error(404, 'Session not found');
     });
     
-	return json(session);
+	return new Response(JSON.stringify({
+        ...session,
+        access_token_expires_in: session.access_token_expires_in.toString(),
+        active_expires: session.active_expires.toString(),
+        idle_expires: session.idle_expires.toString(),
+    }))
 };
 
 
@@ -42,7 +47,8 @@ export const DELETE = async ({ locals, params}) => {
         }
     })
 
+    // serialize bigint
     return json({
-        id: session_id
+        id: session_data.id,
     })
 };

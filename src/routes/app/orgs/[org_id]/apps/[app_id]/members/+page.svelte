@@ -14,6 +14,9 @@
 	import { object_entries } from 'src/lib/utils/object_helpers';
 	import { onMount } from 'svelte';
 	import { goto, invalidate } from '$app/navigation';
+	import ContextMenu from 'src/lib/components/ContextMenu.svelte';
+	import { customDispatch } from 'src/lib/utils/event_helpers.js';
+	import { promise_toast } from 'src/lib/utils/ui_helpers.js';
 	const svetch = get_svetch();
 	export let data;
 	const application = getApplication();
@@ -140,23 +143,40 @@
 														<button
 															class="contents"
 															on:click="{() => {
-																svetch
-																	.delete(
-																		'app/orgs/:org_id/apps/:app_id/members/:member_id/roles/:role_id',
-																		{
-																			path: {
-																				app_id: $page.params.app_id,
-																				org_id: $page.params.org_id,
-																				role_id: role.id.toString(),
-																				member_id: member.id
+																promise_toast(
+																	svetch
+																		.delete(
+																			'app/orgs/:org_id/apps/:app_id/members/:member_id/roles/:role_id',
+																			{
+																				path: {
+																					app_id: $page.params.app_id,
+																					org_id: $page.params.org_id,
+																					role_id: role.id.toString(),
+																					member_id: member.id
+																				}
 																			}
-																		}
-																	)
-																	.then((res) => {
-																		if (res.data) {
-																			invalidate('app:users');
-																		}
-																	});
+																		)
+																		.then((res) => {
+																			if (res.data) {
+																				members = members?.map((m) => {
+																					if (m.id === member.id) {
+																						m.role_assignments =
+																							m.role_assignments.filter(
+																								(r) => r.id !== role.id
+																							);
+																					}
+																					return m;
+																				});
+																				invalidate('app:users');
+																			} else {
+																				throw res.error?.message;
+																			}
+																		}),
+																	{
+																		loading: `Removing role ${app_role.name}...`,
+																		success: `Removed role ${app_role.name}`
+																	}
+																);
 															}}"
 														>
 															<Icon
@@ -200,49 +220,119 @@
 
 								<div class="card-actions">
 									<!-- impersonation button  -->
-									<PromiseButton
-										icon="carbon:user-role"
-										class="btn btn-sm"
-										tooltip="{'impersonate'}"
-										promise="{async () => {
-											await fetch(
-												`${$page.url.pathname}/${member.user_id}/impersonate`
-											)
-												// handle redirect
-												.then((res) => {
-													if (res.redirected) {
-														// handle redirect
-														goto(res.url);
-													}
-												});
-										}}"
-									></PromiseButton>
-									<PromiseButton
-										icon="carbon:trash-can"
-										square
-										class="btn btn-error btn-sm"
-										tooltip="{'delete'}"
-										promise="{async () => {
-											await svetch
-												.delete('app/orgs/:org_id/apps/:app_id/redirects', {
-													path: {
-														app_id: $page.params.app_id,
-														org_id: $page.params.org_id
-													},
-													query: {
-														id: member.id
-													}
-												})
-												.then((res) => {
-													if (res.data) {
-														$application.redirect_urls =
-															$application.redirect_urls.filter(
-																(r) => r.id !== member.id
-															);
-													}
-												});
-										}}"
-									></PromiseButton>
+									<div
+										class="tooltip"
+										data-tip="Add Roles"
+									>
+										<ContextMenu hover>
+											<button class="btn btn-square btn-sm">
+												<Icon
+													icon="carbon:add"
+													class="inline"
+												/>
+											</button>
+											<svelte:fragment slot="menu">
+												{#each $application.app_role as role}
+													<li>
+														<button
+															class="btn btn-sm"
+															on:click="{() => {
+																promise_toast(
+																	svetch
+																		.put(
+																			'app/orgs/:org_id/apps/:app_id/members/:member_id/roles/:role_id',
+																			{
+																				path: {
+																					app_id: $page.params.app_id,
+																					org_id: $page.params.org_id,
+																					role_id: role.id.toString(),
+																					member_id: member.id
+																				}
+																			}
+																		)
+																		.then((res) => {
+																			if (res.data) {
+																				members = members?.map((m) => {
+																					if (m.id === member.id) {
+																						m.role_assignments = [
+																							...(m.role_assignments ?? []),
+																							res.data
+																						];
+																					}
+																					return m;
+																				});
+																				invalidate('app:users');
+																			} else {
+																				throw res.error?.message;
+																			}
+																		}),
+																	{
+																		loading: `Adding role ${role.name}...`,
+																		success: `Added role ${role.name}`
+																	}
+																);
+															}}"
+														>
+															{role.name}
+														</button>
+													</li>
+												{/each}
+											</svelte:fragment></ContextMenu
+										>
+									</div>
+									<div
+										class="tooltip"
+										data-tip="Impersonate member"
+									>
+										<PromiseButton
+											icon="carbon:user-role"
+											class="btn btn-sm"
+											tooltip="{'impersonate'}"
+											promise="{async () => {
+												await fetch(
+													`${$page.url.pathname}/${member.user_id}/impersonate`
+												)
+													// handle redirect
+													.then((res) => {
+														if (res.redirected) {
+															// handle redirect
+															goto(res.url);
+														}
+													});
+											}}"
+										></PromiseButton>
+									</div>
+									<div
+										class="tooltip"
+										data-tip="Delete member"
+									>
+										<PromiseButton
+											icon="carbon:trash-can"
+											square
+											class="btn btn-error btn-sm"
+											tooltip="{'delete'}"
+											promise="{async () => {
+												await svetch
+													.delete('app/orgs/:org_id/apps/:app_id/redirects', {
+														path: {
+															app_id: $page.params.app_id,
+															org_id: $page.params.org_id
+														},
+														query: {
+															id: member.id
+														}
+													})
+													.then((res) => {
+														if (res.data) {
+															$application.redirect_urls =
+																$application.redirect_urls.filter(
+																	(r) => r.id !== member.id
+																);
+														}
+													});
+											}}"
+										></PromiseButton>
+									</div>
 								</div>
 							</div>
 						</div>

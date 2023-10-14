@@ -203,7 +203,8 @@
 	<a
 		href="{`${$page.data.redirect_uri}?${new URLSearchParams({
 			app_id: $page.data.app_id,
-			state: $page.data.state
+			state: $page.data.state,
+			proof: $user_context.signature ?? ''
 		}).toString()}`}"
 		in:fly="{{ x: 100 }}"
 		out:fly="{{ x: -100 }}"

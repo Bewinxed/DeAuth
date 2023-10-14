@@ -7,22 +7,28 @@
 	export let description = '';
 	export let hover = false;
 	export let open = false;
-	const dispatcher = createEventDispatcher<{ close: void }>();
+	const close_dispatcher = createEventDispatcher<{ close: void }>();
+	const open_dispatcher = createEventDispatcher<{ open: void }>();
 </script>
 
 <div
-	class:dropdown-open="{open}"
 	class:dropdown-hover="{hover}"
+	class:dropdown-open="{open}"
 	class="dropdown w-fit"
 >
 	<label
+		on:open="{() => {
+			console.log('open');
+			open_dispatcher('open');
+			open = true;
+		}}"
 		tabindex="0"
 		class="{$$restProps.class}"><slot /></label
 	>
 
 	<div
 		tabindex="0"
-		class="dropdown-content dropdown-open z-[1] w-52 bg-transparent p-1"
+		class="dropdown-content z-[1] w-52 bg-transparent p-1"
 	>
 		<ul class="menu rounded-box bg-base-100 p-2 shadow-xl">
 			{#if title}
@@ -38,7 +44,7 @@
 					</a>
 				</li>
 			{/if}
-			<div
+			<div class="gap-0.5 contents"
 				on:click="{(e) => {
 					// get nearest label
 					open = false;
