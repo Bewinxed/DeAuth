@@ -5,6 +5,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 export default defineConfig({
 	plugins: [sveltekit(), nodePolyfills({
+		include: ['buffer', 'process', 'global'],
 		globals: {
 			Buffer: true,
 			process: true,
