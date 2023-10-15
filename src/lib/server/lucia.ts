@@ -34,8 +34,8 @@ export const auth = lucia({
 
 
 export const solana_oauth = solanaAuth(auth, {
-    uri: "http://127.0.0.1:5173/auth",
-    validationUri: "http://127.0.0.1:5173/api/auth/session",
+    uri: dev ? "http://127.0.0.1:5173/auth" : "https://deauth.xyz/api/auth",
+    validationUri: dev ? "http://127.0.0.1:5173/api/auth/session" : "https://deauth.xyz/api/auth/session",
     redirectUri: dev ? "http://127.0.0.1:5173/api/auth/callback/solana" : "https://deauth.xyz/api/auth/callback/solana",
     scope: ["scope1", "scope2"],
     rpc: "https://api.mainnet-beta.solana.com/",
