@@ -1,5 +1,11 @@
 {
   "name": "@deauth/sdk-universal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeAuthXyz/sdk-universal.git",
+    "directory": "packages/sdk-universal"
+  },
+
   "version": "1.0.1",
   "description": "Drop-In web3 auth",
   "main": "./dist/index.js",

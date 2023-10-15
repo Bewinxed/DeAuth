@@ -1,0 +1,498 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table users {
+  id String [pk]
+  name String
+  username String [unique]
+  avatar_url String
+  email String [unique]
+  created_at DateTime [default: `now()`, not null]
+  organization organizations [not null]
+  nfts nft [not null]
+  session sessions [not null]
+  impersonated_sessions sessions [not null]
+  key keys [not null]
+  auth_request auth_requests [not null]
+  user_role user_roles [not null]
+  updated_at DateTime [not null]
+  memberships members [not null]
+  FeatureFlagSetting feature_flag_settings [not null]
+  suspended_at DateTime
+  suspended_by_user_id String
+  AuditLog audit_logs [not null]
+  Invites application_invites [not null]
+}
+
+Table audit_logs {
+  id Int [pk, increment]
+  created_at DateTime [default: `now()`, not null]
+  user_id String
+  user users
+  application_id String
+  application applications
+  organization_id String
+  organization organizations
+  action String [not null]
+  data Json [not null]
+}
+
+Table auth_requests {
+  id Int [pk, increment]
+  application applications [not null]
+  uuid String [not null]
+  state String [not null]
+  nonce String [not null]
+  uri String [not null]
+  signature String
+  provider_access_token String
+  provider_refresh_token String
+  provider_access_token_expires_in Int
+  provider_account_id String
+  access_token String
+  refresh_token String
+  access_token_expires_in Int
+  user_id String
+  user users
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  application_id String [not null]
+  ip_address String
+  provider OAuthProvider [not null]
+  session sessions [not null]
+
+  indexes {
+    (application_id, state) [unique]
+  }
+}
+
+Table application_invites {
+  id Int [pk, increment]
+  from_user_id String [not null]
+  from_user users [not null]
+  application_id String
+  application applications
+  organization_id String
+  organization organizations
+  key_id String [not null]
+  key keys [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+}
+
+Table sessions {
+  id String [pk]
+  created_at DateTime [default: `now()`, not null]
+  active_expires BigInt [not null]
+  idle_expires BigInt [not null]
+  auth_request_id Int
+  auth_request auth_requests
+  application_id String [not null]
+  application applications [not null]
+  user_id String [not null]
+  user users [not null]
+  provider_account_id String [not null]
+  access_token String [not null]
+  refresh_token String [not null]
+  access_token_expires_in Int [not null]
+  impersonating_user_id String
+  impersonating_user users
+}
+
+Table keys {
+  id String [pk]
+  hashed_password String
+  user_id String [not null]
+  user users [not null]
+  provider OAuthProvider
+  account_id String [unique]
+  additional_data Json
+  Invites application_invites [not null]
+}
+
+Table nft {
+  id Int [pk, increment]
+  public_key String [not null]
+  image_url String [not null]
+  metadata Json [not null]
+  user_id String [not null]
+  user users [not null]
+}
+
+Table user_roles {
+  id Int [pk, increment]
+  role Role [not null]
+  user_id String [not null]
+  user users [not null]
+  organization_id String [not null]
+  organization organizations [not null]
+  assigned_permissions app_permission_assignments [not null]
+}
+
+Table app_roles {
+  id Int [pk, increment]
+  name String [not null, default: 'USER']
+  application_id String [not null]
+  application applications [not null]
+  app_role_assignment app_role_assignments [not null]
+  default_for_new_member Boolean [not null, default: false]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+  feature_flag_settings feature_flag_settings [not null]
+  assigned_permissions app_permission_assignments [not null]
+}
+
+Table members {
+  id String [pk]
+  user_id String [not null]
+  user users [not null]
+  application_id String [not null]
+  application applications [not null]
+  role_assignments app_role_assignments [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+  assigned_permissions app_permission_assignments [not null]
+
+  indexes {
+    (user_id, application_id) [unique]
+  }
+}
+
+Table app_role_assignments {
+  id Int [pk, increment]
+  app_role_id Int [not null]
+  app_role app_roles [not null]
+  member_id String [not null]
+  member members [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+
+  indexes {
+    (app_role_id, member_id) [unique]
+  }
+}
+
+Table organizations {
+  id String [pk]
+  name String [not null]
+  owner_id String [not null]
+  owner users [not null]
+  members user_roles [not null]
+  callback_urls String[] [not null]
+  applications applications [not null]
+  website String
+  privacy_policy_url String
+  terms_of_service_url String
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+  subscription subscriptions [not null]
+  branding_id Int [unique]
+  branding branding
+  Invites application_invites [not null]
+  AuditLog audit_logs [not null]
+}
+
+Table authentication_rules {
+  id Int [pk, increment]
+  created_at DateTime [default: `now()`, not null]
+  application_id String [not null]
+  application applications [not null]
+  provider OAuthProvider [not null]
+  is_required Boolean [not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+
+  indexes {
+    (application_id, provider) [unique]
+  }
+}
+
+Table branding {
+  id Int [pk, increment]
+  created_at DateTime [default: `now()`, not null]
+  logo String
+  primary_color String
+  primary_color_text TextColor
+  secondary_color String
+  secondary_color_text TextColor
+  background_color String
+  background_color_text TextColor
+  background_image String
+  background_image_text TextColor
+  font String
+  organization organizations
+  application applications
+  organization_id String [unique]
+  application_id String [unique]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+}
+
+Table redirect_urls {
+  id Int [pk, increment]
+  url String [not null]
+  application_id String [not null]
+  application applications [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+}
+
+Table applications {
+  id String [pk]
+  name String [not null]
+  description String
+  organization_id String [not null]
+  organization organizations [not null]
+  access_token_secret String [not null]
+  refresh_token_secret String [not null]
+  access_token_expiry Int [not null, default: 3600]
+  website String
+  privacy_policy_url String
+  terms_of_service_url String
+  refresh_token_expiry Int [not null, default: 2592000]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+  redirect_urls redirect_urls [not null]
+  created_at DateTime [default: `now()`, not null]
+  branding branding
+  branding_id Int [unique]
+  app_role app_roles [not null]
+  auth_request auth_requests [not null]
+  session sessions [not null]
+  user_access_controls user_access_controls [not null]
+  authentication_rule authentication_rules [not null]
+  member members [not null]
+  invites application_invites [not null]
+  AuditLog audit_logs [not null]
+  permissions app_permissions [not null]
+  resources app_resources [not null]
+}
+
+Table user_access_controls {
+  id Int [pk, increment]
+  created_at DateTime [default: `now()`, not null]
+  application_id String [not null]
+  application applications [not null]
+  provider OAuthProvider [not null]
+  account_id String [not null]
+  access_type AccessControlType [not null]
+  modified_by_user_id String
+}
+
+Table subscriptions {
+  id Int [pk, increment]
+  organization_id String [not null]
+  organization organizations [not null]
+  plan String [not null]
+  payment_method String [not null]
+  starts_at DateTime [default: `now()`, not null]
+  ends_at DateTime
+  updated_at DateTime [not null]
+}
+
+Table feature_flags {
+  id Int [pk, increment]
+  key_identifier String [unique, not null]
+  flag_type FeatureFlagType [not null]
+  flag_value String
+  FeatureFlagSetting feature_flag_settings [not null]
+}
+
+Table feature_flag_settings {
+  id Int [pk, increment]
+  feature_flag feature_flags [not null]
+  feature_flag_id Int [not null]
+  user users
+  user_id String
+  app_role app_roles
+  app_role_id Int
+  flag_value String [not null]
+}
+
+Table app_resources {
+  id Int [pk, increment]
+  key String [not null]
+  description String
+  application_id String [not null]
+  application applications [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+  permissions app_permissions [not null]
+
+  indexes {
+    (application_id, key) [unique]
+  }
+}
+
+Table app_permissions {
+  id Int [pk, increment]
+  operation CrudOperation [not null]
+  resource_id Int [not null]
+  resource app_resources [not null]
+  description String
+  default_for_new_role Boolean [not null, default: false]
+  parent_permission_id Int
+  parent_permission app_permissions
+  child_permissions app_permissions [not null]
+  application_id String [not null]
+  application applications [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+  assignments app_permission_assignments [not null]
+
+  indexes {
+    (application_id, resource_id, operation) [unique]
+  }
+}
+
+Table app_permission_assignments {
+  id Int [pk, increment]
+  permission_id Int [not null]
+  permission app_permissions [not null]
+  app_role_id Int
+  app_role app_roles
+  member_id String
+  member members
+  user_role user_roles
+  user_role_id Int
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  modified_by_user_id String
+
+  indexes {
+    (permission_id, app_role_id) [unique]
+    (permission_id, member_id) [unique]
+    (permission_id, user_role_id) [unique]
+  }
+}
+
+Enum Role {
+  OWNER
+  ADMIN
+  DEVELOPER
+  MEMBER
+  MODERATOR
+}
+
+Enum OAuthProvider {
+  discord
+  twitter
+  github
+  solana
+  ip_address
+}
+
+Enum TextColor {
+  dark
+  light
+}
+
+Enum AccessControlType {
+  WHITELIST
+  BLACKLIST
+}
+
+Enum FeatureFlagType {
+  BOOLEAN
+  STRING
+  INTEGER
+}
+
+Enum CrudOperation {
+  read
+  update
+  create
+  delete
+  all
+}
+
+Ref: audit_logs.user_id > users.id [delete: Cascade]
+
+Ref: audit_logs.application_id > applications.id [delete: Cascade]
+
+Ref: audit_logs.organization_id > organizations.id [delete: Cascade]
+
+Ref: auth_requests.application_id > applications.id [delete: Cascade]
+
+Ref: auth_requests.user_id > users.id [delete: Cascade]
+
+Ref: application_invites.from_user_id > users.id [delete: Cascade]
+
+Ref: application_invites.application_id > applications.id [delete: Cascade]
+
+Ref: application_invites.organization_id > organizations.id [delete: Cascade]
+
+Ref: application_invites.key_id > keys.id [delete: Cascade]
+
+Ref: sessions.auth_request_id > auth_requests.id [delete: Cascade]
+
+Ref: sessions.application_id > applications.id [delete: Cascade]
+
+Ref: sessions.user_id > users.id [delete: Cascade]
+
+Ref: sessions.impersonating_user_id > users.id [delete: Cascade]
+
+Ref: keys.user_id > users.id [delete: Cascade]
+
+Ref: nft.user_id > users.id [delete: Cascade]
+
+Ref: user_roles.user_id > users.id [delete: Cascade]
+
+Ref: user_roles.organization_id > organizations.id [delete: Cascade]
+
+Ref: app_roles.application_id > applications.id [delete: Cascade]
+
+Ref: members.user_id > users.id [delete: Cascade]
+
+Ref: members.application_id > applications.id [delete: Cascade]
+
+Ref: app_role_assignments.app_role_id > app_roles.id [delete: Cascade]
+
+Ref: app_role_assignments.member_id > members.id [delete: Cascade]
+
+Ref: organizations.owner_id > users.id [delete: Cascade]
+
+Ref: organizations.branding_id - branding.id
+
+Ref: authentication_rules.application_id > applications.id [delete: Cascade]
+
+Ref: redirect_urls.application_id > applications.id [delete: Cascade]
+
+Ref: applications.organization_id > organizations.id [delete: Cascade]
+
+Ref: applications.branding_id - branding.id
+
+Ref: user_access_controls.application_id > applications.id [delete: Cascade]
+
+Ref: subscriptions.organization_id > organizations.id
+
+Ref: feature_flag_settings.feature_flag_id > feature_flags.id
+
+Ref: feature_flag_settings.user_id > users.id
+
+Ref: feature_flag_settings.app_role_id > app_roles.id
+
+Ref: app_resources.application_id > applications.id [delete: Cascade]
+
+Ref: app_permissions.resource_id > app_resources.id [delete: Cascade]
+
+Ref: app_permissions.parent_permission_id - app_permissions.id
+
+Ref: app_permissions.application_id > applications.id [delete: Cascade]
+
+Ref: app_permission_assignments.permission_id > app_permissions.id [delete: Cascade]
+
+Ref: app_permission_assignments.app_role_id > app_roles.id [delete: Cascade]
+
+Ref: app_permission_assignments.member_id > members.id [delete: Cascade]
+
+Ref: app_permission_assignments.user_role_id > user_roles.id [delete: Cascade]
