@@ -206,23 +206,28 @@
 
 <div
 	style:--branding-primary="{$application.branding?.primary_color ??
-		$organization.branding?.primary_color}"
+		$organization.branding?.primary_color ??
+		'#796AC0'}"
 	style:--branding-secondary="{$application.branding?.secondary_color ??
-		$organization.branding?.secondary_color}"
+		$organization.branding?.secondary_color} ?? '#100f0f'"
 	style:--branding-background="{$application.branding?.background_color ??
-		$organization.branding?.background_color}"
+		$organization.branding?.background_color ??
+		'#FCFCFC'}"
 	style:--branding-primary-text="{($application.branding?.primary_color_text ??
-		$application.branding?.primary_color_text) === 'dark'
+		$application.branding?.primary_color_text ??
+		'dark') === 'dark'
 		? 'black'
 		: 'white'}"
 	style:--branding-secondary-text="{($application.branding
-		?.secondary_color_text ?? $application.branding?.secondary_color_text) ===
-	'dark'
+		?.secondary_color_text ??
+		$application.branding?.secondary_color_text ??
+		'dark') === 'dark'
 		? 'black'
 		: 'white'}"
 	style:--branding-background-text="{($application.branding
-		?.background_color_text ?? $application.branding?.background_color_text) ===
-	'dark'
+		?.background_color_text ??
+		$application.branding?.background_color_text ??
+		'dark') === 'dark'
 		? 'black'
 		: 'white'}"
 	class="min-h-screen w-full bg-gradient-to-b from-transparent via-[var(--branding-background)] to-[var(--branding-background)]"

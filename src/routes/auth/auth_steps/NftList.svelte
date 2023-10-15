@@ -46,7 +46,7 @@
 		>
 			{#each nfts ?? [] as nft, index (index)}
 				<button
-					class="card card-compact h-32 w-24 bg-base-200 p-1 shadow outline-base-300"
+					class="card card-compact h-32 w-24 overflow-hidden bg-base-200 p-1 shadow outline-base-300"
 					on:click="{() => selectNft(nft.id)}"
 				>
 					<figure class="h-3/4 w-full">
@@ -69,7 +69,7 @@
 					</figure>
 					<!-- <div class="card-body p-1"> -->
 					<!-- <div class="h-1/2 w-full"> -->
-					<h2 class="card-title truncate break-all text-xs">
+					<h2 class="card-title w-24 truncate break-all text-xs">
 						{nft.content?.metadata.name}
 					</h2>
 					<!-- </div> -->

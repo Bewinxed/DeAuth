@@ -13,8 +13,11 @@
 	import Secrets from './Secrets.svelte';
 	import AnimatedAnchor from 'src/lib/components/AnimatedAnchor.svelte';
 	import Branding from '../../Branding.svelte';
+	import { fly, slide } from 'svelte/transition';
 	const svetch = get_svetch();
 	const application = getApplication();
+
+	let customize_branding = false;
 </script>
 
 <div class="p-4">
@@ -67,6 +70,38 @@
 				<InviteUser />
 			</svelte:fragment>
 		</ModalButton>
+		<button
+			aria-pressed="{customize_branding}"
+			class:bg-neutral="{customize_branding}"
+			class:text-neutral-content="{customize_branding}"
+			class="chonk btn btn-outline"
+			on:click="{() => {
+				customize_branding = !customize_branding;
+			}}"
+		>
+			<figure class="transition-container">
+				{#key customize_branding}
+					<span
+						transition:fly="{{ y: 50 }}"
+						class="transition:fly"
+						><Icon
+							icon="{customize_branding
+								? 'carbon:chevron-up'
+								: 'carbon:color-palette'}"
+							class=" inline"
+						/></span
+					>
+				{/key}
+			</figure>
+
+			Customize Branding
+		</button>
+
+		{#if customize_branding}
+			<div transition:slide="{{ axis: 'y' }}">
+				<Branding branding="{$application.branding}" />
+			</div>
+		{/if}
 	</nav>
 	<div class="divider"></div>
 	<AuthRules id="auth-rules" />
@@ -74,8 +109,6 @@
 	<Secrets id="secrets" />
 	<div class="divider"></div>
 	<RedirectUrls id="redirect-urls" />
-	<div class="divider"></div>
-	<Branding branding="{$application.branding}" />
 	<div class="divider"></div>
 	<LoginLog id="login-log" />
 </div>
