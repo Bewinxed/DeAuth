@@ -23,7 +23,9 @@
 	) {
 		let offset: number;
 		if (target) {
-			const targetElement = document.querySelector(target) as HTMLElement | null;
+			const targetElement = document.querySelector(
+				target
+			) as HTMLElement | null;
 			if (targetElement) {
 				offset = getOffsetTop(targetElement);
 				// console.log(offset);
@@ -245,7 +247,7 @@
 				</div>
 
 				<span
-					class="text-center font-display text-[5rem] font-semibold sm:text-[9rem] md:text-[12rem] lg:text-[14rem] xl:text-[16rem]"
+					class="text-center font-display text-[5rem] font-semibold sm:text-[9rem] md:text-[10rem] lg:text-[14rem] xl:text-[16rem]"
 					>Features.</span
 				>
 				<div class="h-fit rounded-full px-8 py-4 text-base-content underline">
@@ -402,79 +404,8 @@
 						<ul
 							class="menu rounded-box menu-sm w-56 transition-all group-hover:menu-md"
 						>
-							<li class="transition-all">
-								<!-- no href -->
-								<a
-									class="transition-all"
-									href="{void 0}"
-									><Icon
-										icon="carbon:building"
-										class=" inline"
-									/>
-									Organization</a
-								>
-								<ul>
-									<li>
-										<a
-											class="transition-all"
-											href="{void 0}"
-											><Icon
-												icon="carbon:application"
-												class=" inline"
-											/>
-											Application 1</a
-										>
-										<a
-											class="transition-all"
-											href="{void 0}"
-											><Icon
-												icon="carbon:application"
-												class=" inline"
-											/>
-											Application 2</a
-										>
-										<ul>
-											<a
-												class="transition-all"
-												href="{void 0}"
-												><Icon
-													icon="carbon:user-role"
-													class=" inline"
-												/>
-												Role</a
-											>
-											<ul>
-												<li>
-													<a
-														class="transition-all"
-														href="{void 0}"
-													>
-														<!-- user -->
-														<Icon
-															icon="carbon:user"
-															class=" inline"
-														/>
-														User 1</a
-													>
-												</li>
-												<li>
-													<a
-														class="transition-all"
-														href="{void 0}"
-													>
-														<!-- user -->
-														<Icon
-															icon="carbon:user"
-															class=" inline"
-														/>
-														User 2</a
-													>
-												</li>
-											</ul>
-										</ul>
-									</li>
-								</ul>
-							</li>
+							<li><a href="{void 0}">Role/User specific permissions</a></li>
+							
 						</ul>
 						<span class="border-t-2 py-2">
 							Create organizations, applications, and more. Manage your users
@@ -546,7 +477,7 @@
 					</button>
 				</div>
 				<span
-					class="text-center font-display text-[5rem] font-semibold sm:text-[9rem] md:text-[12rem] lg:text-[14rem] xl:text-[16rem]"
+					class="text-center font-display text-[5rem] font-semibold sm:text-[9rem] md:text-[10rem] lg:text-[14rem] xl:text-[16rem]"
 					>Roadmap.</span
 				>
 				<div class="h-fit rounded-full px-8 py-4 text-base-content underline">

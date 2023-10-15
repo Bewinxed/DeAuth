@@ -8,7 +8,11 @@ export const load = async ({parent, params}) => {
         },
         include: {
             redirect_urls: true,
-            authentication_rule: true,
+            authentication_rule: {
+                where: {
+                    application_id: params.app_id
+                }
+            },
             auth_request: {
                 take: 10,
             },
