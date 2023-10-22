@@ -7,7 +7,16 @@ module.exports = {
 		'prettier'
 	],
 	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint', 'perfectionist'],
+	rules: {
+		'perfectionist/sort-objects': [
+			'error',
+			{
+				type: 'natural',
+				order: 'asc'
+			}
+		]
+	},
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 2020,
@@ -26,5 +35,6 @@ module.exports = {
 				parser: '@typescript-eslint/parser'
 			}
 		}
-	]
+	],
+	extends: ['plugin:perfectionist/recommended-natural']
 };

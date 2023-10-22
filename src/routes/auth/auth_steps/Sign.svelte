@@ -323,6 +323,9 @@
 			<button
 				transition:slide="{{ axis: 'x' }}"
 				class="btn"
+				class:btn-disabled="{!verified}"
+				disabled="{!verified}"
+				aria-disabled="{!verified}"
 				class:btn-primary="{!(
 					$organization.branding?.primary_color ??
 					$application.branding?.primary_color

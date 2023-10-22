@@ -11,6 +11,9 @@
     "explorer.sortOrder": "filesFirst",
     "explorer.compactFolders": false,
     "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 1000,
     "terminal.integrated.scrollback": 10000,
@@ -18,6 +21,7 @@
     "files.watcherExclude": {
         "**/.svelte-kit/**": true
     },
+    
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
     "javascript.inlayHints.variableTypes.enabled": true,

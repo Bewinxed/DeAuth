@@ -39,7 +39,7 @@
 	onMount(async () => {
 		$wallet_connect_visible = false;
 		if ($walletStore.connected) {
-			// stepController.nextStep();
+			stepController.nextStep();
 		}
 		const state = $page.url.searchParams.get('state');
 		if (state) {
@@ -111,20 +111,21 @@
 			class="card-actions justify-end"
 		>
 			<button
-			class:btn-primary="{!(
-				$organization.branding?.primary_color ??
-				$application.branding?.primary_color
-			)}"
-			class:bg-[var(--branding-primary)]="{$organization.branding
-				?.primary_color ?? $application.branding?.primary_color}"
-			class:text-[var(--branding-primary-text)]="{$organization.branding
-				?.primary_color_text ?? $application.branding?.primary_color_text}"
-			class:hover:bg-[var(--branding-secondary)]="{$organization.branding
-				?.secondary_color ?? $application.branding?.secondary_color}"
-			class:hover:text-[var(--branding-secondary-text)]="{$organization.branding
-				?.secondary_color_text ?? $application.branding?.secondary_color_text}"
-			class:border-[var(--branding-secondary)]="{$organization.branding
-				?.secondary_color ?? $application.branding?.secondary_color}"
+				class:btn-primary="{!(
+					$organization.branding?.primary_color ??
+					$application.branding?.primary_color
+				)}"
+				class:bg-[var(--branding-primary)]="{$organization.branding
+					?.primary_color ?? $application.branding?.primary_color}"
+				class:text-[var(--branding-primary-text)]="{$organization.branding
+					?.primary_color_text ?? $application.branding?.primary_color_text}"
+				class:hover:bg-[var(--branding-secondary)]="{$organization.branding
+					?.secondary_color ?? $application.branding?.secondary_color}"
+				class:hover:text-[var(--branding-secondary-text)]="{$organization
+					.branding?.secondary_color_text ??
+					$application.branding?.secondary_color_text}"
+				class:border-[var(--branding-secondary)]="{$organization.branding
+					?.secondary_color ?? $application.branding?.secondary_color}"
 				class="btn"
 				on:click="{stepController.nextStep}"
 			>

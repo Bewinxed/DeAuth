@@ -150,7 +150,7 @@
 					</details>
 				</li>
 				<li>
-					<a href="/documentation">
+					<a href="https://bewinxed.gitbook.io/deauth.xyz/">
 						<Icon
 							icon="carbon:document"
 							class="inline h-4 w-4"

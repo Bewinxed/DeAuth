@@ -76,26 +76,13 @@
 							method="post"
 							on:submit="{handleSubmit}"
 						>
-							<div class="form-control">
-								<label
-									class="label"
-									for="name"
-								>
-									<span class="label-text capitalize">name</span>
-								</label>
-								<input
-									type="text"
-									name="name"
-									placeholder=""
-									class="input input-bordered"
-									value="Untitled Organization"
-								/>
-							</div>
-							<button
-								type="submit"
-								class="chonk btn btn-primary btn-wide place-self-center justify-self-center"
-							>
-							</button>
+							<AutoForm
+								button
+								object="{{
+									name: 'Untitled Organization'
+								}}"
+								fields="{['name']}"
+							></AutoForm>
 						</form>
 					</svelte:fragment>
 				</ModalButton>
