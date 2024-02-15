@@ -12,7 +12,7 @@
     "explorer.compactFolders": false,
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.fixAll": true
+        "source.fixAll": "explicit"
     },
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 1000,
