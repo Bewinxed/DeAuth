@@ -8,7 +8,8 @@
 	import {
 		ConnectionProvider,
 		WalletProvider
-	} from '@svelte-on-solana/wallet-adapter-ui';
+	} from '@bewinxed/wallet-adapter-svelte';
+	import { WalletModalProvider } from '@bewinxed/wallet-adapter-svelte-ui';
 	import { setWalletConnectVisible as set_wallet_connect_visible } from 'src/lib/components/context';
 	import { onMount } from 'svelte';
 	import { Toaster } from 'svelte-french-toast';
@@ -55,22 +56,29 @@
 </svelte:head>
 
 <ViewTransition />
-<WalletProvider
-	{localStorageKey}
-	{wallets}
-	autoConnect
-/>
-<ConnectionProvider {network} />
-<Toaster  />
-<DrawerWrapper>
-	<NavigationBar />
-	<main class="sticky top-0 flex flex-1 overflow-x-clip">
-		<Drawer />
-		<!-- <div class="flex "> -->
-		<slot />
-		<!-- </div> -->
-	</main>
-</DrawerWrapper>
+<ConnectionProvider
+	config="{{}}"
+	endpoint="{network}"
+>
+	<WalletProvider
+		{localStorageKey}
+		{wallets}
+		autoConnect
+	>
+		<Toaster />
+		<DrawerWrapper>
+			<WalletModalProvider>
+				<NavigationBar />
+				<main class="sticky top-0 flex flex-1 overflow-x-clip">
+					<Drawer />
+					<!-- <div class="flex "> -->
+					<slot />
+					<!-- </div> -->
+				</main>
+			</WalletModalProvider>
+		</DrawerWrapper>
+	</WalletProvider>
+</ConnectionProvider>
 
 <!--translate 3d-->
 

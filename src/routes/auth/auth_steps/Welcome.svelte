@@ -1,29 +1,27 @@
 <script lang="ts">
-	import { createStepController } from '@efstajas/svelte-stepper';
 	import { page } from '$app/stores';
-	import type { Writable } from 'svelte/store';
-	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
-	import { onDestroy, onMount } from 'svelte';
+	import { WalletMultiButton } from '@bewinxed/wallet-adapter-svelte-ui';
+	import { createStepController } from '@efstajas/svelte-stepper';
 	import Icon from '@iconify/svelte';
-	import { get_svetch } from 'src/lib/context';
-	import type { UserWithProfile } from '../store';
-	import { fly, scale, slide } from 'svelte/transition';
+	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
+	import { get_wallet_connect_visible } from 'src/lib/components/context';
 	import {
 		getApplication,
 		getOrganization
 	} from 'src/lib/components/data_contexts';
-	import DoodleIpsum from 'src/lib/components/DoodleIpsum.svelte';
-	import {
-		WalletConnectButton,
-		WalletMultiButton
-	} from '@svelte-on-solana/wallet-adapter-ui';
-	import { get_wallet_connect_visible } from 'src/lib/components/context';
-	import { bounceInOut } from 'svelte/easing';
+	import { get_svetch } from 'src/lib/context';
+	import { onDestroy, onMount } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { slide } from 'svelte/transition';
+	import type { UserWithProfile } from '../store';
+	import { useSolana, useWallet } from '@bewinxed/wallet-adapter-svelte';
 	const stepController = createStepController();
 	const svetch = get_svetch();
 	const application = getApplication();
 	const organization = getOrganization();
 	const wallet_connect_visible = get_wallet_connect_visible();
+	const { context: solanaContext } = $derived(useSolana());
+	const { wallet } = $derived(solanaContext);
 
 	// $: if ($wallet_connect_visible !== undefined) {
 	// 	// @ts-ignore
@@ -44,7 +42,8 @@
 		const state = $page.url.searchParams.get('state');
 		if (state) {
 			await svetch
-				.get('api/auth/auth_requests', {
+				.get('/api/auth/auth_requests', {
+					path: {},
 					query: {
 						state
 					}
@@ -62,7 +61,11 @@
 		$wallet_connect_visible = true;
 	});
 
-	export let context: Writable<UserWithProfile>;
+	$effect(() => {
+		console.log(wallet);
+	});
+
+	let { context }: { context: Writable<UserWithProfile> } = $props();
 
 	const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 </script>
@@ -70,10 +73,10 @@
 <div
 	class="card-body flex-col place-content-center place-items-center justify-center !p-2 sm:!p-8"
 >
-	{#if !$walletStore.connected}
+	{#if !wallet}
 		<div
 			class="flex flex-col place-content-center place-items-center gap-2"
-			transition:slide="{{ axis: 'y' }}"
+			transition:slide={{ axis: 'y' }}
 		>
 			<span class="text-lg font-bold"> Click below to verify your wallet </span>
 			<span>
@@ -91,43 +94,38 @@
 			class=""
 		>
 			<div
-				on:click="{() => void 0}"
+				on:click={() => void 0}
 				role="button"
-				tabindex="{0}"
+				tabindex={0}
 				on:keydown
 			>
-				<WalletMultiButton
-					><span>
-						<!-- <Icon icon="formkit:solana" class=" inline" /> -->
-						Connect Wallet
-					</span></WalletMultiButton
-				>
+				<WalletMultiButton class="btn btn-primary " />
 			</div>
 		</div>
 	{/if}
-	{#if $walletStore.connected && $walletStore.publicKey}
+	{#if wallet && wallet.publicKey}
 		<div
 			transition:slide
 			class="card-actions justify-end"
 		>
 			<button
-				class:btn-primary="{!(
+				class:btn-primary={!(
 					$organization.branding?.primary_color ??
 					$application.branding?.primary_color
-				)}"
-				class:bg-[var(--branding-primary)]="{$organization.branding
-					?.primary_color ?? $application.branding?.primary_color}"
-				class:text-[var(--branding-primary-text)]="{$organization.branding
-					?.primary_color_text ?? $application.branding?.primary_color_text}"
-				class:hover:bg-[var(--branding-secondary)]="{$organization.branding
-					?.secondary_color ?? $application.branding?.secondary_color}"
-				class:hover:text-[var(--branding-secondary-text)]="{$organization
+				)}
+				class:bg-[var(--branding-primary)]={$organization.branding
+					?.primary_color ?? $application.branding?.primary_color}
+				class:text-[var(--branding-primary-text)]={$organization.branding
+					?.primary_color_text ?? $application.branding?.primary_color_text}
+				class:hover:bg-[var(--branding-secondary)]={$organization.branding
+					?.secondary_color ?? $application.branding?.secondary_color}
+				class:hover:text-[var(--branding-secondary-text)]={$organization
 					.branding?.secondary_color_text ??
-					$application.branding?.secondary_color_text}"
-				class:border-[var(--branding-secondary)]="{$organization.branding
-					?.secondary_color ?? $application.branding?.secondary_color}"
+					$application.branding?.secondary_color_text}
+				class:border-[var(--branding-secondary)]={$organization.branding
+					?.secondary_color ?? $application.branding?.secondary_color}
 				class="btn"
-				on:click="{stepController.nextStep}"
+				on:click={stepController.nextStep}
 			>
 				<Icon
 					class="h-5 w-5"

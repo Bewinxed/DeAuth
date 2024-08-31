@@ -1,4 +1,4 @@
-import { Svetch } from 'src/lib/api/client';
+import { Svetch } from 'src/lib/api/client.js';
 import { getContext, setContext } from 'svelte';
 
 export const set_svetch = () => setContext('svetch', new Svetch());
@@ -20,5 +20,3 @@ export const get_siws = () => {
 	}
 	return siws;
 };
-
-

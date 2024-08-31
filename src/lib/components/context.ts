@@ -1,11 +1,11 @@
-import { writable, type Writable } from 'svelte/store';
 import {
-	getContext,
-	setContext,
-	SvelteComponent,
 	type ComponentProps,
-	type ComponentType
+	type ComponentType,
+	type SvelteComponent,
+	getContext,
+	setContext
 } from 'svelte';
+import { type Writable, writable } from 'svelte/store';
 
 type DrawerStore = {
 	component: ComponentType;
@@ -47,11 +47,11 @@ const drawerStore = () => {
 	};
 
 	return {
-		subscribe: store.subscribe,
-		push,
 		pop,
-		unset,
-		remove
+		push,
+		remove,
+		subscribe: store.subscribe,
+		unset
 	};
 };
 

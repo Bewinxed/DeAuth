@@ -70,5 +70,5 @@
 
 <canvas
 	bind:this="{canvas}"
-	class="fixed left-0 top-0 z-0 h-screen w-screen"
+	class="fixed left-0 top-0 z-0 h-screen w-screen pointer-events-none"
 ></canvas>

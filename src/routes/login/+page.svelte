@@ -22,8 +22,6 @@
 	let innerWidth: number;
 	let innerHeight: number;
 
-	let canvas: HTMLCanvasElement;
-
 	let signInDiv: HTMLElement;
 
 	onMount(() => {
@@ -155,9 +153,9 @@
 		animation: rotateBackground 3s ease infinite;
 	}
 
-	html {
+	/* html {
 		background-color: black;
-	}
+	} */
 
 	@keyframes rotateBackground {
 		0%,

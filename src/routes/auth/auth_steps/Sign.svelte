@@ -9,7 +9,6 @@
 		SolanaSignInInput,
 		SolanaSignInOutput
 	} from '@solana/wallet-standard-features';
-	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 	import base58 from 'bs58';
 	const organization = getOrganization();
 	let isVerifying = false;
@@ -17,24 +16,30 @@
 	let signature: string;
 	const user_context = getContext<Writable<Partial<UserWithProfile>>>('user');
 
-	export let context: Writable<UserWithProfile>;
+	const { context: solanaContext } = $derived(useSolana());
+	const { wallet } = $derived(solanaContext);
+
+	let { context }: { context: Writable<UserWithProfile> } = $props();
 
 	const siws = async (
 		message: SolanaSignInInput
 	): Promise<SolanaSignInOutput> => {
-		if (!$walletStore.publicKey) throw new Error('Wallet not connected');
+		if (!wallet?.publicKey) throw new Error('Wallet not connected');
 
-		// @ts-ignore
-		if ($walletStore?.adapter?._wallet?.signIn) {
-			const output: SolanaSignInOutput =
+		if (wallet.signIn) {
+			const output =
 				// @ts-ignore
-				await $walletStore.adapter._wallet?.signIn(message);
+				await wallet.signIn(message);
 
-			if (!$walletStore?.publicKey) {
+			if (output instanceof Error) {
+				throw output;
+			}
+
+			if (!wallet.publicKey) {
 				throw new Error('Wallet not connected');
 			}
 
-			const res = await svetch.post('api/siws/message/verify', {
+			const res = await svetch.post('/api/siws/message/verify', {
 				query: {
 					state: state
 				},
@@ -44,12 +49,12 @@
 						signature: base58.encode(output.signature),
 						signedMessage: base58.encode(output.signedMessage),
 						account: {
-							publicKey: $walletStore.publicKey.toBase58(),
-							address: $walletStore.publicKey.toBase58(),
+							publicKey: wallet.publicKey.toBase58(),
+							address: wallet.publicKey.toBase58(),
 							chains: ['solana'],
 							features: ['signing'],
-							icon: $walletStore.adapter?.icon,
-							label: $walletStore.adapter?.name
+							icon: wallet.adapter?.icon,
+							label: wallet.adapter?.name
 						},
 						signatureType: 'ed25519'
 					}
@@ -78,13 +83,13 @@
 		message: SolanaSignInInput,
 		legacy_message: string
 	) => {
-		if (!$walletStore.publicKey) return;
+		if (!wallet?.publicKey) return;
 		// If the signIn feature is not available, return true
 		// if $walletStore?.adapter?._wallet?.signIn exists
 		// @ts-ignore
 		const encodedMessage = new TextEncoder().encode(legacy_message);
 
-		if (!$walletStore.signMessage) {
+		if (!wallet.signMessage) {
 			// toast.push('Wallet does not support signing messages, Falling back to ledger signing');
 
 			isVerifying = false;
@@ -92,69 +97,66 @@
 			return;
 		}
 
-		const signedMessage = await $walletStore?.signMessage(encodedMessage);
+		const signedMessage = await wallet.signMessage(encodedMessage);
 
-		if (signedMessage) {
-			const verification = await svetch.post('api/siws/message/verify', {
-				query: {
-					state: state
-				},
-				body: {
-					input: message,
-					output: {
-						signature: base58.encode(signedMessage),
-						signedMessage: legacy_message,
-						account: {
-							address: $walletStore.publicKey.toBase58(),
-							publicKey: $walletStore.publicKey.toBase58(),
-							chains: ['solana'],
-							features: ['signing'],
-							icon: $walletStore.adapter?.icon,
-							label: $walletStore.adapter?.name
-						},
-						signatureType: 'legacy'
-					}
+		if (signedMessage instanceof Error) {
+			throw signedMessage;
+		}
+
+		const verification = await svetch.post('/api/siws/message/verify', {
+			query: {
+				state: state
+			},
+			body: {
+				input: message,
+				output: {
+					signature: base58.encode(signedMessage),
+					signedMessage: legacy_message,
+					account: {
+						address: wallet.publicKey.toBase58(),
+						publicKey: wallet.publicKey.toBase58(),
+						chains: ['solana'],
+						features: ['signing'],
+						icon: wallet.adapter?.icon,
+						label: wallet.adapter?.name
+					},
+					signatureType: 'legacy'
 				}
-			});
-
-			if (verification.data) {
-				user_context.set({
-					...verification.data.user,
-					signature: base58.encode(signedMessage)
-				});
-				console.log('user context', $user_context);
-				signature = base58.encode(signedMessage);
-				isVerifying = false;
-				verified = true;
-				return true;
-			} else {
-				isVerifying = false;
-				verified = false;
-				throw new Error('Failed to verify message', {
-					cause: verification.error
-				});
 			}
+		});
+
+		if (verification.data) {
+			user_context.set({
+				...verification.data.user,
+				signature: base58.encode(signedMessage)
+			});
+			console.log('user context', $user_context);
+			signature = base58.encode(signedMessage);
+			isVerifying = false;
+			verified = true;
+			return true;
+		} else {
+			isVerifying = false;
+			verified = false;
+			throw new Error('Failed to verify message', {
+				cause: verification.error
+			});
 		}
 	};
 
 	const signMessage = async () => {
-		if (
-			!$walletStore ||
-			!$walletStore.publicKey ||
-			// @ts-ignore
-			!$walletStore.adapter?._wallet
-		) {
+		if (!wallet || !wallet.publicKey) {
 			throw new Error('Wallet not connected');
 		}
 
-		if (!$walletStore) return;
+		if (!wallet) return;
 
 		isVerifying = true;
 
 		const message = await svetch
-			.get('api/siws/message/:app_id/:public_key/generate', {
+			.get('/api/siws/message/:app_id/:public_key/generate', {
 				path: {
-					public_key: $walletStore.publicKey.toBase58(),
+					public_key: wallet.publicKey.toBase58(),
 					app_id: app_id
 				},
 				query: {
@@ -209,7 +211,7 @@
 	};
 
 	import { page } from '$app/stores';
-	import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
+	import { WalletMultiButton } from '@bewinxed/wallet-adapter-svelte-ui';
 	import { get_wallet_connect_visible } from 'src/lib/components/context';
 	import {
 		getApplication,
@@ -220,6 +222,7 @@
 	import type { Writable } from 'svelte/store';
 	import { getContext, onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
+	import { useSolana } from '@bewinxed/wallet-adapter-svelte';
 	const stepController = createStepController();
 	const svetch = get_svetch();
 	const application = getApplication();
@@ -241,7 +244,7 @@
 	{#if !verified}
 		<div
 			class="flex flex-col place-content-center place-items-center gap-2"
-			transition:slide="{{ axis: 'y' }}"
+			transition:slide={{ axis: 'y' }}
 		>
 			<span class="text-lg font-bold"> Click below to verify your wallet </span>
 			<span>
@@ -254,15 +257,15 @@
 	{/if}
 
 	<div class="transition-container">
-		{#if !$walletStore.connected && $wallet_connect_visible === false}
+		{#if !wallet && $wallet_connect_visible === false}
 			<div
 				class="wallet-connect"
-				out:slide="{{ axis: 'y' }}"
+				out:slide={{ axis: 'y' }}
 			>
 				<div
-					on:click="{() => void 0}"
+					on:click={() => void 0}
 					role="button"
-					tabindex="{0}"
+					tabindex={0}
 					on:keydown
 				>
 					<WalletMultiButton
@@ -275,12 +278,12 @@
 			</div>
 		{:else if !verified}
 			<button
-				in:fly="{{ x: 100 }}"
-				out:fly="{{ x: -100 }}"
-				class:animate-bounce="{isVerifying}"
+				in:fly={{ x: 100 }}
+				out:fly={{ x: -100 }}
+				class:animate-bounce={isVerifying}
 				class="wallet-adapter-button wallet-adapter-button-trigger"
-				disabled="{isVerifying}"
-				on:click="{signMessage}"
+				disabled={isVerifying}
+				on:click={signMessage}
 			>
 				<span>
 					{#if isVerifying}
@@ -297,21 +300,21 @@
 	<div class="card-actions mt-4 justify-end">
 		<button
 			class="btn"
-			class:btn-primary="{!(
+			class:btn-primary={!(
 				$organization.branding?.primary_color ??
 				$application.branding?.primary_color
-			)}"
-			class:bg-[var(--branding-primary)]="{$organization.branding
-				?.primary_color ?? $application.branding?.primary_color}"
-			class:text-[var(--branding-primary-text)]="{$organization.branding
-				?.primary_color_text ?? $application.branding?.primary_color_text}"
-			class:hover:bg-[var(--branding-secondary)]="{$organization.branding
-				?.secondary_color ?? $application.branding?.secondary_color}"
-			class:hover:text-[var(--branding-secondary-text)]="{$organization.branding
-				?.secondary_color_text ?? $application.branding?.secondary_color_text}"
-			class:border-[var(--branding-secondary)]="{$organization.branding
-				?.secondary_color ?? $application.branding?.secondary_color}"
-			on:click="{stepController.previousStep}"
+			)}
+			class:bg-[var(--branding-primary)]={$organization.branding
+				?.primary_color ?? $application.branding?.primary_color}
+			class:text-[var(--branding-primary-text)]={$organization.branding
+				?.primary_color_text ?? $application.branding?.primary_color_text}
+			class:hover:bg-[var(--branding-secondary)]={$organization.branding
+				?.secondary_color ?? $application.branding?.secondary_color}
+			class:hover:text-[var(--branding-secondary-text)]={$organization.branding
+				?.secondary_color_text ?? $application.branding?.secondary_color_text}
+			class:border-[var(--branding-secondary)]={$organization.branding
+				?.secondary_color ?? $application.branding?.secondary_color}
+			on:click={stepController.previousStep}
 		>
 			<Icon
 				class="h-5 w-5"
@@ -321,27 +324,27 @@
 		>
 		{#if $page.data.session?.user}
 			<button
-				transition:slide="{{ axis: 'x' }}"
+				transition:slide={{ axis: 'x' }}
 				class="btn"
-				class:btn-disabled="{!verified}"
-				disabled="{!verified}"
-				aria-disabled="{!verified}"
-				class:btn-primary="{!(
+				class:btn-disabled={!verified}
+				disabled={!verified}
+				aria-disabled={!verified}
+				class:btn-primary={!(
 					$organization.branding?.primary_color ??
 					$application.branding?.primary_color
-				)}"
-				class:bg-[var(--branding-primary)]="{$organization.branding
-					?.primary_color ?? $application.branding?.primary_color}"
-				class:text-[var(--branding-primary-text)]="{$organization.branding
-					?.primary_color_text ?? $application.branding?.primary_color_text}"
-				class:hover:bg-[var(--branding-secondary)]="{$organization.branding
-					?.secondary_color ?? $application.branding?.secondary_color}"
-				class:hover:text-[var(--branding-secondary-text)]="{$organization
+				)}
+				class:bg-[var(--branding-primary)]={$organization.branding
+					?.primary_color ?? $application.branding?.primary_color}
+				class:text-[var(--branding-primary-text)]={$organization.branding
+					?.primary_color_text ?? $application.branding?.primary_color_text}
+				class:hover:bg-[var(--branding-secondary)]={$organization.branding
+					?.secondary_color ?? $application.branding?.secondary_color}
+				class:hover:text-[var(--branding-secondary-text)]={$organization
 					.branding?.secondary_color_text ??
-					$application.branding?.secondary_color_text}"
-				class:border-[var(--branding-secondary)]="{$organization.branding
-					?.secondary_color ?? $application.branding?.secondary_color}"
-				on:click="{stepController.nextStep}"
+					$application.branding?.secondary_color_text}
+				class:border-[var(--branding-secondary)]={$organization.branding
+					?.secondary_color ?? $application.branding?.secondary_color}
+				on:click={stepController.nextStep}
 			>
 				<Icon
 					class="h-5 w-5"

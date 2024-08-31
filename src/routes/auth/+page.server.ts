@@ -9,25 +9,22 @@ export const load = async ({ url }) => {
 	if (SEED === 'TRUE') {
 		await prisma.user
 			.upsert({
-				where: {
-					id: DEFAULT_APP_ID
-				},
 				create: {
+					email: 'bewinxed@gmail.com',
 					id: DEFAULT_APP_ID,
-					name: 'DeAuth',
-					email: 'bewinxed@gmail.com'
+					name: 'DeAuth'
 				},
 				update: {
-					name: 'DeAuth',
-					email: 'bewinxed@gmail.com'
+					email: 'bewinxed@gmail.com',
+					name: 'DeAuth'
+				},
+				where: {
+					id: DEFAULT_APP_ID
 				}
 			})
 			.catch(() => {});
 		await prisma.organization
 			.upsert({
-				where: {
-					id: DEFAULT_APP_ID
-				},
 				create: {
 					id: DEFAULT_APP_ID,
 					name: 'DeAuth',
@@ -36,65 +33,57 @@ export const load = async ({ url }) => {
 				update: {
 					name: 'DeAuth',
 					owner_id: DEFAULT_APP_ID
+				},
+				where: {
+					id: DEFAULT_APP_ID
 				}
 			})
 			.catch(() => {});
 		await prisma.application
 			.upsert({
-				where: {
-					id: DEFAULT_APP_ID
-				},
 				create: {
-					id: DEFAULT_APP_ID,
-					name: 'DeAuth',
-					organization_id: DEFAULT_APP_ID,
 					access_token_secret: crypto.randomBytes(32).toString('hex'),
-					refresh_token_secret: crypto.randomBytes(32).toString('hex'),
-					authentication_rule: {
-						createMany: {
-							data: [
-								{
-									provider: 'discord',
-									is_required: false
-								},
-								{
-									provider: 'solana',
-									is_required: false
-								}
-							]
-						}
-					},
-					member: {
-						create: {
-							id: DEFAULT_APP_ID,
-							user_id: DEFAULT_APP_ID,
-						}
-					},
 					app_role: {
 						create: {
-							id: 1,
 							app_role_assignment: {
 								create: {
 									id: 1,
 									member_id: DEFAULT_APP_ID,
 									
 								}
-							}
+							},
+							id: 1
 						}
-					}
-					
-				},
-				update: {
-					name: 'DeAuth',
+					},
+					authentication_rule: {
+						createMany: {
+							data: [
+								{
+									is_required: false,
+									provider: 'discord'
+								},
+								{
+									is_required: false,
+									provider: 'solana'
+								}
+							]
+						}
+					},
+					id: DEFAULT_APP_ID,
 					member: {
 						create: {
 							id: DEFAULT_APP_ID,
 							user_id: DEFAULT_APP_ID,
 						}
 					},
+					name: 'DeAuth',
+					organization_id: DEFAULT_APP_ID,
+					refresh_token_secret: crypto.randomBytes(32).toString('hex')
+					
+				},
+				update: {
 					app_role: {
 						create: {
-							id: 1,
 							app_role_assignment: {
 								
 								create: {
@@ -102,9 +91,20 @@ export const load = async ({ url }) => {
 									member_id: DEFAULT_APP_ID,
 									
 								}
-							}
+							},
+							id: 1
 						}
-					}
+					},
+					member: {
+						create: {
+							id: DEFAULT_APP_ID,
+							user_id: DEFAULT_APP_ID,
+						}
+					},
+					name: 'DeAuth'
+				},
+				where: {
+					id: DEFAULT_APP_ID
 				}
 			})
 			.catch((e) => {
@@ -119,13 +119,13 @@ export const load = async ({ url }) => {
 
 	const application = await prisma.application
 		.findFirstOrThrow({
-			where: {
-				id: app_id
-			},
 			include: {
 				app_role: true,
 				branding: true,
 				redirect_urls: true
+			},
+			where: {
+				id: app_id
 			}
 		})
 		.catch(() => {
@@ -133,11 +133,11 @@ export const load = async ({ url }) => {
 		});
 
 	const organization = await prisma.organization.findFirstOrThrow({
-		where: {
-			id: application.organization_id,
-		},
 		include: {
 			branding: true
+		},
+		where: {
+			id: application.organization_id,
 		}
 	});
 
@@ -164,12 +164,12 @@ export const load = async ({ url }) => {
 		throw error(400, 'Missing redirect_uri');
 	}
 	return {
-		organization,
+		app_id,
 		application,
+		extras,
+		organization,
 		redirect_uri,
 		scope,
-		state,
-		app_id,
-		extras
+		state
 	};
 };

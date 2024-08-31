@@ -5,6 +5,7 @@
 		SolanaSignInOutput,
 		SolanaSignMessageOutput
 	} from '@solana/wallet-standard-features';
+	
 	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 	import base58 from 'bs58';
 	import AuthWizard from './AuthWizard.svelte';

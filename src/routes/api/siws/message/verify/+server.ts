@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import type { SolanaSignInInput } from '@solana/wallet-standard-features';
-import { error, json, type RequestEvent } from '@sveltejs/kit';
 
+import { type RequestEvent, error, json } from '@sveltejs/kit';
 import { auth } from 'src/lib/server/lucia';
 import { prisma } from 'src/lib/server/prisma';
 import {
@@ -14,26 +14,26 @@ import {
 } from 'src/routes/api/auth/callback/[provider]/auth_utils';
 
 type SerializedSolanaSignInOutput = {
-	signedMessage: string;
-	signature: string;
 	account: {
-		publicKey: string;
 		address: string;
 		chains: string[];
 		features: string[];
-		label?: string;
 		icon?: string;
+		label?: string;
+		publicKey: string;
 	};
+	signature: string;
 	signatureType: 'ed25519' | 'legacy';
+	signedMessage: string;
 };
 
-export async function POST({
-	params,
+export const POST = async ({
+	getClientAddress,
 	locals,
+	params,
 	request,
-	url,
-	getClientAddress
-}: RequestEvent) {
+	url
+}) => {
 	let session = await locals.auth.validate();
 
 	const application = await prisma.application
@@ -67,15 +67,15 @@ export async function POST({
 		throw error(400, 'Missing state');
 	}
 
-	const payload: {
+	const payload = (await request.json()) as {
 		input: SolanaSignInInput;
 		output: SerializedSolanaSignInOutput;
-	} = await request.json();
+	};
 
 	const {
 		output: {
-			signature,
-			account: { publicKey: public_key }
+			account: { publicKey: public_key },
+			signature
 		}
 	} = payload;
 
@@ -85,12 +85,12 @@ export async function POST({
 
 	const authRequest = await verifyMessage(url, state, payload);
 
-	const { access_token, refresh_token, access_token_expires_in } =
+	const { access_token, access_token_expires_in, refresh_token } =
 		await create_session_tokens({
+			account_id: public_key,
 			application,
 			date: authRequest.created_at,
-			proof: signature,
-			account_id: public_key
+			proof: signature
 		});
 
 	let user: Prisma.UserGetPayload<{
@@ -106,10 +106,10 @@ export async function POST({
 				provider: 'solana',
 				provider_account_id: public_key,
 				provider_user: {
-					id: public_key,
-					name: payload.output.account.label ?? 'Unnamed',
 					email: payload.output.account.address,
-					image: payload.output.account.icon ?? ''
+					id: public_key,
+					image: payload.output.account.icon ?? '',
+					name: payload.output.account.label ?? 'Unnamed'
 				},
 				session
 			});
@@ -119,17 +119,16 @@ export async function POST({
 				provider: 'solana',
 				provider_account_id: public_key,
 				provider_user: {
-					id: public_key,
-					name: payload.output.account.label ?? 'Unnamed',
 					email: payload.output.account.address,
-					image: payload.output.account.icon ?? ''
+					id: public_key,
+					image: payload.output.account.icon ?? '',
+					name: payload.output.account.label ?? 'Unnamed'
 				}
-
 			});
 		}
 	} catch (e) {
 		if (e instanceof Error) {
-			console.log(e)
+			console.log(e);
 			throw error(500, e.message);
 		}
 	}
@@ -139,35 +138,36 @@ export async function POST({
 	}
 
 	await prisma.authRequest.update({
-		where: {
-			id: authRequest.id
-		},
 		data: {
-			signature,
 			access_token,
-			user_id: user.id,
-			refresh_token,
-			provider_access_token: access_token,
-			provider_refresh_token: refresh_token,
 			access_token_expires_in,
 			ip_address: getClientAddress(),
+			provider_access_token: access_token,
+			provider_refresh_token: refresh_token,
+			refresh_token,
+			signature,
+			user_id: user.id
+		},
+		where: {
+			id: authRequest.id
 		}
 	});
 
-	
 	session = await auth.createSession({
-		userId: user.id,
 		attributes: {
-			provider_account_id: public_key,
 			access_token,
-			refresh_token,
 			access_token_expires_in,
+			application_id: authRequest?.application_id,
 			auth_request_id: authRequest?.id,
-			application_id: authRequest?.application_id
-		}
+			provider_account_id: public_key,
+			refresh_token
+		},
+		userId: user.id
 	});
 
 	locals.auth.setSession(session);
 
-	return json(session);
-}
+	const results = session;
+
+	return json(results);
+};

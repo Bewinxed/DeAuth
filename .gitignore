@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
+**/deauth-sdk/node_modules
 /build
 /.svelte-kit
 /package

@@ -1,4 +1,5 @@
 import type { Prisma } from '@prisma/client';
+
 import { error, json } from '@sveltejs/kit';
 import { is_authorized } from 'src/lib/security/is_authorized.js';
 import { prisma } from 'src/lib/server/prisma.js';
@@ -36,25 +37,24 @@ export const POST = async ({ locals, request }) => {
 	const payload =
 		(await request.json()) as Prisma.OrganizationCreateWithoutOwnerInput;
 
-	const organization = await prisma.organization.create({
+	const result = await prisma.organization.create({
 		data: {
 			...payload,
+			members: {
+				create: {
+					role: 'OWNER',
+					user_id: session.user.userId
+				}
+			},
 			owner: {
 				connect: {
 					id: session.user.userId
-				}
-			},
-			members: {
-				create: {
-					user_id: session.user.userId,
-					role: 'OWNER'
-					
 				}
 			}
 		}
 	});
 
-	return json(organization);
+	return json(result);
 };
 
 export const DELETE = async ({ locals, url }) => {
@@ -72,7 +72,7 @@ export const DELETE = async ({ locals, url }) => {
 
 	const organization = await prisma.organization.delete({
 		where: {
-			id: (id)
+			id: id
 		}
 	});
 	return json({ id: organization.id });
@@ -94,10 +94,10 @@ export const PATCH = async ({ locals, request, url }) => {
 	const payload = (await request.json()) as Prisma.OrganizationUpdateInput;
 
 	const organization = await prisma.organization.update({
+		data: payload,
 		where: {
-			id: (id)
-		},
-		data: payload
+			id: id
+		}
 	});
 	return json({ id: organization.id });
 };

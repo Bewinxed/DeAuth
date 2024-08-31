@@ -1,20 +1,24 @@
 import { auth } from '$lib/server/lucia';
-import { error, redirect, type Handle } from '@sveltejs/kit';
+import { type Handle, error, redirect } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.auth = auth.handleRequest(event);
 	// console.log(event.url.pathname)
 
 	// Apply CORS header for API routes
-	if (event.url.pathname.startsWith('/api') && event.request.method === 'OPTIONS') {
-       return new Response(null, {
- 			headers: {
- 			  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
- 			  'Access-Control-Allow-Origin': '*',
- 			  'Access-Control-Allow-Headers': '*',
- 			}
- 		  });
- }
+	if (
+		event.url.pathname.startsWith('/api') &&
+		event.request.method === 'OPTIONS'
+	) {
+		return new Response(null, {
+			headers: {
+				'Access-Control-Allow-Headers': '*',
+				'Access-Control-Allow-Methods':
+					'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+				'Access-Control-Allow-Origin': '*'
+			}
+		});
+	}
 
 	if (event.url.pathname.startsWith('/api/user')) {
 		const session = await event.locals.auth.validate();
@@ -33,10 +37,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	const response = await resolve(event);
-  if (event.url.pathname.startsWith('/api')) {
-    response.headers.append('Access-Control-Allow-Origin', `*`);
-  }
+	if (event.url.pathname.startsWith('/api')) {
+		response.headers.append('Access-Control-Allow-Origin', "*");
+	}
 
 	return response;
 };
-
